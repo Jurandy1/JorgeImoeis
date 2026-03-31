@@ -41,6 +41,12 @@
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+
+        @media (max-width: 640px) {
+            .form-card { padding: 1.25rem; border-radius: 1.75rem; }
+            .upload-zone { padding: 1.75rem; }
+            #map-selector { height: 260px; }
+        }
     </style>
 </head>
 <body class="bg-[#fcfcfc] text-slate-900">
@@ -173,7 +179,7 @@
                     <button id="seg-aluguel" onclick="setHomeSegment('Aluguel')" class="seg-btn bg-slate-100 text-slate-700 rounded-xl py-3 font-black text-[11px] uppercase tracking-widest hover:bg-slate-200 transition-colors">Para Alugar</button>
                     <button id="seg-rural" onclick="setHomeSegment('Rural')" class="seg-btn bg-slate-100 text-slate-700 rounded-xl py-3 font-black text-[11px] uppercase tracking-widest hover:bg-slate-200 transition-colors">Propr. Rural</button>
                 </div>
-                <div id="home-segment-grid" class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            <div id="home-segment-grid" class="mt-6 flex gap-6 overflow-x-auto md:grid md:grid-cols-3 md:overflow-visible pb-2"></div>
             </div>
         </section>
 
@@ -185,7 +191,7 @@
                 </div>
                 <button onclick="switchView('catalog')" class="text-xs font-bold text-slate-400 uppercase underline underline-offset-8">Ver todos</button>
             </div>
-            <div id="home-featured-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            <div id="home-featured-grid" class="flex gap-6 overflow-x-auto md:grid md:grid-cols-3 md:overflow-visible pb-2"></div>
         </section>
 
         <section class="pb-14 md:pb-16 max-w-7xl mx-auto px-4">
@@ -196,7 +202,7 @@
                 </div>
                 <button onclick="switchView('catalog')" class="text-xs font-bold text-slate-400 uppercase underline underline-offset-8">Abrir catálogo</button>
             </div>
-            <div id="home-latest-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            <div id="home-latest-grid" class="flex gap-6 overflow-x-auto md:grid md:grid-cols-3 md:overflow-visible pb-2"></div>
         </section>
 
     </main>
@@ -283,11 +289,12 @@
                 <div class="relative grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
                         <div class="text-[10px] font-black uppercase tracking-widest text-white/70 mb-2">WhatsApp</div>
-                        <div class="font-black text-lg">(98) 9xxxx-xxxx</div>
+                        <div class="font-black text-lg">(98) 99973-1018</div>
+                        <div class="text-[11px] font-bold text-white/70 mt-1">Jorge Protásio</div>
                     </div>
                     <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
                         <div class="text-[10px] font-black uppercase tracking-widest text-white/70 mb-2">E-mail</div>
-                        <div class="font-black text-lg">contato@jorgeimoveis.com</div>
+                        <div class="font-black text-lg">jorge@jorgeimoveis.com.br</div>
                     </div>
                     <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
                         <div class="text-[10px] font-black uppercase tracking-widest text-white/70 mb-2">Endereço</div>
@@ -363,10 +370,6 @@
                                 <option value="Consultor 01">Consultor 01</option>
                             </select>
                         </div>
-                        <div>
-                            <label class="input-label">Ordem / Rank (Ex: 10)</label>
-                            <input type="number" id="form-rank" class="input-field" value="0">
-                        </div>
                     </div>
                     <div class="flex flex-wrap gap-6 mt-8 p-4 bg-slate-50 rounded-2xl border border-slate-100">
                         <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" id="form-featured" class="w-5 h-5 accent-green-500"><span class="text-[10px] font-bold uppercase">Imóvel em Destaque</span></label>
@@ -378,9 +381,9 @@
                 <div class="form-card">
                     <h3 class="section-title">SEO (Otimização de Busca)</h3>
                     <div class="space-y-6">
-                        <div><label class="input-label">Título SEO</label><input type="text" id="form-seo-title" class="input-field"></div>
-                        <div><label class="input-label">Descrição SEO</label><textarea id="form-seo-desc" rows="2" class="input-field"></textarea></div>
-                        <div><label class="input-label">Palavras-chave</label><input type="text" id="form-seo-keys" class="input-field" placeholder="separadas por vírgula"></div>
+                        <div><label class="input-label">Título SEO (Automático)</label><input type="text" id="form-seo-title" class="input-field bg-slate-50" readonly></div>
+                        <div><label class="input-label">Descrição SEO (Automático)</label><textarea id="form-seo-desc" rows="2" class="input-field bg-slate-50" readonly></textarea></div>
+                        <div><label class="input-label">Palavras-chave (Automático)</label><input type="text" id="form-seo-keys" class="input-field bg-slate-50" readonly></div>
                     </div>
                 </div>
 
@@ -398,7 +401,6 @@
                         <div><label class="input-label">Suítes</label><input type="number" id="form-suites" class="input-field"></div>
                         <div><label class="input-label">Banheiros</label><input type="number" id="form-baths" class="input-field"></div>
                         <div><label class="input-label">Garagem (Vagas)</label><input type="number" id="form-garage" class="input-field"></div>
-                        <div class="md:col-span-2"><label class="input-label">Custom ID</label><input type="text" id="form-custom-id" class="input-field"></div>
                     </div>
                     <div class="mt-8">
                         <label class="input-label">Descrição do Imóvel*</label>
@@ -627,7 +629,14 @@
                 propertiesRef,
                 (snapshot) => {
                     allProperties = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    allProperties.sort((a, b) => (b.rank || 0) - (a.rank || 0));
+                    allProperties.sort((a, b) => {
+                        const af = a.isFeatured ? 1 : 0;
+                        const bf = b.isFeatured ? 1 : 0;
+                        if (bf !== af) return bf - af;
+                        const ta = Date.parse(a.updatedAt || a.createdAt || '') || 0;
+                        const tb = Date.parse(b.updatedAt || b.createdAt || '') || 0;
+                        return tb - ta;
+                    });
                     renderHome();
                     renderCatalog(allProperties);
                     initDistrictFilters();
@@ -832,15 +841,16 @@
         };
 
         const createCard = (p) => `
-            <div class="property-card bg-white rounded-[2rem] overflow-hidden border border-slate-100 hover:shadow-2xl transition-all cursor-pointer group" onclick="viewPropertyDetails('${p.id}')">
+            <div class="property-card shrink-0 w-[85%] sm:w-[360px] md:w-auto bg-white rounded-[2rem] overflow-hidden border border-slate-100 hover:shadow-2xl transition-all cursor-pointer group" onclick="viewPropertyDetails('${p.id}')">
                 <div class="relative overflow-hidden h-64">
                     <img src="${(p.images && p.images[0]) || p.img || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1200'}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                     <div class="absolute top-4 left-4 bg-black text-white text-[9px] font-black px-4 py-1.5 rounded-full uppercase">${p.type || 'Imóvel'}</div>
                     <div class="absolute bottom-4 left-4 bg-green-500/90 backdrop-blur-md text-white text-[9px] font-black px-4 py-1.5 rounded-full uppercase">${p.district || p.neighborhood || ''}</div>
+                    <div class="absolute bottom-4 right-4 bg-white/15 border border-white/25 backdrop-blur-md text-white text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">Ver Fotos</div>
                 </div>
                 <div class="p-8">
                     <h4 class="text-xl font-black text-black mb-2 uppercase tracking-tighter truncate">${p.title || ''}</h4>
-                    <p class="text-slate-400 text-[10px] font-bold mb-6 italic uppercase tracking-tighter">📍 ${(p.district || p.neighborhood || '')}${(p.city ? ', ' + p.city : '')}</p>
+                    <p class="text-slate-400 text-[10px] font-bold mb-6 italic uppercase tracking-tighter">📍 ${(p.district || p.neighborhood || '')}${(p.city ? ', ' + p.city : '')}${(p.state ? '/' + p.state : '')}</p>
                     <div class="flex justify-between items-center pt-6 border-t border-slate-50">
                         <span class="text-green-600 font-black text-2xl tracking-tighter">${p.price ? 'R$ ' + p.price : 'Consultar'}</span>
                         <span class="text-slate-400 text-[9px] font-black uppercase">📏 ${p.size || p.area || '-'} m²</span>
@@ -881,7 +891,27 @@
                     : '<div class="md:col-span-3 bg-white border border-slate-100 rounded-[2rem] p-10 text-center text-slate-500 font-bold">Nenhum imóvel publicado ainda.</div>';
             }
             renderHomeSegment(currentTypeFilter || 'Venda');
+            setupAutoScroll('home-featured-grid');
+            setupAutoScroll('home-latest-grid');
+            setupAutoScroll('home-segment-grid');
         };
+
+        const autoScrollTimers = {};
+        function setupAutoScroll(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (autoScrollTimers[id]) {
+                clearInterval(autoScrollTimers[id]);
+                delete autoScrollTimers[id];
+            }
+            if (!window.matchMedia('(max-width: 768px)').matches) return;
+            if (el.scrollWidth <= el.clientWidth + 8) return;
+            autoScrollTimers[id] = setInterval(() => {
+                const max = el.scrollWidth - el.clientWidth;
+                const next = el.scrollLeft + 1.25;
+                el.scrollLeft = next >= max ? 0 : next;
+            }, 20);
+        }
 
         let homeSegment = 'Venda';
         window.setHomeSegment = (type) => {
@@ -902,6 +932,7 @@
             grid.innerHTML = filtered.length
                 ? filtered.slice(0, 6).map(p => createCard(p)).join('')
                 : '<div class="md:col-span-3 bg-white border border-slate-100 rounded-[2rem] p-10 text-center text-slate-500 font-bold">Nenhum imóvel nesta categoria.</div>';
+            setupAutoScroll('home-segment-grid');
         };
 
         const normalizeStr = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-').toLowerCase();
@@ -927,6 +958,33 @@
                 document.head.appendChild(m);
             }
             m.setAttribute('content', p.seoDescription || `${p.title} em ${p.city || ''}`);
+        };
+
+        const buildSeoFromForm = () => {
+            const title = (document.getElementById('form-title')?.value || '').trim();
+            const type = (document.getElementById('form-type')?.value || '').trim();
+            const category = (document.getElementById('form-category')?.value || '').trim();
+            const district = (document.getElementById('form-district')?.value || '').trim();
+            const city = (document.getElementById('form-city')?.value || '').trim();
+            const state = (document.getElementById('form-state')?.value || '').trim();
+            const size = (document.getElementById('form-size')?.value || '').trim();
+            const price = (document.getElementById('form-price')?.value || '').trim();
+
+            const loc = [district, city].filter(Boolean).join(', ') + (state ? `/${state}` : '');
+            const seoTitle = [title, type ? `${type} em ${city || state || ''}` : '', state ? state : ''].filter(Boolean).join(' | ');
+            const seoDescription = `${title || 'Imóvel'}${loc ? ` em ${loc}` : ''}.${type ? ` ${type}.` : ''}${size ? ` ${size} m².` : ''}${price ? ` Preço: R$ ${price}.` : ''}`;
+            const seoKeys = Array.from(new Set([category, type, district, city, state].filter(Boolean))).join(', ');
+            return { seoTitle, seoDescription, seoKeys };
+        };
+
+        const refreshSeoFields = () => {
+            const { seoTitle, seoDescription, seoKeys } = buildSeoFromForm();
+            const titleEl = document.getElementById('form-seo-title');
+            const descEl = document.getElementById('form-seo-desc');
+            const keysEl = document.getElementById('form-seo-keys');
+            if (titleEl) titleEl.value = seoTitle;
+            if (descEl) descEl.value = seoDescription;
+            if (keysEl) keysEl.value = seoKeys;
         };
 
         const uploadImages = async (docId, files) => {
@@ -993,19 +1051,14 @@
             const stateEl = document.getElementById('form-state');
             if (stateEl) stateEl.value = p.state || '';
 
-            const contentEl = document.getElementById('form-content');
-            if (contentEl) contentEl.value = p.description || p.content || '';
-            const seoTitleEl = document.getElementById('seo-title');
-            if (seoTitleEl) seoTitleEl.value = p.seoTitle || '';
-            const seoDescEl = document.getElementById('seo-desc');
-            if (seoDescEl) seoDescEl.value = p.seoDescription || '';
+            const descEl2 = document.getElementById('form-description');
+            if (descEl2) descEl2.value = p.description || p.content || '';
 
             const featuredEl = document.getElementById('form-featured');
             if (featuredEl) featuredEl.checked = Boolean(p.isFeatured);
             const activeEl = document.getElementById('form-active');
             if (activeEl) activeEl.checked = p.isActive !== false;
-            const rankEl = document.getElementById('form-rank');
-            if (rankEl) rankEl.value = p.rank || 0;
+            refreshSeoFields();
 
             const imgInput = document.getElementById('form-img');
             if (imgInput) imgInput.value = p.img || (p.images && p.images[0]) || '';
@@ -1263,23 +1316,20 @@
                 const price = getVal('form-price');
                 const description = getVal('form-description');
 
-                let seoTitle = getVal('form-seo-title').trim();
-                let seoDescription = getVal('form-seo-desc').trim();
-                if (!seoTitle) seoTitle = `${title} | ${type} em ${city || ''}`;
-                if (!seoDescription) seoDescription = `${title} em ${district || ''}, ${city || ''} - ${state || ''}. ${type}${size ? ' • ' + size + ' m²' : ''}${price ? ' • R$ ' + price : ''}.`;
+                const { seoTitle, seoDescription, seoKeys } = buildSeoFromForm();
+                refreshSeoFields();
 
                 const data = {
                     title,
                     slug,
                     category: getVal('form-category'),
                     agent: getVal('form-agent'),
-                    rank: parseInt(getVal('form-rank')) || 0,
                     isFeatured: getChecked('form-featured'),
                     isActive: getChecked('form-active'),
                     seoTitle,
                     seoDescription,
                     seoDesc: seoDescription,
-                    seoKeys: getVal('form-seo-keys'),
+                    seoKeys,
                     type,
                     price,
                     size,
@@ -1291,7 +1341,6 @@
                     suites: getVal('form-suites'),
                     baths: getVal('form-baths'),
                     garage: getVal('form-garage'),
-                    customId: getVal('form-custom-id'),
                     description,
                     content: description,
                     country: getVal('form-country'),
@@ -1355,6 +1404,7 @@
             if (slugEl) slugEl.value = "";
             const submitBtn = document.getElementById('submit-btn');
             if (submitBtn) submitBtn.textContent = "Publicar Imóvel";
+            refreshSeoFields();
         };
 
         const titleEl = document.getElementById('form-title');
@@ -1364,8 +1414,17 @@
                 if (document.getElementById('edit-id')?.value) return;
                 const v = normalizeStr(titleEl.value || '');
                 slugEl.value = v;
+                refreshSeoFields();
             });
         }
+
+        ['form-title','form-category','form-type','form-district','form-city','form-state','form-size','form-price','form-description'].forEach((id) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener('input', refreshSeoFields);
+            el.addEventListener('change', refreshSeoFields);
+        });
+        refreshSeoFields();
 
         const zipEl = document.getElementById('form-zip');
         if (zipEl) {
@@ -1471,9 +1530,9 @@
             const mainImg = images[0] || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1400';
             const area = p.size || p.area;
             const suites = p.suites ?? 0;
-            const refId = p.customId || 'N/A';
             const district = p.district || p.neighborhood || '-';
             const desc = p.content || p.description || '';
+            const cityState = `${p.city || '-'}${p.state ? '/' + p.state : ''}`;
 
             document.getElementById('property-detail-content').innerHTML = `
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -1503,7 +1562,7 @@
                                 <div class="bg-slate-50 p-6 rounded-3xl"><p class="text-[9px] font-black text-slate-400 uppercase">Valor</p><p class="text-xl font-black text-green-600">${p.price ? 'R$ ' + p.price : 'Consultar'}</p></div>
                                 <div class="bg-slate-50 p-6 rounded-3xl"><p class="text-[9px] font-black text-slate-400 uppercase">Área</p><p class="text-xl font-black text-black">${area ? area + ' m²' : '-'}</p></div>
                                 <div class="bg-slate-50 p-6 rounded-3xl"><p class="text-[9px] font-black text-slate-400 uppercase">Suítes</p><p class="text-xl font-black text-black">${suites}</p></div>
-                                <div class="bg-slate-50 p-6 rounded-3xl"><p class="text-[9px] font-black text-slate-400 uppercase">Ref</p><p class="text-xl font-black text-black">${refId}</p></div>
+                                <div class="bg-slate-50 p-6 rounded-3xl"><p class="text-[9px] font-black text-slate-400 uppercase">Cidade/UF</p><p class="text-xl font-black text-black">${cityState}</p></div>
                             </div>
                             
                             <h2 class="text-sm font-black uppercase mb-6 flex items-center gap-3"><span class="w-1.5 h-6 bg-green-500 rounded-full"></span> Detalhes do Imóvel</h2>
