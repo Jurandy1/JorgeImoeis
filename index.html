@@ -532,11 +532,11 @@
                     <form id="login-form" class="space-y-4" onsubmit="handleLogin(event)">
                         <div>
                             <label class="input-label">E-mail</label>
-                            <input id="login-email" type="email" required class="input-field" placeholder="seuemail@dominio.com">
+                            <input id="login-email" type="email" required class="input-field" placeholder="seuemail@dominio.com" autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false">
                         </div>
                         <div>
                             <label class="input-label">Senha</label>
-                            <input id="login-password" type="password" required class="input-field" placeholder="********">
+                            <input id="login-password" type="password" required class="input-field" placeholder="********" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false">
                         </div>
 
                         <div id="login-error" class="hidden text-[11px] font-bold text-red-600 bg-red-50 border border-red-100 rounded-xl p-4"></div>
@@ -1467,9 +1467,23 @@
             modal.classList.add('hidden');
         };
 
+        const authErrorMessage = (error) => {
+            const code = String(error?.code || '');
+            if (code === 'auth/invalid-email') return 'E-mail inválido.';
+            if (code === 'auth/missing-email') return 'Informe o e-mail.';
+            if (code === 'auth/missing-password') return 'Informe a senha.';
+            if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') return 'E-mail ou senha incorretos.';
+            if (code === 'auth/user-disabled') return 'Usuário desativado.';
+            if (code === 'auth/too-many-requests') return 'Muitas tentativas. Aguarde e tente novamente.';
+            if (code === 'auth/network-request-failed') return 'Falha de rede. Verifique a internet e tente novamente.';
+            if (code === 'auth/operation-not-allowed') return 'Login por e-mail/senha não está habilitado no Firebase.';
+            if (code === 'auth/unauthorized-domain') return `Domínio não autorizado (${window.location.hostname}). Adicione em Authentication → Settings → Authorized domains.`;
+            return 'Falha ao entrar. Tente novamente.';
+        };
+
         window.handleLogin = async (e) => {
             e.preventDefault();
-            const email = (document.getElementById('login-email')?.value || '').trim();
+            const email = (document.getElementById('login-email')?.value || '').trim().toLowerCase();
             const password = document.getElementById('login-password')?.value || '';
             const err = document.getElementById('login-error');
             if (err) {
@@ -1483,14 +1497,14 @@
             } catch (error) {
                 console.error(error);
                 if (err) {
-                    err.textContent = 'Falha ao entrar. Verifique e-mail e senha.';
+                    err.textContent = authErrorMessage(error);
                     err.classList.remove('hidden');
                 }
             }
         };
 
         window.handleRegister = async () => {
-            const email = (document.getElementById('login-email')?.value || '').trim();
+            const email = (document.getElementById('login-email')?.value || '').trim().toLowerCase();
             const password = document.getElementById('login-password')?.value || '';
             const err = document.getElementById('login-error');
             if (err) {
@@ -1504,7 +1518,13 @@
             } catch (error) {
                 console.error(error);
                 if (err) {
-                    err.textContent = 'Falha ao criar conta. Verifique os dados e tente novamente.';
+                    if (String(error?.code || '') === 'auth/email-already-in-use') {
+                        err.textContent = 'Este e-mail já está cadastrado. Clique em “Entrar”.';
+                    } else if (String(error?.code || '') === 'auth/weak-password') {
+                        err.textContent = 'Senha fraca. Use pelo menos 6 caracteres.';
+                    } else {
+                        err.textContent = authErrorMessage(error);
+                    }
                     err.classList.remove('hidden');
                 }
             }
