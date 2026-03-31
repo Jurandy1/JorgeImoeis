@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jorge Imóveis - Gestão Profissional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <style>
+        :root { --primary-green: #22c55e; --primary-dark: #000000; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        .glass-effect { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); }
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .active-link { color: var(--primary-green) !important; position: relative; font-weight: 800; }
+        .active-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 100%; height: 3px; background: var(--primary-green); border-radius: 10px; }
+        
+        .form-card { background: white; border: 1px solid #e5e7eb; border-radius: 1.25rem; padding: 2rem; margin-bottom: 2rem; }
+        .section-title { font-size: 0.75rem; font-weight: 900; text-transform: uppercase; color: var(--primary-dark); letter-spacing: 0.1em; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+        .section-title::before { content: ''; width: 4px; height: 18px; background: var(--primary-green); border-radius: 10px; }
+
+        .input-label { font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; margin-bottom: 0.5rem; display: block; }
+        .input-field { width: 100%; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 0.75rem 1rem; font-size: 0.875rem; transition: all 0.2s; }
+        .input-field:focus { border-color: var(--primary-green); outline: none; box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25); background: white; }
+        
+        .checkbox-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 0.75rem; background: #f9fafb; border: 1px solid #f3f4f6; cursor: pointer; transition: 0.2s; }
+        .checkbox-item:hover { border-color: var(--primary-green); background: white; }
+        .checkbox-item input { width: 1.2rem; height: 1.2rem; accent-color: var(--primary-green); }
+        .checkbox-item span { font-size: 0.75rem; font-weight: 600; color: #374151; }
+
+        #map-selector { height: 350px; border-radius: 1rem; margin-top: 1rem; border: 1px solid #e5e7eb; z-index: 10; }
+        .upload-zone { border: 2px dashed #d1d5db; border-radius: 1rem; padding: 2.5rem; text-align: center; cursor: pointer; transition: 0.2s; }
+        .upload-zone:hover { border-color: var(--primary-green); background: #f0fdf4; }
+        
+        .preview-box { width: 100%; height: 250px; border-radius: 1rem; object-fit: cover; margin-top: 1rem; border: 1px solid #e5e7eb; display: none; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-[#fcfcfc] text-slate-900">
+
+    <nav class="fixed w-full z-[100] glass-effect border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center gap-6">
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="switchView('home')">
+                    <img src="./Gemini_Generated_Image_op1pifop1pifop1p-removebg-preview.png" alt="Jorge Imóveis" class="h-16 md:h-20 w-auto">
+                </div>
+
+                <div class="hidden lg:flex items-center gap-8 text-[11px] font-bold uppercase tracking-widest">
+                    <a href="javascript:void(0)" onclick="switchView('home')" id="nav-home" class="nav-item active-link">Home</a>
+                    <a href="javascript:void(0)" onclick="switchView('empresa')" id="nav-empresa" class="nav-item text-slate-400 hover:text-green-500 transition-colors">Empresa</a>
+                    <a href="javascript:void(0)" onclick="switchView('servicos')" id="nav-servicos" class="nav-item text-slate-400 hover:text-green-500 transition-colors">Serviços</a>
+
+                    <div class="relative group">
+                        <button id="nav-catalog" type="button" onclick="switchView('catalog')" class="nav-item text-slate-400 hover:text-green-500 transition-colors flex items-center gap-2">
+                            IMÓVEIS
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </button>
+                        <div class="absolute left-0 top-full pt-3 hidden group-hover:block">
+                            <div class="bg-white border border-slate-100 rounded-2xl shadow-2xl overflow-hidden min-w-[260px]">
+                                <a href="javascript:void(0)" onclick="switchView('catalog')" class="block px-6 py-4 text-[11px] font-black uppercase tracking-widest text-slate-700 hover:bg-slate-50">IMÓVEIS</a>
+                                <a href="javascript:void(0)" onclick="filterCatalogByType('Venda')" class="block px-6 py-4 text-[11px] font-black uppercase tracking-widest text-slate-700 hover:bg-slate-50">Imóveis à Venda</a>
+                                <a href="javascript:void(0)" onclick="filterCatalogByType('Aluguel')" class="block px-6 py-4 text-[11px] font-black uppercase tracking-widest text-slate-700 hover:bg-slate-50">Imóveis Para Alugar</a>
+                                <a href="javascript:void(0)" onclick="filterCatalogByType('Rural')" class="block px-6 py-4 text-[11px] font-black uppercase tracking-widest text-slate-700 hover:bg-slate-50">Propriedades Rurais e Fazendas</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="javascript:void(0)" onclick="switchView('contato')" id="nav-contato" class="nav-item text-slate-400 hover:text-green-500 transition-colors">Contato</a>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="toggleMobileMenu()" class="lg:hidden bg-white border border-slate-200 text-slate-700 w-11 h-11 rounded-full flex items-center justify-center hover:border-green-500 hover:text-green-600 transition-all" aria-label="Menu">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+
+                    <button id="login-button" type="button" onclick="openLoginModal()" class="inline-flex bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-full font-black text-[10px] uppercase tracking-widest hover:border-green-500 hover:text-green-600 transition-all">
+                        Entrar
+                    </button>
+                    <div id="user-badge" class="hidden sm:flex items-center gap-3">
+                        <span id="user-email" class="text-[10px] font-black uppercase tracking-widest text-slate-500"></span>
+                        <button type="button" onclick="logout()" class="bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-full font-black text-[10px] uppercase tracking-widest hover:border-slate-400 transition-all">
+                            Sair
+                        </button>
+                    </div>
+
+                    <button id="new-btn-desktop" onclick="switchView('admin')" class="hidden bg-black text-white px-6 py-2.5 rounded-full font-bold text-[10px] uppercase tracking-widest hover:bg-green-600 transition-all">
+                        + Novo Imóvel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="mobile-menu" class="fixed inset-0 z-[150] hidden lg:hidden">
+        <div class="absolute inset-0 bg-black/60" onclick="toggleMobileMenu()"></div>
+        <div class="absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white border-l border-slate-100 shadow-2xl p-8 flex flex-col">
+            <div class="flex items-center justify-between mb-10">
+                <img src="./Gemini_Generated_Image_op1pifop1pifop1p-removebg-preview.png" alt="Jorge Imóveis" class="h-12 w-auto">
+                <button type="button" onclick="toggleMobileMenu()" class="text-slate-500 hover:text-black transition-colors" aria-label="Fechar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+
+            <div class="flex flex-col gap-6 text-[12px] font-black uppercase tracking-widest">
+                <a href="javascript:void(0)" onclick="switchView('home'); toggleMobileMenu();" class="text-slate-700 hover:text-green-600 transition-colors">Home</a>
+                <a href="javascript:void(0)" onclick="switchView('empresa'); toggleMobileMenu();" class="text-slate-700 hover:text-green-600 transition-colors">Empresa</a>
+                <a href="javascript:void(0)" onclick="switchView('servicos'); toggleMobileMenu();" class="text-slate-700 hover:text-green-600 transition-colors">Serviços</a>
+                <a href="javascript:void(0)" onclick="switchView('catalog'); toggleMobileMenu();" class="text-slate-700 hover:text-green-600 transition-colors">Imóveis</a>
+                <a href="javascript:void(0)" onclick="filterCatalogByType('Venda'); toggleMobileMenu();" class="text-slate-500 hover:text-green-600 transition-colors pl-4">Imóveis à Venda</a>
+                <a href="javascript:void(0)" onclick="filterCatalogByType('Aluguel'); toggleMobileMenu();" class="text-slate-500 hover:text-green-600 transition-colors pl-4">Imóveis Para Alugar</a>
+                <a href="javascript:void(0)" onclick="filterCatalogByType('Rural'); toggleMobileMenu();" class="text-slate-500 hover:text-green-600 transition-colors pl-4">Propriedades Rurais</a>
+                <a href="javascript:void(0)" onclick="switchView('contato'); toggleMobileMenu();" class="text-slate-700 hover:text-green-600 transition-colors">Contato</a>
+            </div>
+
+            <div class="mt-auto pt-8 border-t border-slate-100">
+                <button type="button" onclick="openLoginModal(); toggleMobileMenu();" class="w-full bg-black text-white py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-green-600 transition-all">Área de Login</button>
+                <button id="new-btn-mobile" type="button" onclick="switchView('admin'); toggleMobileMenu();" class="hidden w-full mt-3 bg-white border border-slate-200 text-slate-700 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:border-green-500 hover:text-green-600 transition-all">+ Novo Imóvel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISTA: HOME -->
+    <main id="view-home" class="view-section active pt-20">
+        <section class="relative min-h-[48vh] md:min-h-[56vh] flex items-center overflow-hidden">
+            <img src="./1BBD56BC-1AD3-493A-88A5-397D8F0DEBBA-1024x576.jpeg" alt="Vista aérea - São Luís" class="absolute inset-0 w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/55"></div>
+            <div class="relative z-10 max-w-7xl mx-auto px-4 w-full">
+                <div class="max-w-3xl">
+                    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/25 text-white text-[10px] font-black tracking-[0.25em] uppercase mb-3">
+                        Especialista desde 1982
+                    </span>
+                    <h1 class="text-4xl md:text-6xl font-extrabold text-white uppercase leading-tight">
+                        AQUI VOCÊ ENCONTRA O SEU IMÓVEL
+                    </h1>
+                    <h2 class="text-3xl md:text-5xl font-extrabold text-emerald-400 uppercase leading-tight mb-4">
+                        PARA REALIZAR O SEU SONHO
+                    </h2>
+                    <p class="text-white/90 max-w-2xl font-semibold mb-7 uppercase text-[11px] md:text-xs tracking-widest">
+                        A segurança jurídica que você precisa com a experiência de quem trabalha desde 1982
+                    </p>
+                    <div class="flex flex-wrap gap-3 sm:items-center">
+                        <button onclick="switchView('catalog')" class="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all">
+                            Ver Imóveis
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </button>
+                        <button id="new-hero-btn" onclick="switchView('admin')" class="hidden inline-flex items-center justify-center gap-2 bg-white/10 border border-white/30 text-white px-8 py-3 rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-white/15 transition-all">
+                            Anunciar Imóvel
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-10 md:py-12 max-w-7xl mx-auto px-4">
+            <div class="flex items-end justify-between mb-5">
+                <div>
+                    <h2 class="text-green-500 text-[10px] font-black uppercase tracking-widest mb-2">Catálogo</h2>
+                    <h3 class="text-3xl font-black text-black uppercase tracking-tighter">Explorar na Home</h3>
+                </div>
+                <button onclick="switchView('catalog')" class="text-xs font-bold text-slate-400 uppercase underline underline-offset-8">Abrir Catálogo</button>
+            </div>
+            <div class="bg-white border border-slate-100 rounded-[2rem] p-3 md:p-4 shadow-sm">
+                <div class="grid grid-cols-3 gap-2 md:gap-3">
+                    <button id="seg-venda" onclick="setHomeSegment('Venda')" class="seg-btn active bg-emerald-500 text-white rounded-xl py-3 font-black text-[11px] uppercase tracking-widest hover:bg-emerald-600 transition-colors">Imóveis à Venda</button>
+                    <button id="seg-aluguel" onclick="setHomeSegment('Aluguel')" class="seg-btn bg-slate-100 text-slate-700 rounded-xl py-3 font-black text-[11px] uppercase tracking-widest hover:bg-slate-200 transition-colors">Para Alugar</button>
+                    <button id="seg-rural" onclick="setHomeSegment('Rural')" class="seg-btn bg-slate-100 text-slate-700 rounded-xl py-3 font-black text-[11px] uppercase tracking-widest hover:bg-slate-200 transition-colors">Propr. Rural</button>
+                </div>
+                <div id="home-segment-grid" class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            </div>
+        </section>
+
+        <section class="py-14 md:py-16 max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-green-500 text-[10px] font-black uppercase tracking-widest mb-2">Vitrine</h2>
+                    <h3 class="text-3xl font-black text-black uppercase tracking-tighter">Imóveis em Destaque</h3>
+                </div>
+                <button onclick="switchView('catalog')" class="text-xs font-bold text-slate-400 uppercase underline underline-offset-8">Ver todos</button>
+            </div>
+            <div id="home-featured-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+        </section>
+
+        <section class="pb-14 md:pb-16 max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-end mb-10">
+                <div>
+                    <h2 class="text-green-500 text-[10px] font-black uppercase tracking-widest mb-2">Novidades</h2>
+                    <h3 class="text-3xl font-black text-black uppercase tracking-tighter">Últimos Imóveis</h3>
+                </div>
+                <button onclick="switchView('catalog')" class="text-xs font-bold text-slate-400 uppercase underline underline-offset-8">Abrir catálogo</button>
+            </div>
+            <div id="home-latest-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+        </section>
+
+    </main>
+
+    <main id="view-empresa" class="view-section pt-32 pb-24">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="mb-10">
+                <h2 class="text-green-500 text-[10px] font-black uppercase tracking-widest mb-2">Empresa</h2>
+                <h1 class="text-4xl md:text-6xl font-black text-black uppercase tracking-tighter">Quem Somos</h1>
+            </div>
+
+            <div class="bg-white border border-slate-100 rounded-[2.5rem] p-10 md:p-14 shadow-sm space-y-10">
+                <div class="space-y-4 text-slate-600 font-medium leading-relaxed">
+                    <p>
+                        A Jorge Imóveis – Atuante no mercado imobiliário desde 1982, com endereço comercial localizada na Rua dos Professores, 13 – Altos – Cohafuma – São Luís, Capital do Estado do Maranhão, a única cidade brasileira fundada por franceses, no dia 8 de setembro de 1612, tendo sido posteriormente invadida por holandeses. Em seguida, foi colonizada pelos portugueses. População de 1.255.879 habitantes (2.010), e com área de 1.410,015 km², compreendendo a metropolização, 04 (Quatro) Municípios, que são: Paço do Lumiar, Raposa, São José de Ribamar e São Luís.
+                    </p>
+                    <p>
+                        Cujo nosso objetivo, é atender as expectativas e exigências, no sentido de viabilizar e concretizar a tão sonhada casa Própria.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl p-8">
+                        <h3 class="text-black font-black uppercase tracking-widest text-[11px] mb-4">Nossa Missão</h3>
+                        <p class="text-slate-600 font-medium leading-relaxed">
+                            Vender o imóvel de nossos proprietários ao melhor preço de mercado, no menor tempo possível, utilizando para isso as mais modernas técnicas de divulgação e marketing. Prestar um serviço de excelência, atuar com profissionalismo, transparência e ética, e assumir uma postura de compromisso para com nossos clientes. Tudo isso só é possível, pois trabalhamos com pessoas que têm sonhos e objetivos, e para nós é um prazer saber que fazemos parte da transformação de histórias e conquistas.
+                        </p>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl p-8">
+                        <h3 class="text-black font-black uppercase tracking-widest text-[11px] mb-4">Nossa Visão</h3>
+                        <p class="text-slate-600 font-medium leading-relaxed">
+                            Ser referência no mercado imobiliário, prestando um assessoria inovadora, com qualidade e de comprometimento em todos os nossos seguimentos. A união de esforços com nossos parceiros e colaboradores resultará sempre em grandes conquistas para todas as partes.
+                        </p>
+                        <div class="mt-6 space-y-2">
+                            <div class="flex items-center gap-3 text-slate-700 font-semibold"><span class="w-2.5 h-2.5 bg-green-500 rounded-full"></span>Ética e Transparência</div>
+                            <div class="flex items-center gap-3 text-slate-700 font-semibold"><span class="w-2.5 h-2.5 bg-green-500 rounded-full"></span>Satisfação do Cliente</div>
+                            <div class="flex items-center gap-3 text-slate-700 font-semibold"><span class="w-2.5 h-2.5 bg-green-500 rounded-full"></span>Excelência com Simplicidade</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <main id="view-servicos" class="view-section pt-32 pb-24">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="mb-10">
+                <h2 class="text-green-500 text-[10px] font-black uppercase tracking-widest mb-2">Serviços</h2>
+                <h1 class="text-4xl md:text-6xl font-black text-black uppercase tracking-tighter">O que fazemos</h1>
+            </div>
+
+            <div class="bg-white border border-slate-100 rounded-[2.5rem] p-10 md:p-14 shadow-sm">
+                <p class="text-slate-600 font-medium leading-relaxed">
+                    A Jorge Imóveis é uma empresa especializada em Aluguel, Compra e Venda de Imóveis Residencial, Comercial e Industrial, em área Urbana e Rural, tais como: Casas, Apartamentos, Lojas, Salas, Prédios Residencial e Comercial, Terrenos, Fazendas, Propriedades Rurais, Glebas e Outros, além de Cobrança de Aluguel, Administração de Imóveis, Legalização e Regularização da Documentação de Imóveis, Averbação de Construção, Consultoria Jurídica Completa, Avaliação de Imóveis Residencial, Comercial, Rural e Urbano, Georreferenciamento de Imóvel Rural e Urbano, Financiamento de Imóveis novos e usados, junto ao Sistema Financeiro de Habitação, e atividades afins.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl p-8">
+                        <h3 class="text-black font-black uppercase tracking-widest text-[11px] mb-3">Compra e Venda</h3>
+                        <p class="text-slate-600 font-medium text-sm leading-relaxed">Curadoria, negociação e suporte jurídico do início ao fim.</p>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl p-8">
+                        <h3 class="text-black font-black uppercase tracking-widest text-[11px] mb-3">Locação e Administração</h3>
+                        <p class="text-slate-600 font-medium text-sm leading-relaxed">Cobrança, contratos, vistoria e acompanhamento com transparência.</p>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl p-8">
+                        <h3 class="text-black font-black uppercase tracking-widest text-[11px] mb-3">Documentação</h3>
+                        <p class="text-slate-600 font-medium text-sm leading-relaxed">Regularização, averbação, consultoria completa e avaliação.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <main id="view-contato" class="view-section pt-32 pb-24">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="mb-10">
+                <h2 class="text-green-500 text-[10px] font-black uppercase tracking-widest mb-2">Contato</h2>
+                <h1 class="text-4xl md:text-6xl font-black text-black uppercase tracking-tighter">Fale Conosco</h1>
+            </div>
+
+            <div class="bg-black rounded-[2.5rem] p-10 md:p-14 text-white overflow-hidden relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-green-500/20 to-transparent"></div>
+                <div class="relative grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+                        <div class="text-[10px] font-black uppercase tracking-widest text-white/70 mb-2">WhatsApp</div>
+                        <div class="font-black text-lg">(98) 9xxxx-xxxx</div>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+                        <div class="text-[10px] font-black uppercase tracking-widest text-white/70 mb-2">E-mail</div>
+                        <div class="font-black text-lg">contato@jorgeimoveis.com</div>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+                        <div class="text-[10px] font-black uppercase tracking-widest text-white/70 mb-2">Endereço</div>
+                        <div class="font-black text-lg">Rua dos Professores, 13 – Altos – Cohafuma – São Luís/MA</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- VISTA: CATÁLOGO -->
+    <main id="view-catalog" class="view-section pt-32 pb-24">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col lg:flex-row gap-12">
+                <aside class="lg:w-1/4">
+                    <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm sticky top-32">
+                        <h4 class="text-[10px] font-black uppercase text-slate-400 mb-6 tracking-widest">Filtros Avançados</h4>
+                        <div id="neighborhood-filters" class="space-y-3"></div>
+                    </div>
+                </aside>
+                <div id="catalog-full-grid" class="lg:w-3/4 grid grid-cols-1 md:grid-cols-2 gap-8"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- VISTA: ADMIN (DASHBOARD COMPLETO) -->
+    <main id="view-admin" class="view-section pt-32 pb-24">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="mb-12 flex justify-between items-center">
+                <div>
+                    <h2 class="text-4xl font-black text-black uppercase tracking-tighter">Adicionar Imóvel</h2>
+                    <p class="text-slate-500 text-sm mt-2">Gestão completa seguindo o padrão WordPress Jorge Imóveis.</p>
+                </div>
+                <button onclick="resetForm()" class="bg-slate-100 text-slate-500 px-6 py-2 rounded-xl font-bold text-[10px] uppercase">Limpar</button>
+            </div>
+
+            <form id="property-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                <input type="hidden" id="edit-id">
+                
+                <!-- Dados Principais -->
+                <div class="form-card">
+                    <h3 class="section-title">Dados Gerais</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="md:col-span-2">
+                            <label class="input-label">Título do Imóvel*</label>
+                            <input type="text" id="form-title" required class="input-field" placeholder="Ex: Casa Duplex de Alto Padrão">
+                        </div>
+                        <div>
+                            <label class="input-label">Slug (URL)</label>
+                            <input type="text" id="form-slug" class="input-field" placeholder="Gerado automaticamente" disabled>
+                        </div>
+                        <div>
+                            <label class="input-label">Categoria*</label>
+                            <select id="form-category" class="input-field" required>
+                                <option value="Casa">Casa</option>
+                                <option value="Apartamento">Apartamento</option>
+                                <option value="Chácara">Chácara</option>
+                                <option value="Galpão">Galpão</option>
+                                <option value="Loja Comercial">Loja Comercial</option>
+                                <option value="Pousada">Pousada</option>
+                                <option value="Prédio Comercial">Prédio Comercial</option>
+                                <option value="Propriedade Rural">Propriedade Rural</option>
+                                <option value="Sala Comercial">Sala Comercial</option>
+                                <option value="Terreno">Terreno</option>
+                                <option value="Academia">Academia</option>
+                                <option value="Ponto Comercial">Ponto Comercial</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="input-label">Agente Editor</label>
+                            <select id="form-agent" class="input-field">
+                                <option value="Jorge Imóveis">Jorge Imóveis</option>
+                                <option value="Consultor 01">Consultor 01</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="input-label">Ordem / Rank (Ex: 10)</label>
+                            <input type="number" id="form-rank" class="input-field" value="0">
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-6 mt-8 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" id="form-featured" class="w-5 h-5 accent-green-500"><span class="text-[10px] font-bold uppercase">Imóvel em Destaque</span></label>
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" id="form-active" checked class="w-5 h-5 accent-green-500"><span class="text-[10px] font-bold uppercase">Publicar Imediatamente</span></label>
+                    </div>
+                </div>
+
+                <!-- SEO -->
+                <div class="form-card">
+                    <h3 class="section-title">SEO (Otimização de Busca)</h3>
+                    <div class="space-y-6">
+                        <div><label class="input-label">Título SEO</label><input type="text" id="form-seo-title" class="input-field"></div>
+                        <div><label class="input-label">Descrição SEO</label><textarea id="form-seo-desc" rows="2" class="input-field"></textarea></div>
+                        <div><label class="input-label">Palavras-chave</label><input type="text" id="form-seo-keys" class="input-field" placeholder="separadas por vírgula"></div>
+                    </div>
+                </div>
+
+                <!-- Visão Geral -->
+                <div class="form-card">
+                    <h3 class="section-title">Visão Geral Técnica</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div><label class="input-label">Tipo Negócio</label><select id="form-type" class="input-field"><option value="Venda">Venda</option><option value="Aluguel">Aluguel</option><option value="Rural">Rural</option></select></div>
+                        <div><label class="input-label">Preço (R$)</label><input type="text" id="form-price" class="input-field" placeholder="Ex: 1.200.000,00"></div>
+                        <div><label class="input-label">Área Útil (m²)</label><input type="number" id="form-size" class="input-field"></div>
+                        <div><label class="input-label">Área Lote (m²)</label><input type="number" id="form-lot" class="input-field"></div>
+                        <div><label class="input-label">Ano Construção</label><input type="number" id="form-year" class="input-field"></div>
+                        <div><label class="input-label">Pisos Nº</label><input type="number" id="form-floors" class="input-field"></div>
+                        <div><label class="input-label">Quartos</label><input type="number" id="form-beds" class="input-field"></div>
+                        <div><label class="input-label">Suítes</label><input type="number" id="form-suites" class="input-field"></div>
+                        <div><label class="input-label">Banheiros</label><input type="number" id="form-baths" class="input-field"></div>
+                        <div><label class="input-label">Garagem (Vagas)</label><input type="number" id="form-garage" class="input-field"></div>
+                        <div class="md:col-span-2"><label class="input-label">Custom ID</label><input type="text" id="form-custom-id" class="input-field"></div>
+                    </div>
+                    <div class="mt-8">
+                        <label class="input-label">Descrição do Imóvel*</label>
+                        <textarea id="form-description" required rows="6" class="input-field" placeholder="Conte os detalhes do imóvel..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Localidade -->
+                <div class="form-card">
+                    <h3 class="section-title">Localidade & Endereço</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div><label class="input-label">País</label><input type="text" id="form-country" class="input-field" value="Brasil"></div>
+                        <div><label class="input-label">Estado</label><input type="text" id="form-state" class="input-field" value="Maranhão"></div>
+                        <div><label class="input-label">Cidade</label><input type="text" id="form-city" class="input-field" value="São Luís"></div>
+                        <div><label class="input-label">Bairro / Área*</label><input type="text" id="form-district" required class="input-field" placeholder="Ex: Calhau"></div>
+                        <div class="md:col-span-2"><label class="input-label">Endereço Completo</label><input type="text" id="form-address" class="input-field"></div>
+                        <div><label class="input-label">Número</label><input type="text" id="form-number" class="input-field"></div>
+                        <div><label class="input-label">CEP</label><input type="text" id="form-zip" class="input-field"></div>
+                    </div>
+                    <div id="map-selector"></div>
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <input type="text" id="form-lat" readonly class="input-field bg-slate-50 text-[9px] font-mono" placeholder="Latitude">
+                        <input type="text" id="form-lng" readonly class="input-field bg-slate-50 text-[9px] font-mono" placeholder="Longitude">
+                    </div>
+                </div>
+
+                <!-- Amenidades -->
+                <div class="form-card">
+                    <h3 class="section-title">Detalhes do Interior & Exterior</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="Cozinha Equipada"><span>Cozinha Equipada</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="Academia"><span>Academia</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="Piscina"><span>Piscina</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="Churrasqueira"><span>Churrasqueira</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="Ar Condicionado"><span>Ar Condicionado</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="Elevador"><span>Elevador</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="Varanda"><span>Varanda</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="Escritório"><span>Escritório</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="TV a Cabo"><span>TV a Cabo</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="Mezanino"><span>Mezanino</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="WiFi"><span>WiFi</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="Sauna"><span>Sauna</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="Recepção"><span>Recepção</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="Estacionamento"><span>Estacionamento</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="Poço Artesiano"><span>Poço Artesiano</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="Área de Lazer"><span>Área de Lazer</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="Energia Elétrica"><span>Energia Elétrica</span></label>
+                        <label class="checkbox-item"><input type="checkbox" name="amenity" value="Playground"><span>Playground</span></label>
+                    </div>
+                </div>
+
+                <!-- Multimédia -->
+                <div class="form-card">
+                    <h3 class="section-title">Multimédia & Imagens</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <label class="input-label">Foto de Capa*</label>
+                            <div class="upload-zone" onclick="document.getElementById('form-file').click()">
+                                <svg class="mx-auto text-slate-300 mb-2" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase">Fazer Upload</span>
+                            </div>
+                            <input type="file" id="form-file" accept="image/*" class="hidden" onchange="previewUpload(event)">
+                            <img id="preview-img" class="preview-box">
+                            <div id="upload-status" class="mt-3 text-[10px] font-bold uppercase tracking-widest text-slate-400"></div>
+                            <div class="mt-6">
+                                <label class="input-label">Galeria (várias fotos)</label>
+                                <div class="upload-zone" onclick="document.getElementById('form-files').click()">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase">Adicionar várias imagens</span>
+                                </div>
+                                <input type="file" id="form-files" accept="image/*" multiple class="hidden" onchange="previewUploadMultiple(event)">
+                                <div id="images-preview" class="grid grid-cols-3 gap-2 mt-3"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div><label class="input-label">Ou Link Direto da Imagem</label><input type="text" id="form-img" class="input-field" placeholder="https://..." oninput="updatePreviewUrl(this.value)"></div>
+                            <div><label class="input-label">Vídeo URL (YouTube)</label><input type="url" id="form-video" class="input-field"></div>
+                            <div><label class="input-label">Embed Vídeo (HTML)</label><textarea id="form-embed-video" rows="2" class="input-field text-[10px] font-mono"></textarea></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-4 pt-12">
+                    <button type="submit" id="submit-btn" class="flex-1 bg-green-500 text-white font-black py-5 rounded-2xl hover:bg-black transition-all uppercase text-sm shadow-2xl shadow-green-500/20">Publicar Imóvel</button>
+                    <button type="button" onclick="switchView('catalog')" class="px-10 py-5 bg-white border border-slate-200 text-slate-400 font-bold rounded-2xl uppercase text-sm">Cancelar</button>
+                </div>
+            </form>
+
+            <div class="mt-10 bg-white border border-slate-100 rounded-[2rem] p-8 shadow-sm">
+                <div class="flex items-end justify-between mb-6">
+                    <div>
+                        <h3 class="text-green-500 text-[10px] font-black uppercase tracking-widest mb-2">Admin</h3>
+                        <h4 class="text-2xl font-black text-black uppercase tracking-tighter">Meus Imóveis</h4>
+                    </div>
+                </div>
+                <div id="admin-list" class="divide-y border border-slate-100 rounded-2xl overflow-hidden"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- VISTA: DETALHES -->
+    <main id="view-details" class="view-section pt-32 pb-24">
+        <div class="max-w-7xl mx-auto px-4" id="property-detail-content"></div>
+    </main>
+
+    <footer class="bg-black text-white py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="text-3xl font-black mb-4 uppercase tracking-tighter">Jorge<span class="text-green-500">Imóveis</span></div>
+            <p class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em] mb-12">Segurança Jurídica desde 1982</p>
+            <div class="w-12 h-1 bg-green-500 mx-auto mb-12"></div>
+            <p class="text-slate-600 text-[8px] uppercase tracking-[0.5em]">CRECI: 663 20º RG | São Luís - Maranhão</p>
+        </div>
+    </footer>
+
+    <div id="login-modal" class="fixed inset-0 z-[200] hidden">
+        <div class="absolute inset-0 bg-black/60" onclick="closeLoginModal()"></div>
+        <div class="relative max-w-lg mx-auto mt-24 px-4">
+            <div class="bg-white rounded-[2rem] border border-slate-100 shadow-2xl overflow-hidden">
+                <div class="p-8">
+                    <div class="flex items-start justify-between gap-6 mb-6">
+                        <div>
+                            <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Acesso</div>
+                            <h3 class="text-2xl font-black text-black uppercase tracking-tighter">Entrar</h3>
+                        </div>
+                        <button type="button" onclick="closeLoginModal()" class="text-slate-400 hover:text-black transition-colors" aria-label="Fechar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                    </div>
+
+                    <form id="login-form" class="space-y-4" onsubmit="handleLogin(event)">
+                        <div>
+                            <label class="input-label">E-mail</label>
+                            <input id="login-email" type="email" required class="input-field" placeholder="seuemail@dominio.com">
+                        </div>
+                        <div>
+                            <label class="input-label">Senha</label>
+                            <input id="login-password" type="password" required class="input-field" placeholder="********">
+                        </div>
+
+                        <div id="login-error" class="hidden text-[11px] font-bold text-red-600 bg-red-50 border border-red-100 rounded-xl p-4"></div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                            <button type="submit" class="bg-black text-white py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-green-600 transition-all">Entrar</button>
+                            <button type="button" onclick="handleRegister()" class="bg-white border border-slate-200 text-slate-700 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:border-green-500 hover:text-green-600 transition-all">Criar conta</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="px-8 py-6 bg-slate-50 border-t border-slate-100">
+                    <p class="text-[11px] font-medium text-slate-500">
+                        Use o acesso para administrar imóveis no dashboard.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged, signInAnonymously, signInWithCustomToken, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+        import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBNk_yttqJQdUKuhtzS7mrp5_dC9JGvVW4",
+            authDomain: "jorge-imoveis.firebaseapp.com",
+            projectId: "jorge-imoveis",
+            storageBucket: "jorge-imoveis.appspot.com",
+            messagingSenderId: "390637166084",
+            appId: "1:390637166084:web:b434dca553e8ba1d791f51"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        const appId = 'jorge-imoveis';
+
+        let user = null;
+        let allProperties = [];
+        let map = null;
+        let marker = null;
+        let activeImage = "";
+        let activeImages = [];
+        let currentTypeFilter = "";
+        let isDataLoaded = false;
+
+        // AUTH (somente email/senha; sem login anônimo)
+
+        onAuthStateChanged(auth, (u) => {
+            user = u;
+            updateAuthUi();
+            if (!isDataLoaded) loadData();
+        });
+
+        const updateAuthUi = () => {
+            const loginBtn = document.getElementById('login-button');
+            const badge = document.getElementById('user-badge');
+            const emailEl = document.getElementById('user-email');
+            const newBtnDesktop = document.getElementById('new-btn-desktop');
+            const newBtnMobile = document.getElementById('new-btn-mobile');
+            const newHeroBtn = document.getElementById('new-hero-btn');
+            if (!loginBtn || !badge || !emailEl) return;
+
+            if (user && !user.isAnonymous) {
+                loginBtn.classList.add('hidden');
+                badge.classList.remove('hidden');
+                emailEl.textContent = user.email || 'Usuário';
+                if (newBtnDesktop) newBtnDesktop.classList.remove('hidden');
+                if (newBtnMobile) newBtnMobile.classList.remove('hidden');
+                if (newHeroBtn) newHeroBtn.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+                loginBtn.classList.remove('hidden');
+                emailEl.textContent = '';
+                if (newBtnDesktop) newBtnDesktop.classList.add('hidden');
+                if (newBtnMobile) newBtnMobile.classList.add('hidden');
+                if (newHeroBtn) newHeroBtn.classList.add('hidden');
+            }
+        };
+
+        const loadData = () => {
+            if (isDataLoaded) return;
+            isDataLoaded = true;
+            const propertiesRef = collection(db, 'artifacts', appId, 'public', 'data', 'properties');
+            onSnapshot(
+                propertiesRef,
+                (snapshot) => {
+                    allProperties = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    allProperties.sort((a, b) => (b.rank || 0) - (a.rank || 0));
+                    renderHome();
+                    renderCatalog(allProperties);
+                    initDistrictFilters();
+                    renderAdminList();
+                },
+                (error) => {
+                    console.error(error);
+                    allProperties = [];
+                    renderHome();
+                    renderCatalog(allProperties);
+                    initDistrictFilters();
+                    renderAdminList();
+                }
+            );
+        };
+
+        window.switchView = (viewName) => {
+            const viewEl = document.getElementById(`view-${viewName}`);
+            if (!viewEl) return;
+
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            viewEl.classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(link => link.classList.remove('active-link'));
+            const navMap = {
+                home: 'nav-home',
+                empresa: 'nav-empresa',
+                servicos: 'nav-servicos',
+                catalog: 'nav-catalog',
+                contato: 'nav-contato'
+            };
+            const activeNav = document.getElementById(navMap[viewName] || '');
+            if(activeNav) activeNav.classList.add('active-link');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (viewName === 'admin') initMap();
+        };
+
+        window.goToHomeSection = (id) => {
+            switchView(id);
+        };
+
+        window.filterCatalogByType = (type) => {
+            currentTypeFilter = type || '';
+            switchView('catalog');
+            renderCatalog(allProperties);
+        };
+
+        const initMap = () => {
+            if (map) return;
+            map = L.map('map-selector', { zoomControl: false }).setView([-2.5307, -44.3068], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            marker = L.marker([-2.5307, -44.3068], { draggable: true }).addTo(map);
+            marker.on('dragend', (e) => {
+                const pos = e.target.getLatLng();
+                document.getElementById('form-lat').value = pos.lat.toFixed(6);
+                document.getElementById('form-lng').value = pos.lng.toFixed(6);
+            });
+        };
+
+        const uploadImageToStorage = async (file) => {
+            if (!auth.currentUser) {
+                throw new Error('not-authenticated');
+            }
+            const safeName = (file.name || 'imagem').replace(/[^\w.\-]+/g, '_');
+            const path = `properties/${Date.now()}_${safeName}`;
+            const storageRef = ref(storage, path);
+            await uploadBytes(storageRef, file, { contentType: file.type || 'application/octet-stream' });
+            return await getDownloadURL(storageRef);
+        };
+
+        window.previewUpload = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const prev = document.getElementById('preview-img');
+            prev.src = URL.createObjectURL(file);
+            prev.style.display = "block";
+
+            const imgInput = document.getElementById('form-img');
+            const statusEl = document.getElementById('upload-status');
+            if (statusEl) statusEl.textContent = 'Enviando capa...';
+            imgInput.placeholder = 'Enviando...';
+
+            try {
+                const submitBtn = document.getElementById('submit-btn');
+                if (submitBtn) submitBtn.disabled = true;
+                const url = await uploadImageToStorage(file);
+                activeImage = url;
+                if (!activeImages.includes(url)) activeImages = [url, ...activeImages];
+                imgInput.value = url;
+                imgInput.placeholder = 'https://...';
+                if (statusEl) statusEl.textContent = 'Capa enviada com sucesso.';
+                if (submitBtn) submitBtn.disabled = false;
+            } catch (err) {
+                console.error(err);
+                if (String(err?.message || '') === 'not-authenticated') {
+                    if (statusEl) statusEl.textContent = 'Faça login para enviar imagens.';
+                    openLoginModal();
+                } else {
+                    if (statusEl) statusEl.textContent = 'Falha ao enviar. Ative o Firebase Storage e regras.';
+                }
+                imgInput.placeholder = 'https://...';
+                const submitBtn = document.getElementById('submit-btn');
+                if (submitBtn) submitBtn.disabled = false;
+            }
+        };
+
+        window.updatePreviewUrl = (url) => {
+            if (!url) return;
+            activeImage = url;
+            activeImages = [url];
+            const prev = document.getElementById('preview-img');
+            prev.src = url;
+            prev.style.display = "block";
+        };
+
+        window.previewUploadMultiple = async (e) => {
+            const files = Array.from(e.target.files || []);
+            const wrap = document.getElementById('images-preview');
+            if (wrap) {
+                wrap.innerHTML = files.map((f) => `
+                    <div class="w-full h-24 bg-slate-100 rounded-xl overflow-hidden border border-slate-200">
+                        <img src="${URL.createObjectURL(f)}" class="w-full h-full object-cover">
+                    </div>
+                `).join('');
+            }
+
+            if (!files.length) {
+                activeImages = [];
+                return;
+            }
+
+            try {
+                const statusEl = document.getElementById('upload-status');
+                if (statusEl) statusEl.textContent = 'Enviando galeria...';
+                const submitBtn = document.getElementById('submit-btn');
+                if (submitBtn) submitBtn.disabled = true;
+                const urls = [];
+                for (const file of files) {
+                    urls.push(await uploadImageToStorage(file));
+                }
+                activeImages = urls;
+
+                const setCover = (url) => {
+                    activeImage = url;
+                    activeImages = [url, ...activeImages.filter(u => u !== url)];
+                    const imgInput = document.getElementById('form-img');
+                    if (imgInput) imgInput.value = url;
+                    const prev = document.getElementById('preview-img');
+                    if (prev) {
+                        prev.src = url;
+                        prev.style.display = "block";
+                    }
+                    if (wrap) {
+                        wrap.querySelectorAll('[data-cover]').forEach(el => el.classList.add('hidden'));
+                        const badge = wrap.querySelector(`[data-cover-for="${CSS.escape(url)}"]`);
+                        if (badge) badge.classList.remove('hidden');
+                    }
+                };
+
+                if (!activeImage && urls[0]) {
+                    setCover(urls[0]);
+                } else if (activeImage && urls.includes(activeImage)) {
+                    setCover(activeImage);
+                }
+
+                if (wrap) {
+                    wrap.innerHTML = urls.map(u => `
+                        <button type="button" class="relative rounded-xl overflow-hidden border border-slate-200 bg-white" onclick="window.setGalleryCover('${u.replace(/'/g, "\\'")}')">
+                            <img src="${u}" class="w-full h-24 object-cover">
+                            <div data-cover data-cover-for="${u}" class="${u === activeImage ? '' : 'hidden'} absolute top-2 left-2 bg-emerald-500 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Capa</div>
+                        </button>
+                    `).join('');
+                    window.setGalleryCover = setCover;
+                }
+                if (statusEl) statusEl.textContent = 'Galeria enviada. Clique em uma foto para definir a capa.';
+                if (submitBtn) submitBtn.disabled = false;
+            } catch (err) {
+                console.error(err);
+                if (String(err?.message || '') === 'not-authenticated') {
+                    const statusEl = document.getElementById('upload-status');
+                    if (statusEl) statusEl.textContent = 'Faça login para enviar imagens.';
+                    openLoginModal();
+                } else {
+                    const statusEl = document.getElementById('upload-status');
+                    if (statusEl) statusEl.textContent = 'Falha ao enviar. Confirme: Storage habilitado (Get started), regras publicadas e login ativo.';
+                }
+                const submitBtn = document.getElementById('submit-btn');
+                if (submitBtn) submitBtn.disabled = false;
+            }
+        };
+
+        const createCard = (p) => `
+            <div class="property-card bg-white rounded-[2rem] overflow-hidden border border-slate-100 hover:shadow-2xl transition-all cursor-pointer group" onclick="viewPropertyDetails('${p.id}')">
+                <div class="relative overflow-hidden h-64">
+                    <img src="${(p.images && p.images[0]) || p.img || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1200'}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute top-4 left-4 bg-black text-white text-[9px] font-black px-4 py-1.5 rounded-full uppercase">${p.type || 'Imóvel'}</div>
+                    <div class="absolute bottom-4 left-4 bg-green-500/90 backdrop-blur-md text-white text-[9px] font-black px-4 py-1.5 rounded-full uppercase">${p.district || p.neighborhood || ''}</div>
+                </div>
+                <div class="p-8">
+                    <h4 class="text-xl font-black text-black mb-2 uppercase tracking-tighter truncate">${p.title || ''}</h4>
+                    <p class="text-slate-400 text-[10px] font-bold mb-6 italic uppercase tracking-tighter">📍 ${(p.district || p.neighborhood || '')}${(p.city ? ', ' + p.city : '')}</p>
+                    <div class="flex justify-between items-center pt-6 border-t border-slate-50">
+                        <span class="text-green-600 font-black text-2xl tracking-tighter">${p.price ? 'R$ ' + p.price : 'Consultar'}</span>
+                        <span class="text-slate-400 text-[9px] font-black uppercase">📏 ${p.size || p.area || '-'} m²</span>
+                    </div>
+                </div>
+            </div>`;
+
+        window.renderCatalog = (list) => {
+            const grid = document.getElementById('catalog-full-grid');
+            const filtered = list
+                .filter(p => p.isActive)
+                .filter(p => !currentTypeFilter || (String(p.type || '').toLowerCase() === String(currentTypeFilter).toLowerCase()));
+            grid.innerHTML = filtered.map(p => createCard(p)).join('');
+        };
+
+        const renderHome = () => {
+            const featuredGrid = document.getElementById('home-featured-grid');
+            const latestGrid = document.getElementById('home-latest-grid');
+
+            const featured = allProperties
+                .filter(p => p.isFeatured && p.isActive)
+                .slice(0, 3);
+
+            const latest = [...allProperties]
+                .filter(p => p.isActive)
+                .sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')))
+                .slice(0, 6);
+
+            if (featuredGrid) {
+                featuredGrid.innerHTML = featured.length
+                    ? featured.map(p => createCard(p)).join('')
+                    : '<div class="md:col-span-3 bg-white border border-slate-100 rounded-[2rem] p-10 text-center text-slate-500 font-bold">Sem imóveis em destaque no momento.</div>';
+            }
+
+            if (latestGrid) {
+                latestGrid.innerHTML = latest.length
+                    ? latest.map(p => createCard(p)).join('')
+                    : '<div class="md:col-span-3 bg-white border border-slate-100 rounded-[2rem] p-10 text-center text-slate-500 font-bold">Nenhum imóvel publicado ainda.</div>';
+            }
+            renderHomeSegment(currentTypeFilter || 'Venda');
+        };
+
+        let homeSegment = 'Venda';
+        window.setHomeSegment = (type) => {
+            homeSegment = type;
+            document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('bg-emerald-500','text-white','active'));
+            const map = { 'Venda': 'seg-venda', 'Aluguel': 'seg-aluguel', 'Rural': 'seg-rural' };
+            const btn = document.getElementById(map[type]);
+            if (btn) btn.classList.add('bg-emerald-500','text-white','active');
+            renderHomeSegment(type);
+        };
+
+        const renderHomeSegment = (type) => {
+            const grid = document.getElementById('home-segment-grid');
+            if (!grid) return;
+            const filtered = allProperties
+                .filter(p => p.isActive)
+                .filter(p => String(p.type || '').toLowerCase() === String(type).toLowerCase());
+            grid.innerHTML = filtered.length
+                ? filtered.slice(0, 6).map(p => createCard(p)).join('')
+                : '<div class="md:col-span-3 bg-white border border-slate-100 rounded-[2rem] p-10 text-center text-slate-500 font-bold">Nenhum imóvel nesta categoria.</div>';
+        };
+
+        const normalizeStr = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-').toLowerCase();
+        const uniqueSlug = async (title) => {
+            let base = normalizeStr(title || 'imovel');
+            let slug = base;
+            let i = 2;
+            const { getDocs, query, collection, where } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
+            while (true) {
+                const ref = collection(db, 'artifacts', appId, 'public', 'data', 'properties');
+                const snap = await getDocs(query(ref, where('slug', '==', slug)));
+                if (snap.empty) return slug;
+                slug = `${base}-${i++}`;
+            }
+        };
+
+        const setSeo = (p) => {
+            document.title = p.seoTitle || `${p.title} | Imóveis`;
+            let m = document.querySelector('meta[name="description"]');
+            if (!m) {
+                m = document.createElement('meta');
+                m.setAttribute('name', 'description');
+                document.head.appendChild(m);
+            }
+            m.setAttribute('content', p.seoDescription || `${p.title} em ${p.city || ''}`);
+        };
+
+        const uploadImages = async (docId, files) => {
+            const { ref, uploadBytes, getDownloadURL } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js');
+            const urls = [];
+            for (let i = 0; i < files.length; i++) {
+                const f = files[i];
+                const name = (f.name || `image_${i}`).replace(/[^\w.\-]+/g, '_');
+                const storageRef = ref(storage, `properties/${docId}/${Date.now()}_${name}`);
+                await uploadBytes(storageRef, f, { contentType: f.type || 'image/jpeg' });
+                urls.push(await getDownloadURL(storageRef));
+            }
+            return urls;
+        };
+
+        const adminList = document.getElementById('admin-list');
+        const renderAdminList = () => {
+            if (!adminList) return;
+            adminList.innerHTML = allProperties.map(p => `
+                <div class="p-4 flex items-center justify-between gap-4">
+                    <div class="text-sm min-w-0">
+                        <div class="font-bold truncate">${p.title || '(sem título)'}</div>
+                        <div class="text-slate-500 truncate">${p.type || ''} • ${(p.district || p.neighborhood || '')}${(p.city ? ' • ' + p.city : '')} • ${(p.slug || '')}</div>
+                    </div>
+                    <div class="flex gap-2 shrink-0">
+                        <button class="px-3 py-1.5 rounded-lg border text-sm" data-edit="${p.id}">Editar</button>
+                        <button class="px-3 py-1.5 rounded-lg border text-sm text-red-600" data-del="${p.id}">Excluir</button>
+                    </div>
+                </div>
+            `).join('');
+            adminList.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => loadForEdit(b.dataset.edit)));
+            adminList.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => deleteProperty(b.dataset.del)));
+        };
+
+        const loadForEdit = (id) => {
+            const p = allProperties.find(x => x.id === id);
+            if (!p) return;
+            switchView('admin');
+
+            const editIdEl = document.getElementById('edit-id');
+            if (editIdEl) editIdEl.value = id;
+
+            const titleEl = document.getElementById('form-title');
+            if (titleEl) titleEl.value = p.title || '';
+            const slugEl = document.getElementById('form-slug');
+            if (slugEl) slugEl.value = p.slug || '';
+
+            const categoryEl = document.getElementById('form-category');
+            if (categoryEl) categoryEl.value = p.category || 'Casa';
+            const typeEl = document.getElementById('form-type');
+            if (typeEl) typeEl.value = p.type || 'Venda';
+
+            const priceEl = document.getElementById('form-price');
+            if (priceEl) priceEl.value = p.price || '';
+            const sizeEl = document.getElementById('form-size');
+            if (sizeEl) sizeEl.value = p.size || p.area || '';
+
+            const zipEl = document.getElementById('form-zip');
+            if (zipEl) zipEl.value = p.zip || p.cep || '';
+            const districtEl = document.getElementById('form-district');
+            if (districtEl) districtEl.value = p.district || p.neighborhood || '';
+            const cityEl = document.getElementById('form-city');
+            if (cityEl) cityEl.value = p.city || '';
+            const stateEl = document.getElementById('form-state');
+            if (stateEl) stateEl.value = p.state || '';
+
+            const contentEl = document.getElementById('form-content');
+            if (contentEl) contentEl.value = p.description || p.content || '';
+            const seoTitleEl = document.getElementById('seo-title');
+            if (seoTitleEl) seoTitleEl.value = p.seoTitle || '';
+            const seoDescEl = document.getElementById('seo-desc');
+            if (seoDescEl) seoDescEl.value = p.seoDescription || '';
+
+            const featuredEl = document.getElementById('form-featured');
+            if (featuredEl) featuredEl.checked = Boolean(p.isFeatured);
+            const activeEl = document.getElementById('form-active');
+            if (activeEl) activeEl.checked = p.isActive !== false;
+            const rankEl = document.getElementById('form-rank');
+            if (rankEl) rankEl.value = p.rank || 0;
+
+            const imgInput = document.getElementById('form-img');
+            if (imgInput) imgInput.value = p.img || (p.images && p.images[0]) || '';
+            if ((p.images && p.images[0]) || p.img) {
+                updatePreviewUrl((p.images && p.images[0]) || p.img);
+            }
+
+            const submitBtn = document.getElementById('submit-btn');
+            if (submitBtn) submitBtn.textContent = 'Atualizar Imóvel';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        const deleteProperty = async (id) => {
+            if (!confirm('Excluir este imóvel?')) return;
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'properties', id));
+        };
+
+        const imagesInput = document.getElementById('form-images');
+        const imagesPreview = document.getElementById('images-preview');
+        if (imagesInput) {
+            imagesInput.addEventListener('change', (e) => {
+                imagesPreview.innerHTML = '';
+                [...e.target.files].forEach(f => {
+                    const url = URL.createObjectURL(f);
+                    const img = document.createElement('img');
+                    img.src = url;
+                    img.className = 'w-full h-28 object-cover rounded-xl border';
+                    imagesPreview.appendChild(img);
+                });
+            });
+        }
+
+        const saveBtn = document.getElementById('btn-save');
+        const resetBtn = document.getElementById('btn-reset');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                document.getElementById('form-id').value = '';
+                document.getElementById('form-title').value = '';
+                document.getElementById('form-type').value = 'Venda';
+                document.getElementById('form-price').value = '';
+                document.getElementById('form-area').value = '';
+                document.getElementById('form-description').value = '';
+                document.getElementById('form-rooms').value = '';
+                document.getElementById('form-suites').value = '';
+                document.getElementById('form-bathrooms').value = '';
+                document.getElementById('form-garages').value = '';
+                document.getElementById('form-year').value = '';
+                document.getElementById('form-lot').value = '';
+                document.getElementById('form-cep').value = '';
+                document.getElementById('form-address').value = '';
+                document.getElementById('form-neighborhood').value = '';
+                document.getElementById('form-state').value = '';
+                document.getElementById('form-city').value = '';
+                document.getElementById('form-number').value = '';
+                document.getElementById('form-featured').checked = false;
+                document.getElementById('form-active').checked = true;
+                document.getElementById('form-rank').value = '';
+                document.getElementById('form-slug').value = '';
+                document.getElementById('form-seo-auto').checked = true;
+                document.getElementById('form-seo-title').value = '';
+                document.getElementById('form-seo-desc').value = '';
+                if (imagesInput) imagesInput.value = '';
+                imagesPreview.innerHTML = '';
+            });
+        }
+
+        if (saveBtn) {
+            saveBtn.addEventListener('click', async () => {
+                const { addDoc, doc, updateDoc, collection } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
+                const id = document.getElementById('form-id').value.trim();
+                const title = document.getElementById('form-title').value.trim();
+                const type = document.getElementById('form-type').value.trim();
+                const price = Number(document.getElementById('form-price').value || 0);
+                const area = Number(document.getElementById('form-area').value || 0);
+                const description = document.getElementById('form-description').value.trim();
+                const rooms = Number(document.getElementById('form-rooms').value || 0);
+                const suites = Number(document.getElementById('form-suites').value || 0);
+                const bathrooms = Number(document.getElementById('form-bathrooms').value || 0);
+                const garages = Number(document.getElementById('form-garages').value || 0);
+                const year = Number(document.getElementById('form-year').value || 0);
+                const lot = Number(document.getElementById('form-lot').value || 0);
+                const cep = document.getElementById('form-cep').value.trim();
+                const address = document.getElementById('form-address').value.trim();
+                const neighborhood = document.getElementById('form-neighborhood').value.trim();
+                const state = document.getElementById('form-state').value.trim();
+                const city = document.getElementById('form-city').value.trim();
+                const number = document.getElementById('form-number').value.trim();
+                const isFeatured = document.getElementById('form-featured').checked;
+                const isActive = document.getElementById('form-active').checked;
+                const rank = Number(document.getElementById('form-rank').value || 0);
+                const seoAuto = document.getElementById('form-seo-auto').checked;
+                let seoTitle = document.getElementById('form-seo-title').value.trim();
+                let seoDescription = document.getElementById('form-seo-desc').value.trim();
+                const slug = id ? undefined : await uniqueSlug(title);
+                if (seoAuto || !seoTitle) seoTitle = `${title} | ${type} em ${city || ''}`;
+                if (seoAuto || !seoDescription) seoDescription = `${title} em ${neighborhood || ''}, ${city || ''} - ${state || ''}. ${type} ${area ? '• '+area+' m²' : ''} ${price ? '• R$ '+price.toLocaleString('pt-BR') : ''}.`;
+                const files = imagesInput?.files || [];
+
+                if (id) {
+                    const ref = doc(db, 'artifacts', appId, 'public', 'data', 'properties', id);
+                    await updateDoc(ref, { title, type, price, area, description, rooms, suites, bathrooms, garages, year, lot, cep, address, neighborhood, state, city, number, isFeatured, isActive, rank, seoTitle, seoDescription, updatedAt: new Date().toISOString() });
+                    if (files.length) {
+                        const newUrls = await uploadImages(id, [...files]);
+                        await updateDoc(ref, { images: newUrls });
+                    }
+                } else {
+                    const baseRef = collection(db, 'artifacts', appId, 'public', 'data', 'properties');
+                    const created = await addDoc(baseRef, { title, type, price, area, description, rooms, suites, bathrooms, garages, year, lot, cep, address, neighborhood, state, city, number, slug, isFeatured, isActive, rank, seoTitle, seoDescription, createdAt: new Date().toISOString() });
+                    if (files.length) {
+                        const urls = await uploadImages(created.id, [...files]);
+                        await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'properties', created.id), { images: urls });
+                    }
+                }
+            });
+        }
+
+        const seoAutoEl = document.getElementById('form-seo-auto');
+        const seoTitleEl = document.getElementById('form-seo-title');
+        const seoDescEl = document.getElementById('form-seo-desc');
+        if (seoAutoEl) {
+            const toggleSeoInputs = () => {
+                const dis = seoAutoEl.checked;
+                seoTitleEl.disabled = dis;
+                seoDescEl.disabled = dis;
+            };
+            seoAutoEl.addEventListener('change', toggleSeoInputs);
+            toggleSeoInputs();
+        }
+
+        const cepEl = document.getElementById('form-cep');
+        if (cepEl) {
+            cepEl.addEventListener('input', async (e) => {
+                const v = (e.target.value || '').replace(/\D/g,'').slice(0,8);
+                e.target.value = v;
+                if (v.length === 8) {
+                    const r = await fetch(`https://viacep.com.br/ws/${v}/json/`);
+                    const j = await r.json();
+                    if (!j.erro) {
+                        document.getElementById('form-address').value = j.logradouro || '';
+                        document.getElementById('form-neighborhood').value = j.bairro || '';
+                        document.getElementById('form-city').value = j.localidade || '';
+                        document.getElementById('form-state').value = j.uf || '';
+                    }
+                }
+            });
+        }
+
+        const stateEl = document.getElementById('form-state');
+        const cityEl = document.getElementById('form-city');
+        const loadStates = async () => {
+            if (!stateEl) return;
+            const r = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome');
+            const data = await r.json();
+            stateEl.innerHTML = '<option value="">UF</option>' + data.map(s => `<option value="${s.sigla}">${s.nome} (${s.sigla})</option>`).join('');
+        };
+        const loadCities = async (uf) => {
+            if (!cityEl) return;
+            if (!uf) { cityEl.innerHTML = '<option value="">Cidade</option>'; return; }
+            const r = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios?orderBy=nome`);
+            const data = await r.json();
+            cityEl.innerHTML = '<option value="">Cidade</option>' + data.map(c => `<option value="${c.nome}">${c.nome}</option>`).join('');
+        };
+        if (stateEl) {
+            loadStates();
+            stateEl.addEventListener('change', (e) => loadCities(e.target.value));
+        }
+
+        if (typeof window.createCard !== 'function') {
+            window.createCard = (p) => {
+                const img = (p.images && p.images[0]) || p.image || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1200';
+                const badge = p.type || 'Imóvel';
+                const price = p.price ? `R$ ${Number(p.price).toLocaleString('pt-BR')}` : 'Consultar';
+                const area = p.area ? `${p.area} m²` : '';
+                const title = p.title || '(Sem título)';
+                const address = [p.neighborhood, p.city].filter(Boolean).join(', ');
+                return `
+                <a href="javascript:void(0)" class="property-card bg-white rounded-[2rem] overflow-hidden border ${p.isFeatured ? 'border-amber-400 shadow-md' : 'border-slate-200 hover:shadow-xl'} transition-custom cursor-pointer group block">
+                    <div class="relative overflow-hidden h-60">
+                        <img src="${img}" alt="${title}" class="w-full h-full object-cover transition-custom property-image">
+                        <div class="absolute top-4 left-4 bg-blue-900 text-white text-[9px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">${badge}</div>
+                    </div>
+                    <div class="p-6">
+                        <h4 class="text-lg font-bold text-blue-900 mb-1 uppercase tracking-tight truncate">${title}</h4>
+                        <p class="text-slate-400 text-[10px] mb-4 italic truncate">📍 ${address || 'Endereço sob consulta'}</p>
+                        <div class="flex justify-between items-center border-t border-slate-100 pt-4">
+                            <span class="text-blue-900 font-black text-lg">${price}</span>
+                            <span class="text-slate-400 text-[9px] font-bold uppercase">${area}</span>
+                        </div>
+                    </div>
+                </a>`;
+            };
+        }
+
+        if (typeof window.openLoginModal !== 'function') {
+            window.openLoginModal = () => {
+                const modal = document.getElementById('login-modal');
+                if (!modal) return;
+                const err = document.getElementById('login-error');
+                if (err) { err.classList.add('hidden'); err.textContent = ''; }
+                modal.classList.remove('hidden');
+            };
+        }
+        if (typeof window.closeLoginModal !== 'function') {
+            window.closeLoginModal = () => {
+                const modal = document.getElementById('login-modal');
+                if (!modal) return;
+                modal.classList.add('hidden');
+            };
+        }
+
+        window.initDistrictFilters = () => {
+            const districts = [...new Set(allProperties.map(p => p.district || p.neighborhood))].filter(Boolean).sort();
+            document.getElementById('neighborhood-filters').innerHTML = districts.map(d => `
+                <label class="flex items-center gap-3 text-[11px] font-bold text-slate-500 cursor-pointer group">
+                    <input type="checkbox" name="dist" value="${d}" onchange="applyFilters()" class="w-4 h-4 accent-green-500">
+                    <span class="group-hover:text-green-500 transition-colors uppercase tracking-widest">${d}</span>
+                </label>`).join('');
+        };
+
+        window.applyFilters = () => {
+            const dists = Array.from(document.querySelectorAll('input[name="dist"]:checked')).map(c => c.value);
+            const filtered = allProperties.filter(p => dists.length === 0 || dists.includes(p.district || p.neighborhood));
+            renderCatalog(filtered);
+        };
+
+        window.handleFormSubmit = async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('submit-btn');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = 'Publicando...';
+            }
+
+            const getVal = (id) => (document.getElementById(id)?.value || '').toString();
+            const getChecked = (id) => Boolean(document.getElementById(id)?.checked);
+
+            try {
+                const amenities = Array.from(document.querySelectorAll('input[name="amenity"]:checked')).map(c => c.value);
+                const editId = getVal('edit-id').trim();
+
+                const title = getVal('form-title').trim();
+                let slug = getVal('form-slug').trim();
+                if (!slug) {
+                    slug = await uniqueSlug(title);
+                    const slugEl2 = document.getElementById('form-slug');
+                    if (slugEl2) slugEl2.value = slug;
+                }
+
+                const type = getVal('form-type');
+                const district = getVal('form-district');
+                const city = getVal('form-city');
+                const state = getVal('form-state');
+                const size = getVal('form-size');
+                const price = getVal('form-price');
+                const description = getVal('form-description');
+
+                let seoTitle = getVal('form-seo-title').trim();
+                let seoDescription = getVal('form-seo-desc').trim();
+                if (!seoTitle) seoTitle = `${title} | ${type} em ${city || ''}`;
+                if (!seoDescription) seoDescription = `${title} em ${district || ''}, ${city || ''} - ${state || ''}. ${type}${size ? ' • ' + size + ' m²' : ''}${price ? ' • R$ ' + price : ''}.`;
+
+                const data = {
+                    title,
+                    slug,
+                    category: getVal('form-category'),
+                    agent: getVal('form-agent'),
+                    rank: parseInt(getVal('form-rank')) || 0,
+                    isFeatured: getChecked('form-featured'),
+                    isActive: getChecked('form-active'),
+                    seoTitle,
+                    seoDescription,
+                    seoDesc: seoDescription,
+                    seoKeys: getVal('form-seo-keys'),
+                    type,
+                    price,
+                    size,
+                    area: size,
+                    lot: getVal('form-lot'),
+                    year: getVal('form-year'),
+                    floors: getVal('form-floors'),
+                    beds: getVal('form-beds'),
+                    suites: getVal('form-suites'),
+                    baths: getVal('form-baths'),
+                    garage: getVal('form-garage'),
+                    customId: getVal('form-custom-id'),
+                    description,
+                    content: description,
+                    country: getVal('form-country'),
+                    state,
+                    city,
+                    district,
+                    neighborhood: district,
+                    address: getVal('form-address'),
+                    number: getVal('form-number'),
+                    zip: getVal('form-zip'),
+                    cep: getVal('form-zip'),
+                    lat: getVal('form-lat'),
+                    lng: getVal('form-lng'),
+                    amenities,
+                    images: Array.from(new Set([...(activeImage ? [activeImage] : []), ...(activeImages || [])])).filter(Boolean),
+                    img: (activeImages && activeImages[0]) || activeImage || '',
+                    video: getVal('form-video'),
+                    embedVideo: getVal('form-embed-video')
+                };
+
+                const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'properties');
+                if (editId) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'properties', editId), { ...data, updatedAt: new Date().toISOString() });
+                    alert('Imóvel atualizado!');
+                } else {
+                    await addDoc(colRef, { ...data, createdAt: new Date().toISOString() });
+                    alert('Imóvel publicado!');
+                }
+                resetForm();
+                switchView('catalog');
+            } catch (err) {
+                console.error(err);
+                alert('Erro ao salvar.');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = 'Publicar Imóvel';
+                }
+            }
+        };
+
+        window.resetForm = () => {
+            document.getElementById('property-form').reset();
+            activeImage = "";
+            activeImages = [];
+            const prev = document.getElementById('preview-img');
+            if (prev) prev.style.display = "none";
+            const gallery = document.getElementById('images-preview');
+            if (gallery) gallery.innerHTML = "";
+            const statusEl = document.getElementById('upload-status');
+            if (statusEl) statusEl.textContent = '';
+            const editIdEl = document.getElementById('edit-id');
+            if (editIdEl) editIdEl.value = "";
+            const slugEl = document.getElementById('form-slug');
+            if (slugEl) slugEl.value = "";
+            const submitBtn = document.getElementById('submit-btn');
+            if (submitBtn) submitBtn.textContent = "Publicar Imóvel";
+        };
+
+        const titleEl = document.getElementById('form-title');
+        const slugEl = document.getElementById('form-slug');
+        if (titleEl && slugEl) {
+            titleEl.addEventListener('input', () => {
+                if (document.getElementById('edit-id')?.value) return;
+                const v = normalizeStr(titleEl.value || '');
+                slugEl.value = v;
+            });
+        }
+
+        const zipEl = document.getElementById('form-zip');
+        if (zipEl) {
+            zipEl.addEventListener('input', async (e) => {
+                const v = (e.target.value || '').replace(/\D/g, '').slice(0, 8);
+                e.target.value = v;
+                if (v.length !== 8) return;
+                try {
+                    const r = await fetch(`https://viacep.com.br/ws/${v}/json/`);
+                    const j = await r.json();
+                    if (j.erro) return;
+                    const addressEl = document.getElementById('form-address');
+                    const districtEl = document.getElementById('form-district');
+                    const cityEl2 = document.getElementById('form-city');
+                    const stateEl2 = document.getElementById('form-state');
+                    if (addressEl) addressEl.value = j.logradouro || '';
+                    if (districtEl) districtEl.value = j.bairro || '';
+                    if (cityEl2) cityEl2.value = j.localidade || '';
+                    if (stateEl2) stateEl2.value = j.uf || '';
+                } catch (err) {
+                    console.error(err);
+                }
+            });
+        }
+
+        window.openLoginModal = () => {
+            const modal = document.getElementById('login-modal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            const err = document.getElementById('login-error');
+            if (err) {
+                err.classList.add('hidden');
+                err.textContent = '';
+            }
+        };
+
+        window.closeLoginModal = () => {
+            const modal = document.getElementById('login-modal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+        };
+
+        window.handleLogin = async (e) => {
+            e.preventDefault();
+            const email = (document.getElementById('login-email')?.value || '').trim();
+            const password = document.getElementById('login-password')?.value || '';
+            const err = document.getElementById('login-error');
+            if (err) {
+                err.classList.add('hidden');
+                err.textContent = '';
+            }
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                closeLoginModal();
+            } catch (error) {
+                console.error(error);
+                if (err) {
+                    err.textContent = 'Falha ao entrar. Verifique e-mail e senha.';
+                    err.classList.remove('hidden');
+                }
+            }
+        };
+
+        window.handleRegister = async () => {
+            const email = (document.getElementById('login-email')?.value || '').trim();
+            const password = document.getElementById('login-password')?.value || '';
+            const err = document.getElementById('login-error');
+            if (err) {
+                err.classList.add('hidden');
+                err.textContent = '';
+            }
+
+            try {
+                await createUserWithEmailAndPassword(auth, email, password);
+                closeLoginModal();
+            } catch (error) {
+                console.error(error);
+                if (err) {
+                    err.textContent = 'Falha ao criar conta. Verifique os dados e tente novamente.';
+                    err.classList.remove('hidden');
+                }
+            }
+        };
+
+        window.logout = async () => {
+            await signOut(auth);
+        };
+
+        window.toggleMobileMenu = () => {
+            const menu = document.getElementById('mobile-menu');
+            if (!menu) return;
+            menu.classList.toggle('hidden');
+        };
+
+        window.viewPropertyDetails = (id) => {
+            const p = allProperties.find(item => item.id === id);
+            if (!p) return;
+
+            setSeo(p);
+
+            const images = Array.isArray(p.images) && p.images.length ? p.images : (p.img ? [p.img] : []);
+            const mainImg = images[0] || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1400';
+            const area = p.size || p.area;
+            const suites = p.suites ?? 0;
+            const refId = p.customId || 'N/A';
+            const district = p.district || p.neighborhood || '-';
+            const desc = p.content || p.description || '';
+
+            document.getElementById('property-detail-content').innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    <div class="lg:col-span-2 space-y-8">
+                        <div class="relative rounded-[3rem] overflow-hidden shadow-3xl h-[500px] bg-slate-200">
+                            <img src="${mainImg}" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                            <div class="absolute bottom-10 left-10 right-10 text-white">
+                                <span class="bg-green-500 text-white text-[9px] font-black px-4 py-1 rounded-full uppercase tracking-widest">${p.category || p.type || 'Imóvel'}</span>
+                                <h1 class="text-4xl md:text-5xl font-black mt-4 uppercase leading-tight">${p.title || ''}</h1>
+                                <p class="text-white/80 text-[10px] font-bold uppercase tracking-widest mt-3">📍 ${(p.address || '')}${(p.city ? ', ' + p.city : '')}</p>
+                            </div>
+                        </div>
+
+                        ${images.length > 1 ? `
+                            <div class="grid grid-cols-3 sm:grid-cols-6 gap-3">
+                                ${images.slice(0, 12).map(u => `
+                                    <button type="button" class="rounded-2xl overflow-hidden border border-slate-200 bg-white" onclick="document.querySelector('#property-detail-content img').src='${u}'">
+                                        <img src="${u}" class="w-full h-20 object-cover">
+                                    </button>
+                                `).join('')}
+                            </div>
+                        ` : ``}
+                        
+                        <div class="bg-white p-12 rounded-[3rem] border border-slate-100">
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+                                <div class="bg-slate-50 p-6 rounded-3xl"><p class="text-[9px] font-black text-slate-400 uppercase">Valor</p><p class="text-xl font-black text-green-600">${p.price ? 'R$ ' + p.price : 'Consultar'}</p></div>
+                                <div class="bg-slate-50 p-6 rounded-3xl"><p class="text-[9px] font-black text-slate-400 uppercase">Área</p><p class="text-xl font-black text-black">${area ? area + ' m²' : '-'}</p></div>
+                                <div class="bg-slate-50 p-6 rounded-3xl"><p class="text-[9px] font-black text-slate-400 uppercase">Suítes</p><p class="text-xl font-black text-black">${suites}</p></div>
+                                <div class="bg-slate-50 p-6 rounded-3xl"><p class="text-[9px] font-black text-slate-400 uppercase">Ref</p><p class="text-xl font-black text-black">${refId}</p></div>
+                            </div>
+                            
+                            <h2 class="text-sm font-black uppercase mb-6 flex items-center gap-3"><span class="w-1.5 h-6 bg-green-500 rounded-full"></span> Detalhes do Imóvel</h2>
+                            <p class="text-slate-500 text-sm leading-relaxed mb-12 whitespace-pre-line">${desc || 'Sem descrição.'}</p>
+                            
+                            ${(p.amenities || []).length ? `
+                                <h2 class="text-sm font-black uppercase mb-6 flex items-center gap-3"><span class="w-1.5 h-6 bg-green-500 rounded-full"></span> Amenidades</h2>
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-12">
+                                    ${(p.amenities || []).map(a => `<div class="flex items-center gap-3 text-[10px] font-bold text-slate-500 uppercase"><svg class="text-green-500" width="16" height="16" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg> ${a}</div>`).join('')}
+                                </div>
+                            ` : ''}
+
+                            ${p.embedVideo ? `<div class="rounded-3xl overflow-hidden aspect-video bg-black">${p.embedVideo}</div>` : ''}
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="bg-black text-white p-12 rounded-[3rem] sticky top-32">
+                            <h3 class="text-2xl font-black mb-6 uppercase">Consultar</h3>
+                            <p class="text-slate-400 text-xs mb-8">Nossos consultores especialistas estão à disposição para agendar sua visita.</p>
+                            <button class="w-full bg-green-500 text-white font-black py-5 rounded-2xl hover:bg-white hover:text-black transition-all text-xs uppercase tracking-widest shadow-xl shadow-green-500/20">WhatsApp Direto</button>
+                            <div class="mt-8 text-slate-400 text-xs space-y-2">
+                                <div><strong>Bairro:</strong> ${district}</div>
+                                <div><strong>Cidade:</strong> ${p.city || '-'}</div>
+                                <div><strong>Estado:</strong> ${p.state || '-'}</div>
+                                <div><strong>CEP:</strong> ${p.zip || p.cep || '-'}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            switchView('details');
+        };
+
+        // Carrega dados mesmo sem login; usuário pode entrar via modal (email/senha)
+        if (!isDataLoaded) loadData();
+    </script>
+</body>
+</html>
