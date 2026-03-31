@@ -1288,6 +1288,7 @@
             e.preventDefault();
 
             const btn = document.getElementById('submit-btn');
+            const statusEl = document.getElementById('upload-status');
             if (btn) {
                 btn.disabled = true;
                 btn.innerText = 'Publicando...';
@@ -1297,6 +1298,12 @@
             const getChecked = (id) => Boolean(document.getElementById(id)?.checked);
 
             try {
+                if (!auth.currentUser || auth.currentUser.isAnonymous) {
+                    if (statusEl) statusEl.textContent = 'Faça login para publicar.';
+                    openLoginModal();
+                    return;
+                }
+
                 const amenities = Array.from(document.querySelectorAll('input[name="amenity"]:checked')).map(c => c.value);
                 const editId = getVal('edit-id').trim();
 
@@ -1358,26 +1365,33 @@
                     images: Array.from(new Set([...(activeImage ? [activeImage] : []), ...(activeImages || [])])).filter(Boolean),
                     img: (activeImages && activeImages[0]) || activeImage || '',
                     video: getVal('form-video'),
-                    embedVideo: getVal('form-embed-video')
+                    embedVideo: getVal('form-embed-video'),
+                    createdBy: auth.currentUser.uid,
+                    createdByEmail: auth.currentUser.email || ''
                 };
 
                 const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'properties');
                 if (editId) {
+                    if (statusEl) statusEl.textContent = 'Salvando alterações...';
                     await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'properties', editId), { ...data, updatedAt: new Date().toISOString() });
                     alert('Imóvel atualizado!');
                 } else {
+                    if (statusEl) statusEl.textContent = 'Salvando no banco de dados...';
                     await addDoc(colRef, { ...data, createdAt: new Date().toISOString() });
                     alert('Imóvel publicado!');
                 }
                 resetForm();
+                currentTypeFilter = '';
                 switchView('catalog');
             } catch (err) {
                 console.error(err);
                 const code = String(err?.code || '');
                 if (code.includes('permission-denied') || code.includes('unauthenticated') || code.includes('not-authenticated')) {
+                    if (statusEl) statusEl.textContent = 'Permissão negada. Faça login e tente novamente.';
                     alert('Faça login para publicar.');
                     openLoginModal();
                 } else {
+                    if (statusEl) statusEl.textContent = `Erro ao salvar (${code || 'desconhecido'}).`;
                     alert('Erro ao salvar.');
                 }
             } finally {
