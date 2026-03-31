@@ -583,6 +583,7 @@
         let activeImages = [];
         let currentTypeFilter = "";
         let isDataLoaded = false;
+        let storageBlocked = false;
 
         // AUTH (somente email/senha; sem login anônimo)
 
@@ -657,8 +658,11 @@
                 catalog: 'nav-catalog',
                 contato: 'nav-contato'
             };
-            const activeNav = document.getElementById(navMap[viewName] || '');
-            if(activeNav) activeNav.classList.add('active-link');
+            const activeNavId = navMap[viewName];
+            if (activeNavId) {
+                const activeNav = document.getElementById(activeNavId);
+                if (activeNav) activeNav.classList.add('active-link');
+            }
             window.scrollTo({ top: 0, behavior: 'smooth' });
             if (viewName === 'admin') initMap();
         };
@@ -688,6 +692,9 @@
         const uploadImageToStorage = async (file) => {
             if (!auth.currentUser) {
                 throw new Error('not-authenticated');
+            }
+            if (storageBlocked) {
+                throw new Error('storage-blocked');
             }
             const safeName = (file.name || 'imagem').replace(/[^\w.\-]+/g, '_');
             const path = `properties/${Date.now()}_${safeName}`;
@@ -723,6 +730,9 @@
                 if (String(err?.message || '') === 'not-authenticated') {
                     if (statusEl) statusEl.textContent = 'Faça login para enviar imagens.';
                     openLoginModal();
+                } else if (String(err?.message || '') === 'storage-blocked' || String(err?.code || '') === 'storage/unknown' || String(err?.message || '').includes('404')) {
+                    storageBlocked = true;
+                    if (statusEl) statusEl.textContent = 'Storage não configurado. Publique o imóvel e adicione as imagens depois, ou use link direto.';
                 } else {
                     if (statusEl) statusEl.textContent = 'Falha ao enviar. Ative o Firebase Storage e regras.';
                 }
@@ -808,6 +818,10 @@
                     const statusEl = document.getElementById('upload-status');
                     if (statusEl) statusEl.textContent = 'Faça login para enviar imagens.';
                     openLoginModal();
+                } else if (String(err?.message || '') === 'storage-blocked' || String(err?.code || '') === 'storage/unknown' || String(err?.message || '').includes('404')) {
+                    storageBlocked = true;
+                    const statusEl = document.getElementById('upload-status');
+                    if (statusEl) statusEl.textContent = 'Storage não configurado. Publique o imóvel e adicione as imagens depois, ou use link direto.';
                 } else {
                     const statusEl = document.getElementById('upload-status');
                     if (statusEl) statusEl.textContent = 'Falha ao enviar. Confirme: Storage habilitado (Get started), regras publicadas e login ativo.';
@@ -1310,7 +1324,13 @@
                 switchView('catalog');
             } catch (err) {
                 console.error(err);
-                alert('Erro ao salvar.');
+                const code = String(err?.code || '');
+                if (code.includes('permission-denied') || code.includes('unauthenticated') || code.includes('not-authenticated')) {
+                    alert('Faça login para publicar.');
+                    openLoginModal();
+                } else {
+                    alert('Erro ao salvar.');
+                }
             } finally {
                 if (btn) {
                     btn.disabled = false;
