@@ -582,7 +582,9 @@
         let map = null;
         let marker = null;
         let activeImage = "";
+        let activeThumb = "";
         let activeImages = [];
+        let activeThumbs = [];
         let currentTypeFilter = "";
         let isDataLoaded = false;
         let storageBlocked = false;
@@ -765,17 +767,22 @@
             return new File([blob], outName, { type: blob.type, lastModified: Date.now() });
         };
 
-        const uploadImageToStorage = async (file) => {
+        const uploadImageToStorage = async (file, options = {}) => {
             if (!auth.currentUser) {
                 throw new Error('not-authenticated');
             }
             if (storageBlocked) {
                 throw new Error('storage-blocked');
             }
-            const safeName = (file.name || 'imagem').replace(/[^\w.\-]+/g, '_');
-            const path = `properties/${Date.now()}_${safeName}`;
+            const safeName = (options.safeName || file.name || 'imagem').replace(/[^\w.\-]+/g, '_');
+            const folder = options.folder || 'properties';
+            const ts = options.ts || Date.now();
+            const path = `${folder}/${ts}_${safeName}`;
             const storageRef = ref(storage, path);
-            await uploadBytes(storageRef, file, { contentType: file.type || 'application/octet-stream' });
+            await uploadBytes(storageRef, file, {
+                contentType: file.type || 'application/octet-stream',
+                cacheControl: 'public,max-age=31536000'
+            });
             return await getDownloadURL(storageRef);
         };
 
@@ -794,11 +801,19 @@
             try {
                 const submitBtn = document.getElementById('submit-btn');
                 if (submitBtn) submitBtn.disabled = true;
-                const optimized = await optimizeImageFile(file, { maxDim: 1600, maxBytes: 900 * 1024, preferJpeg: true });
+                const ts = Date.now();
+                const safeName = (file.name || 'imagem').replace(/[^\w.\-]+/g, '_');
+                const optimized = await optimizeImageFile(file, { maxDim: 1600, maxBytes: 700 * 1024, preferJpeg: true });
+                const thumbFile = await optimizeImageFile(file, { maxDim: 700, maxBytes: 180 * 1024, preferJpeg: true });
                 if (statusEl) statusEl.textContent = 'Enviando capa...';
-                const url = await uploadImageToStorage(optimized);
+                const url = await uploadImageToStorage(optimized, { ts, safeName, folder: 'properties' });
+                const thumb = await uploadImageToStorage(thumbFile, { ts, safeName, folder: 'properties/thumbs' });
                 activeImage = url;
-                if (!activeImages.includes(url)) activeImages = [url, ...activeImages];
+                activeThumb = thumb;
+                if (!activeImages.includes(url)) {
+                    activeImages = [url, ...activeImages];
+                    activeThumbs = [thumb, ...activeThumbs];
+                }
                 imgInput.value = url;
                 imgInput.placeholder = 'https://...';
                 if (statusEl) statusEl.textContent = 'Capa enviada com sucesso.';
@@ -824,6 +839,8 @@
             if (!url) return;
             activeImage = url;
             activeImages = [url];
+            activeThumb = url;
+            activeThumbs = [url];
             const prev = document.getElementById('preview-img');
             prev.src = url;
             prev.style.display = "block";
@@ -842,6 +859,9 @@
 
             if (!files.length) {
                 activeImages = [];
+                activeThumbs = [];
+                activeImage = '';
+                activeThumb = '';
                 return;
             }
 
@@ -851,17 +871,29 @@
                 const submitBtn = document.getElementById('submit-btn');
                 if (submitBtn) submitBtn.disabled = true;
                 const urls = [];
+                const thumbs = [];
                 for (let i = 0; i < files.length; i++) {
                     if (statusEl) statusEl.textContent = `Otimizando galeria... (${i + 1}/${files.length})`;
-                    const optimized = await optimizeImageFile(files[i], { maxDim: 1600, maxBytes: 900 * 1024, preferJpeg: true });
+                    const ts = Date.now();
+                    const safeName = (files[i].name || `imagem_${i}`).replace(/[^\w.\-]+/g, '_');
+                    const optimized = await optimizeImageFile(files[i], { maxDim: 1600, maxBytes: 700 * 1024, preferJpeg: true });
+                    const thumbFile = await optimizeImageFile(files[i], { maxDim: 700, maxBytes: 180 * 1024, preferJpeg: true });
                     if (statusEl) statusEl.textContent = `Enviando galeria... (${i + 1}/${files.length})`;
-                    urls.push(await uploadImageToStorage(optimized));
+                    urls.push(await uploadImageToStorage(optimized, { ts, safeName, folder: 'properties' }));
+                    thumbs.push(await uploadImageToStorage(thumbFile, { ts, safeName, folder: 'properties/thumbs' }));
                 }
                 activeImages = urls;
+                activeThumbs = thumbs;
 
                 const setCover = (url) => {
+                    const idx = activeImages.indexOf(url);
+                    const coverThumb = idx >= 0 ? (activeThumbs[idx] || url) : url;
+                    const nextImages = idx >= 0 ? [url, ...activeImages.filter((_, i) => i !== idx)] : [url, ...activeImages.filter(u => u !== url)];
+                    const nextThumbs = idx >= 0 ? [coverThumb, ...activeThumbs.filter((_, i) => i !== idx)] : [coverThumb, ...activeThumbs];
                     activeImage = url;
-                    activeImages = [url, ...activeImages.filter(u => u !== url)];
+                    activeThumb = coverThumb;
+                    activeImages = nextImages;
+                    activeThumbs = nextThumbs;
                     const imgInput = document.getElementById('form-img');
                     if (imgInput) imgInput.value = url;
                     const prev = document.getElementById('preview-img');
@@ -883,9 +915,9 @@
                 }
 
                 if (wrap) {
-                    wrap.innerHTML = urls.map(u => `
+                    wrap.innerHTML = urls.map((u, i) => `
                         <button type="button" class="relative rounded-xl overflow-hidden border border-slate-200 bg-white" onclick="window.setGalleryCover('${u.replace(/'/g, "\\'")}')">
-                            <img src="${u}" class="w-full h-24 object-cover">
+                            <img src="${(thumbs[i] || u)}" class="w-full h-24 object-cover" loading="lazy" decoding="async">
                             <div data-cover data-cover-for="${u}" class="${u === activeImage ? '' : 'hidden'} absolute top-2 left-2 bg-emerald-500 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest">Capa</div>
                         </button>
                     `).join('');
@@ -915,7 +947,7 @@
         const createCard = (p) => `
             <div class="property-card shrink-0 w-[85%] sm:w-[360px] md:w-auto bg-white rounded-[2rem] overflow-hidden border border-slate-100 hover:shadow-2xl transition-all cursor-pointer group" onclick="viewPropertyDetails('${p.id}')">
                 <div class="relative overflow-hidden h-64">
-                    <img src="${(p.images && p.images[0]) || p.img || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1200'}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <img src="${p.thumb || (p.thumbs && p.thumbs[0]) || (p.images && p.images[0]) || p.img || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1200'}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" decoding="async">
                     <div class="absolute top-4 left-4 bg-black text-white text-[9px] font-black px-4 py-1.5 rounded-full uppercase">${p.type || 'Imóvel'}</div>
                     <div class="absolute bottom-4 left-4 bg-green-500/90 backdrop-blur-md text-white text-[9px] font-black px-4 py-1.5 rounded-full uppercase">${p.district || p.neighborhood || ''}</div>
                     <div class="absolute bottom-4 right-4 bg-white/15 border border-white/25 backdrop-blur-md text-white text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">Ver Fotos</div>
@@ -1434,8 +1466,10 @@
                     lat: getVal('form-lat'),
                     lng: getVal('form-lng'),
                     amenities,
-                    images: Array.from(new Set([...(activeImage ? [activeImage] : []), ...(activeImages || [])])).filter(Boolean),
+                    images: (activeImages && activeImages.length ? activeImages : (activeImage ? [activeImage] : [])).filter(Boolean),
+                    thumbs: (activeThumbs && activeThumbs.length ? activeThumbs : (activeThumb ? [activeThumb] : [])).filter(Boolean),
                     img: (activeImages && activeImages[0]) || activeImage || '',
+                    thumb: (activeThumbs && activeThumbs[0]) || activeThumb || '',
                     video: getVal('form-video'),
                     embedVideo: getVal('form-embed-video'),
                     createdBy: auth.currentUser.uid,
@@ -1477,7 +1511,9 @@
         window.resetForm = () => {
             document.getElementById('property-form').reset();
             activeImage = "";
+            activeThumb = "";
             activeImages = [];
+            activeThumbs = [];
             const prev = document.getElementById('preview-img');
             if (prev) prev.style.display = "none";
             const gallery = document.getElementById('images-preview');
@@ -1633,6 +1669,7 @@
             setSeo(p);
 
             const images = Array.isArray(p.images) && p.images.length ? p.images : (p.img ? [p.img] : []);
+            const thumbs = Array.isArray(p.thumbs) && p.thumbs.length ? p.thumbs : (p.thumb ? [p.thumb] : []);
             const mainImg = images[0] || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=1400';
             const area = p.size || p.area;
             const suites = p.suites ?? 0;
@@ -1655,9 +1692,9 @@
 
                         ${images.length > 1 ? `
                             <div class="grid grid-cols-3 sm:grid-cols-6 gap-3">
-                                ${images.slice(0, 12).map(u => `
+                                ${images.slice(0, 12).map((u, i) => `
                                     <button type="button" class="rounded-2xl overflow-hidden border border-slate-200 bg-white" onclick="document.querySelector('#property-detail-content img').src='${u}'">
-                                        <img src="${u}" class="w-full h-20 object-cover">
+                                        <img src="${thumbs[i] || u}" class="w-full h-20 object-cover" loading="lazy" decoding="async">
                                     </button>
                                 `).join('')}
                             </div>
