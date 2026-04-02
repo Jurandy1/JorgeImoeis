@@ -698,6 +698,73 @@
             });
         };
 
+        const loadImageFromFile = async (file) => {
+            if (typeof createImageBitmap === 'function') {
+                try {
+                    return await createImageBitmap(file, { imageOrientation: 'from-image' });
+                } catch {
+                    return await createImageBitmap(file);
+                }
+            }
+            return await new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = URL.createObjectURL(file);
+            });
+        };
+
+        const optimizeImageFile = async (file, opts = {}) => {
+            const maxDim = Number(opts.maxDim || 1600);
+            const maxBytes = Number(opts.maxBytes || 900 * 1024);
+            const preferJpeg = opts.preferJpeg !== false;
+
+            const isJpeg = file.type === 'image/jpeg' || file.type === 'image/jpg';
+            const isPng = file.type === 'image/png';
+            const isWebp = file.type === 'image/webp';
+
+            if ((isJpeg || isWebp) && file.size <= maxBytes) return file;
+            if (isPng && file.size <= 350 * 1024) return file;
+
+            const img = await loadImageFromFile(file);
+            const w = img.width || 0;
+            const h = img.height || 0;
+            if (!w || !h) return file;
+
+            const scale = Math.min(1, maxDim / Math.max(w, h));
+            const tw = Math.max(1, Math.round(w * scale));
+            const th = Math.max(1, Math.round(h * scale));
+
+            const canvas = document.createElement('canvas');
+            canvas.width = tw;
+            canvas.height = th;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return file;
+
+            if (preferJpeg || !isPng) {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, tw, th);
+            }
+            ctx.drawImage(img, 0, 0, tw, th);
+
+            const extBase = (file.name || 'imagem').replace(/\.[^.]+$/, '');
+            const outType = preferJpeg ? 'image/jpeg' : (file.type || 'image/jpeg');
+            const makeBlob = (q) => new Promise((resolve) => canvas.toBlob(resolve, outType, q));
+
+            let quality = isPng ? 0.82 : 0.78;
+            let blob = await makeBlob(quality);
+            if (!blob) return file;
+            while (blob.size > maxBytes && quality > 0.55) {
+                quality = Math.max(0.55, quality - 0.08);
+                const next = await makeBlob(quality);
+                if (!next) break;
+                blob = next;
+            }
+
+            const outName = preferJpeg ? `${extBase}.jpg` : file.name;
+            return new File([blob], outName, { type: blob.type, lastModified: Date.now() });
+        };
+
         const uploadImageToStorage = async (file) => {
             if (!auth.currentUser) {
                 throw new Error('not-authenticated');
@@ -721,13 +788,15 @@
 
             const imgInput = document.getElementById('form-img');
             const statusEl = document.getElementById('upload-status');
-            if (statusEl) statusEl.textContent = 'Enviando capa...';
+            if (statusEl) statusEl.textContent = 'Otimizando capa...';
             imgInput.placeholder = 'Enviando...';
 
             try {
                 const submitBtn = document.getElementById('submit-btn');
                 if (submitBtn) submitBtn.disabled = true;
-                const url = await uploadImageToStorage(file);
+                const optimized = await optimizeImageFile(file, { maxDim: 1600, maxBytes: 900 * 1024, preferJpeg: true });
+                if (statusEl) statusEl.textContent = 'Enviando capa...';
+                const url = await uploadImageToStorage(optimized);
                 activeImage = url;
                 if (!activeImages.includes(url)) activeImages = [url, ...activeImages];
                 imgInput.value = url;
@@ -778,12 +847,15 @@
 
             try {
                 const statusEl = document.getElementById('upload-status');
-                if (statusEl) statusEl.textContent = 'Enviando galeria...';
+                if (statusEl) statusEl.textContent = 'Otimizando galeria...';
                 const submitBtn = document.getElementById('submit-btn');
                 if (submitBtn) submitBtn.disabled = true;
                 const urls = [];
-                for (const file of files) {
-                    urls.push(await uploadImageToStorage(file));
+                for (let i = 0; i < files.length; i++) {
+                    if (statusEl) statusEl.textContent = `Otimizando galeria... (${i + 1}/${files.length})`;
+                    const optimized = await optimizeImageFile(files[i], { maxDim: 1600, maxBytes: 900 * 1024, preferJpeg: true });
+                    if (statusEl) statusEl.textContent = `Enviando galeria... (${i + 1}/${files.length})`;
+                    urls.push(await uploadImageToStorage(optimized));
                 }
                 activeImages = urls;
 
