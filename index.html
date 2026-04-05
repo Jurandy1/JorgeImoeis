@@ -665,6 +665,12 @@
         <!-- ADMIN MAIN CONTENT -->
         <div id="admin-main-content">
 
+        <!-- FIREBASE ERROR BANNER -->
+        <div id="firebase-error-banner" class="hidden mb-5 bg-red-50 border border-red-200 text-red-700 rounded-2xl p-4 text-sm font-medium flex items-start gap-3">
+            <span class="text-xl flex-shrink-0 mt-0.5">🔥</span>
+            <span></span>
+        </div>
+
         <!-- ADMIN HEADER -->
         <div class="flex items-center justify-between mb-6">
             <div>
@@ -1389,10 +1395,21 @@ function setMediaTab(tab) {
     let isDataLoaded = false;
     let storageBlocked = false;
 
+    /* ── Price helpers — declared as functions so they hoist above window._mod ── */
+    function parsePrice(raw) {
+        if (!raw) return null;
+        const s = String(raw).replace(/\./g,'').replace(',','.');
+        const n = parseFloat(s);
+        return isNaN(n) ? null : n;
+    }
+    function fmtPrice(n) {
+        return n ? 'R$ ' + n.toLocaleString('pt-BR', {minimumFractionDigits:0,maximumFractionDigits:2}) : 'Consultar';
+    }
+
     /* ── Expose module API to plain-script stubs via window._mod ── */
     window._mod = {
         initMap, resetSeo, renderCatalog, renderHomeSegment,
-        applyFilters, parsePrice, handleLogin, handleRegister, logout, handleFormSubmit,
+        applyFilters, handleLogin, handleRegister, logout, handleFormSubmit,
         viewPropertyDetails, resetForm, loadForEdit, deleteProperty,
         previewUpload, previewUploadMultiple, updatePreviewUrl,
         generateAndDownloadSitemap, initDistrictFilters
@@ -1482,10 +1499,35 @@ function setMediaTab(tab) {
     };
 
     /* ── DATA ── */
+    const showFirebaseError = (err) => {
+        const code = String(err?.code||'');
+        let msg = '';
+        if (code === 'permission-denied' || code === 'PERMISSION_DENIED') {
+            msg = '🔒 Regras do Firestore bloqueando o acesso. Acesse o Firebase Console → Firestore → Regras e publique as regras corretas.';
+        } else if (code === 'unavailable') {
+            msg = '🌐 Sem conexão com o Firebase. Verifique sua internet.';
+        } else if (code === 'not-found') {
+            msg = '📭 Banco de dados não encontrado. Verifique se o Firestore está ativado no Firebase Console.';
+        } else {
+            msg = `⚠️ Erro Firebase: ${code || err?.message || 'desconhecido'}`;
+        }
+        console.error('[Firebase]', err);
+        // Show error in admin panel if visible
+        const adminErr = document.getElementById('firebase-error-banner');
+        if (adminErr) { adminErr.textContent = msg; adminErr.classList.remove('hidden'); }
+        // Show toast
+        showToast(msg.slice(0,80));
+    };
+
     const loadData = () => {
         if (isDataLoaded) return;
         isDataLoaded = true;
-        onSnapshot(collection(db,'artifacts',DB_APP_ID,'public','data','properties'), snap => {
+        const colRef = collection(db,'artifacts',DB_APP_ID,'public','data','properties');
+        onSnapshot(colRef, (snap) => {
+            // Hide any previous error
+            const adminErr = document.getElementById('firebase-error-banner');
+            if (adminErr) adminErr.classList.add('hidden');
+
             _allProperties = snap.docs.map(d => ({ id:d.id, ...d.data() }));
             _allProperties.sort((a,b) => {
                 if (!!b.isFeatured !== !!a.isFeatured) return b.isFeatured ? 1 : -1;
@@ -1498,6 +1540,9 @@ function setMediaTab(tab) {
             updateStats();
             updateSeoTab();
             checkHashRoute();
+        }, (err) => {
+            isDataLoaded = false; // Allow retry
+            showFirebaseError(err);
         });
     };
 
@@ -1585,17 +1630,7 @@ function setMediaTab(tab) {
         grid.innerHTML = items.length ? items.map(createCard).join('') : `<div class="col-span-full p-8 text-center text-slate-400 bg-slate-50 rounded-2xl">Sem imóveis de ${type.toLowerCase()} no momento.</div>`;
     }
 
-    /* ── Price parsing helper ── */
-    const parsePrice = raw => {
-        if (!raw) return null;
-        // Accept "1.200.000,50" or "1200000.50" or "1200000"
-        const s = String(raw).replace(/\./g,'').replace(',','.');
-        const n = parseFloat(s);
-        return isNaN(n) ? null : n;
-    };
-
-    /* ── Format price for display ── */
-    const fmtPrice = n => n ? 'R$ ' + n.toLocaleString('pt-BR', {minimumFractionDigits:0,maximumFractionDigits:2}) : 'Consultar';
+    /* parsePrice and fmtPrice defined above window._mod as function declarations */
 
     const AMENITY_ICONS = {
         'Piscina':'🏊','Academia':'💪','Churrasqueira':'🔥','Ar Condicionado':'❄️',
