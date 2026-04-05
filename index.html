@@ -119,6 +119,43 @@
             .form-card { padding:1.25rem; }
             #map-selector { height:240px; }
         }
+
+        /* SEARCH BAR IN HERO */
+        .hero-search-bar { background:rgba(255,255,255,.12); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,.2); border-radius:1.25rem; }
+        .hero-search-bar input { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); color:#fff; border-radius:.75rem; padding:.65rem 1rem; font-size:.875rem; width:100%; outline:none; transition:all .2s; font-family:'DM Sans',sans-serif; }
+        .hero-search-bar input::placeholder { color:rgba(255,255,255,.45); }
+        .hero-search-bar input:focus { background:rgba(255,255,255,.15); border-color:rgba(255,255,255,.35); }
+        .hero-search-bar select { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); color:#fff; border-radius:.75rem; padding:.65rem 1rem; font-size:.875rem; outline:none; font-family:'DM Sans',sans-serif; cursor:pointer; }
+        .hero-search-bar select option { background:#1a1a1a; color:#fff; }
+
+        /* FLOATING WHATSAPP */
+        .whatsapp-fab { position:fixed; bottom:84px; right:20px; z-index:85; width:56px; height:56px; border-radius:50%; background:#25d366; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 24px rgba(37,211,102,.45); cursor:pointer; transition:all .25s; border:none; }
+        .whatsapp-fab:hover { transform:scale(1.1); box-shadow:0 12px 32px rgba(37,211,102,.55); }
+        .whatsapp-fab svg { width:28px; height:28px; }
+        @media (min-width:1024px) { .whatsapp-fab { bottom:28px; right:28px; } }
+
+        /* TRUST BADGES */
+        .trust-badge { display:flex; flex-direction:column; align-items:center; gap:.5rem; padding:1.5rem 1rem; background:#fff; border:1px solid var(--border); border-radius:1.25rem; text-align:center; transition:all .25s; }
+        .trust-badge:hover { border-color:#16a34a; box-shadow:0 8px 24px rgba(22,163,74,.1); transform:translateY(-2px); }
+        .trust-icon { width:3rem; height:3rem; border-radius:1rem; display:flex; align-items:center; justify-content:center; font-size:1.4rem; background:linear-gradient(135deg,#f0fdf4,#dcfce7); }
+
+        /* PROP CARD */
+        .prop-card { background:#fff; border-radius:1.5rem; overflow:hidden; border:1px solid var(--border); transition:all .3s cubic-bezier(.34,1.56,.64,1); }
+        .prop-card:hover { box-shadow:0 24px 64px rgba(0,0,0,.13); transform:translateY(-4px); border-color:#d1fae5; }
+        .prop-card .card-img-wrap { overflow:hidden; }
+        .prop-card img { transition:transform .65s cubic-bezier(.25,.46,.45,.94); }
+        .prop-card:hover img { transform:scale(1.08); }
+
+        /* SECTION DIVIDER */
+        .section-eyebrow { font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.22em; color:#16a34a; margin-bottom:.5rem; display:flex; align-items:center; gap:.5rem; }
+        .section-eyebrow::before { content:''; display:inline-block; width:20px; height:2px; background:currentColor; border-radius:2px; }
+
+        /* CTA STRIP */
+        .cta-strip { background:linear-gradient(135deg,#0a0a0a 0%,#1a2e1a 50%,#0a0a0a 100%); }
+
+        /* COUNTER ANIMATION */
+        @keyframes countUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+        .stat-num { animation:countUp .6s ease both; }
     </style>
 </head>
 <body>
@@ -138,7 +175,7 @@
 
                 <div class="relative group">
                     <button id="nav-catalog" type="button" onclick="switchView('catalog')" class="nav-item relative text-slate-400 hover:text-green-600 transition-colors flex items-center gap-1.5">
-                        Imóveis
+                        IMÓVEIS
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m6 9 6 6 6-6"/></svg>
                     </button>
                     <div class="absolute left-0 top-full pt-3 hidden group-hover:block">
@@ -249,7 +286,7 @@
 <main id="view-home" class="view-section active main-top pt-[68px]">
 
     <!-- HERO -->
-    <section class="relative min-h-[52vh] sm:min-h-[60vh] flex items-center overflow-hidden">
+    <section class="relative min-h-[62vh] sm:min-h-[72vh] flex items-center overflow-hidden">
         <img src="./1BBD56BC-1AD3-493A-88A5-397D8F0DEBBA-1024x576.jpeg" alt="Vista aérea São Luís, Maranhão" class="absolute inset-0 w-full h-full object-cover" fetchpriority="high">
         <div class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/50 to-black/20"></div>
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full py-12">
@@ -257,25 +294,34 @@
                 <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-white text-[9.5px] font-bold tracking-[.22em] uppercase mb-4">
                     ✦ Especialistas desde 1982
                 </span>
-                <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl text-white leading-tight mb-2">
-                    Encontre o imóvel
+                <h1 class="font-serif text-3xl sm:text-4xl md:text-5xl text-white leading-snug mb-2">
+                    Já se foi o tempo em que<br>os imóveis deixavam você
                 </h1>
-                <h2 class="font-serif text-4xl sm:text-5xl md:text-6xl text-green-400 leading-tight mb-5">
-                    dos seus sonhos
+                <h2 class="font-serif text-3xl sm:text-4xl md:text-5xl text-green-400 leading-snug mb-5">
+                    imóvel
                 </h2>
                 <p class="text-white/75 text-sm font-medium mb-8 max-w-md leading-relaxed">
                     Segurança jurídica e experiência de quem trabalha há mais de 40 anos no mercado imobiliário do Maranhão.
                 </p>
-                <div class="flex flex-wrap gap-3">
-                    <button onclick="switchView('catalog')" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-7 py-3.5 rounded-2xl font-bold text-[11px] uppercase tracking-widest transition-all shadow-lg shadow-green-700/30">
-                        Ver Imóveis
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                    </button>
-                    <button onclick="openWhatsApp('')" class="inline-flex items-center gap-2 bg-white/10 border border-white/25 text-white px-7 py-3.5 rounded-2xl font-bold text-[11px] uppercase tracking-widest hover:bg-white/20 transition-all">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-                        WhatsApp
-                    </button>
-                    <button id="new-hero-btn" onclick="switchView('admin')" class="hidden inline-flex items-center gap-2 bg-white/10 border border-white/25 text-white px-7 py-3.5 rounded-2xl font-bold text-[11px] uppercase tracking-widest hover:bg-white/20 transition-all">
+                <!-- SEARCH BAR -->
+                <div class="hero-search-bar p-3 max-w-xl">
+                    <div class="flex gap-2 flex-col sm:flex-row">
+                        <select id="hero-type-select" class="flex-shrink-0 rounded-xl">
+                            <option value="">Todos os tipos</option>
+                            <option value="Venda">Comprar</option>
+                            <option value="Aluguel">Alugar</option>
+                            <option value="Rural">Rural</option>
+                        </select>
+                        <input id="hero-search-input" type="text" placeholder="Buscar por bairro, cidade ou tipo..." class="flex-1 min-w-0" onkeydown="if(event.key==='Enter')heroSearch()">
+                        <button onclick="heroSearch()" class="flex-shrink-0 bg-green-600 hover:bg-green-500 text-white px-5 py-2 rounded-xl font-bold text-[11px] uppercase tracking-widest transition-all flex items-center gap-1.5">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            Buscar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-3 mt-2">
+                    <button id="new-hero-btn" onclick="switchView('admin')" class="hidden inline-flex items-center gap-2 bg-white/10 border border-white/25 text-white px-6 py-2.5 rounded-xl font-bold text-[10.5px] uppercase tracking-widest hover:bg-white/20 transition-all">
                         + Anunciar
                     </button>
                 </div>
@@ -283,16 +329,25 @@
         </div>
     </section>
 
-    <!-- QUICK FILTER TABS -->
-    <section class="py-8 sm:py-10 max-w-7xl mx-auto px-4 sm:px-6">
+    <!-- QUICK BROWSE SECTION -->
+    <section class="pt-4 pb-6 max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <p class="section-eyebrow">Explorar por tipo</p>
+                <h2 class="font-serif text-2xl sm:text-3xl text-[#0a0a0a]">Encontre o que procura</h2>
+            </div>
+            <button onclick="switchView('catalog')" class="hidden sm:flex items-center gap-1.5 text-[10.5px] font-bold text-slate-400 uppercase tracking-widest hover:text-green-600 transition-colors">
+                Ver catálogo completo
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+        </div>
         <div class="bg-white border border-[#e8e8e4] rounded-2xl p-3 shadow-sm">
-            <div class="flex gap-2 overflow-x-auto pb-0 scrollbar-none">
+            <div class="flex gap-2 overflow-x-auto scrollbar-none mb-1">
                 <button id="seg-venda" onclick="setHomeSegment('Venda')" class="seg-btn filter-chip active flex-shrink-0">🏠 À Venda</button>
                 <button id="seg-aluguel" onclick="setHomeSegment('Aluguel')" class="seg-btn filter-chip flex-shrink-0">🔑 Para Alugar</button>
-                <button id="seg-rural" onclick="setHomeSegment('Rural')" class="seg-btn filter-chip flex-shrink-0">🌿 Propriedades Rurais</button>
-                <button onclick="switchView('catalog')" class="filter-chip flex-shrink-0 ml-auto">Ver Catálogo →</button>
+                <button id="seg-rural" onclick="setHomeSegment('Rural')" class="seg-btn filter-chip flex-shrink-0">🌿 Rurais</button>
             </div>
-            <div id="home-segment-grid" class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            <div id="home-segment-grid" class="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </div>
     </section>
 
@@ -300,7 +355,7 @@
     <section class="pb-8 sm:pb-10 max-w-7xl mx-auto px-4 sm:px-6">
         <div class="flex items-end justify-between mb-6">
             <div>
-                <p class="text-green-600 text-[10px] font-bold uppercase tracking-[.2em] mb-1">✦ Vitrine</p>
+                <p class="section-eyebrow">Vitrine</p>
                 <h3 class="font-serif text-3xl sm:text-4xl text-[#0a0a0a]">Imóveis em Destaque</h3>
             </div>
             <button onclick="switchView('catalog')" class="text-[10.5px] font-bold text-slate-400 uppercase tracking-widest hover:text-green-600 transition-colors">Ver todos →</button>
@@ -312,7 +367,7 @@
     <section class="pb-14 max-w-7xl mx-auto px-4 sm:px-6">
         <div class="flex items-end justify-between mb-6">
             <div>
-                <p class="text-green-600 text-[10px] font-bold uppercase tracking-[.2em] mb-1">✦ Novidades</p>
+                <p class="section-eyebrow">Novidades</p>
                 <h3 class="font-serif text-3xl sm:text-4xl text-[#0a0a0a]">Últimos Imóveis</h3>
             </div>
             <button onclick="switchView('catalog')" class="text-[10.5px] font-bold text-slate-400 uppercase tracking-widest hover:text-green-600 transition-colors">Catálogo →</button>
@@ -320,13 +375,48 @@
         <div id="home-latest-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
     </section>
 
-    <!-- STATS STRIP -->
-    <section class="bg-[#0a0a0a] py-12 px-4">
-        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div><p class="font-serif text-4xl text-white mb-1">+40</p><p class="text-green-500 text-[10px] font-bold uppercase tracking-widest">Anos de Mercado</p></div>
-            <div><p class="font-serif text-4xl text-white mb-1">MA</p><p class="text-green-500 text-[10px] font-bold uppercase tracking-widest">CRECI: 663 20º RG</p></div>
-            <div><p class="font-serif text-4xl text-white mb-1">1982</p><p class="text-green-500 text-[10px] font-bold uppercase tracking-widest">Fundação</p></div>
-            <div><p class="font-serif text-4xl text-white mb-1">∞</p><p class="text-green-500 text-[10px] font-bold uppercase tracking-widest">Sonhos Realizados</p></div>
+    <!-- TRUST BADGES -->
+    <section class="py-10 max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="trust-badge">
+                <div class="trust-icon">🏆</div>
+                <p class="font-serif text-2xl text-[#0a0a0a]">+40</p>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Anos de Mercado</p>
+            </div>
+            <div class="trust-badge">
+                <div class="trust-icon">📜</div>
+                <p class="font-serif text-2xl text-[#0a0a0a]">CRECI</p>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">663 20º RG — MA</p>
+            </div>
+            <div class="trust-badge">
+                <div class="trust-icon">🤝</div>
+                <p class="font-serif text-2xl text-[#0a0a0a]" id="stat-badge-total">—</p>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Imóveis Disponíveis</p>
+            </div>
+            <div class="trust-badge">
+                <div class="trust-icon">📍</div>
+                <p class="font-serif text-2xl text-[#0a0a0a]" id="stat-badge-regions">—</p>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Regiões Atendidas</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA STRIP -->
+    <section class="cta-strip py-14 px-4 mb-0">
+        <div class="max-w-4xl mx-auto text-center">
+            <p class="section-eyebrow justify-center text-green-400 mb-4">✦ Realize seu Sonho</p>
+            <h2 class="font-serif text-3xl sm:text-4xl text-white mb-4 leading-snug">Encontre seu imóvel ideal<br class="hidden sm:block"> com quem entende do mercado</h2>
+            <p class="text-white/55 text-sm mb-8 max-w-md mx-auto leading-relaxed">Mais de 40 anos conectando famílias ao imóvel certo em São Luís e Maranhão.</p>
+            <div class="flex flex-wrap gap-3 justify-center">
+                <button onclick="switchView('catalog')" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-8 py-3.5 rounded-2xl font-bold text-[11px] uppercase tracking-widest transition-all shadow-xl shadow-green-900/40">
+                    Ver todos os imóveis
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </button>
+                <button onclick="openWhatsApp('')" class="inline-flex items-center gap-2 bg-white/10 border border-white/20 hover:bg-white/18 text-white px-8 py-3.5 rounded-2xl font-bold text-[11px] uppercase tracking-widest transition-all">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                    Consultar via WhatsApp
+                </button>
+            </div>
         </div>
     </section>
 </main>
@@ -427,30 +517,118 @@
 
 <!-- ═══════════════ VIEW: CATÁLOGO ═══════════════ -->
 <main id="view-catalog" class="view-section main-top pt-[68px]">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+
+        <!-- HEADER -->
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
             <div>
                 <p class="text-green-600 text-[10px] font-bold uppercase tracking-[.2em] mb-1">✦ Catálogo</p>
-                <h1 class="font-serif text-3xl sm:text-5xl text-[#0a0a0a]">Todos os Imóveis</h1>
+                <h1 class="font-serif text-3xl sm:text-4xl text-[#0a0a0a]">Todos os Imóveis</h1>
             </div>
-            <div class="flex gap-2 overflow-x-auto pb-1 sm:pb-0">
-                <button onclick="filterCatalogByType('')" id="filt-all" class="filter-chip active flex-shrink-0">Todos</button>
-                <button onclick="filterCatalogByType('Venda')" id="filt-venda" class="filter-chip flex-shrink-0">Venda</button>
-                <button onclick="filterCatalogByType('Aluguel')" id="filt-aluguel" class="filter-chip flex-shrink-0">Aluguel</button>
-                <button onclick="filterCatalogByType('Rural')" id="filt-rural" class="filter-chip flex-shrink-0">Rural</button>
-            </div>
+            <p id="catalog-count" class="text-slate-400 text-sm font-medium"></p>
         </div>
 
-        <div class="flex flex-col lg:flex-row gap-8">
-            <!-- SIDEBAR FILTERS -->
-            <aside class="lg:w-60 flex-shrink-0">
-                <div class="bg-white border border-[#e8e8e4] rounded-2xl p-5 sticky top-[80px]">
-                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Filtrar por Bairro</p>
-                    <div id="neighborhood-filters" class="space-y-1.5 max-h-80 overflow-y-auto"></div>
+        <!-- TIPO CHIPS (top) -->
+        <div class="flex gap-2 overflow-x-auto pb-1 mb-6">
+            <button onclick="filterCatalogByType('')" id="filt-all" class="filter-chip active flex-shrink-0">🏘 Todos</button>
+            <button onclick="filterCatalogByType('Venda')" id="filt-venda" class="filter-chip flex-shrink-0">🏠 Venda</button>
+            <button onclick="filterCatalogByType('Aluguel')" id="filt-aluguel" class="filter-chip flex-shrink-0">🔑 Aluguel</button>
+            <button onclick="filterCatalogByType('Rural')" id="filt-rural" class="filter-chip flex-shrink-0">🌿 Rural</button>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-6">
+
+            <!-- ── SIDEBAR FILTROS AVANÇADOS ── -->
+            <aside class="lg:w-72 flex-shrink-0">
+                <div class="bg-white border border-[#e8e8e4] rounded-2xl overflow-hidden sticky top-[80px]">
+                    <!-- Cabeçalho do filtro -->
+                    <div class="flex items-center justify-between px-5 py-4 border-b border-[#e8e8e4]">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-[#0a0a0a]">Filtros</p>
+                        <button onclick="clearAllFilters()" class="text-[9.5px] font-bold uppercase tracking-widest text-green-600 hover:text-green-700 transition-colors">Limpar tudo</button>
+                    </div>
+
+                    <div class="p-5 space-y-6 max-h-[78vh] overflow-y-auto">
+
+                        <!-- Categoria do imóvel -->
+                        <div>
+                            <p class="text-[9.5px] font-bold uppercase tracking-widest text-slate-400 mb-3">Categoria</p>
+                            <div id="category-filters" class="space-y-1"></div>
+                        </div>
+
+                        <!-- Preço -->
+                        <div class="border-t border-[#f0f0ec] pt-5">
+                            <p class="text-[9.5px] font-bold uppercase tracking-widest text-slate-400 mb-3">Faixa de Preço</p>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-[9.5px] text-slate-400 mb-1 block">Mínimo (R$)</label>
+                                    <input type="text" id="filter-price-min" oninput="maskPrice(this);applyFilters()" placeholder="Ex: 200.000" class="w-full bg-[#fafaf8] border border-[#e8e8e4] rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/10">
+                                </div>
+                                <div>
+                                    <label class="text-[9.5px] text-slate-400 mb-1 block">Máximo (R$)</label>
+                                    <input type="text" id="filter-price-max" oninput="maskPrice(this);applyFilters()" placeholder="Ex: 2.000.000" class="w-full bg-[#fafaf8] border border-[#e8e8e4] rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/10">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Área -->
+                        <div class="border-t border-[#f0f0ec] pt-5">
+                            <p class="text-[9.5px] font-bold uppercase tracking-widest text-slate-400 mb-3">Área (m²)</p>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-[9.5px] text-slate-400 mb-1 block">Mín.</label>
+                                    <input type="number" id="filter-area-min" oninput="applyFilters()" placeholder="0" min="0" class="w-full bg-[#fafaf8] border border-[#e8e8e4] rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/10">
+                                </div>
+                                <div>
+                                    <label class="text-[9.5px] text-slate-400 mb-1 block">Máx.</label>
+                                    <input type="number" id="filter-area-max" oninput="applyFilters()" placeholder="∞" min="0" class="w-full bg-[#fafaf8] border border-[#e8e8e4] rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/10">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quartos -->
+                        <div class="border-t border-[#f0f0ec] pt-5">
+                            <p class="text-[9.5px] font-bold uppercase tracking-widest text-slate-400 mb-3">Quartos (mínimo)</p>
+                            <div class="flex gap-2 flex-wrap">
+                                <button onclick="setRoomFilter(0)" id="rf-0" class="room-chip px-3 py-1.5 rounded-lg text-[11px] font-bold border border-[#e8e8e4] text-slate-500 hover:border-green-500 hover:text-green-600 transition-all active-rf">Todos</button>
+                                <button onclick="setRoomFilter(1)" id="rf-1" class="room-chip px-3 py-1.5 rounded-lg text-[11px] font-bold border border-[#e8e8e4] text-slate-500 hover:border-green-500 hover:text-green-600 transition-all">1+</button>
+                                <button onclick="setRoomFilter(2)" id="rf-2" class="room-chip px-3 py-1.5 rounded-lg text-[11px] font-bold border border-[#e8e8e4] text-slate-500 hover:border-green-500 hover:text-green-600 transition-all">2+</button>
+                                <button onclick="setRoomFilter(3)" id="rf-3" class="room-chip px-3 py-1.5 rounded-lg text-[11px] font-bold border border-[#e8e8e4] text-slate-500 hover:border-green-500 hover:text-green-600 transition-all">3+</button>
+                                <button onclick="setRoomFilter(4)" id="rf-4" class="room-chip px-3 py-1.5 rounded-lg text-[11px] font-bold border border-[#e8e8e4] text-slate-500 hover:border-green-500 hover:text-green-600 transition-all">4+</button>
+                            </div>
+                        </div>
+
+                        <!-- Comodidades -->
+                        <div class="border-t border-[#f0f0ec] pt-5">
+                            <p class="text-[9.5px] font-bold uppercase tracking-widest text-slate-400 mb-3">Comodidades</p>
+                            <div id="amenity-filters" class="grid grid-cols-2 gap-1.5 max-h-44 overflow-y-auto"></div>
+                        </div>
+
+                        <!-- Bairro -->
+                        <div class="border-t border-[#f0f0ec] pt-5">
+                            <p class="text-[9.5px] font-bold uppercase tracking-widest text-slate-400 mb-3">Bairro / Região</p>
+                            <input type="text" id="filter-district-search" oninput="filterDistrictList(this.value)" placeholder="Buscar bairro..." class="w-full bg-[#fafaf8] border border-[#e8e8e4] rounded-xl px-3 py-2 text-sm mb-3 text-slate-700 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/10">
+                            <div id="neighborhood-filters" class="space-y-1 max-h-48 overflow-y-auto"></div>
+                        </div>
+
+                    </div>
                 </div>
             </aside>
-            <!-- GRID -->
-            <div id="catalog-full-grid" class="flex-1 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+
+            <!-- ── GRID DE IMÓVEIS ── -->
+            <div class="flex-1 min-w-0">
+                <!-- Ordenação -->
+                <div class="flex items-center justify-between mb-4">
+                    <p id="catalog-results-label" class="text-[11px] text-slate-400 font-medium"></p>
+                    <select id="catalog-sort" onchange="applyFilters()" class="bg-white border border-[#e8e8e4] rounded-xl px-3 py-2 text-[11px] font-bold text-slate-600 focus:outline-none focus:border-green-500 cursor-pointer">
+                        <option value="recent">Mais recentes</option>
+                        <option value="price-asc">Menor preço</option>
+                        <option value="price-desc">Maior preço</option>
+                        <option value="area-desc">Maior área</option>
+                        <option value="featured">Destaques primeiro</option>
+                    </select>
+                </div>
+                <div id="catalog-full-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+            </div>
         </div>
     </div>
 </main>
@@ -639,7 +817,7 @@
                     <h3 class="section-title">Dados Técnicos</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         <div><label class="input-label">Tipo Negócio</label><select id="form-type" class="input-field"><option value="Venda">Venda</option><option value="Aluguel">Aluguel</option><option value="Rural">Rural</option></select></div>
-                        <div><label class="input-label">Preço (R$)</label><input type="text" id="form-price" class="input-field" placeholder="1.200.000,00"></div>
+                        <div><label class="input-label">Preço (R$)</label><input type="text" id="form-price" class="input-field" placeholder="1.200.000,00" oninput="maskPrice(this)" inputmode="numeric"></div>
                         <div><label class="input-label">Área Útil (m²)</label><input type="number" id="form-size" class="input-field"></div>
                         <div><label class="input-label">Área Lote (m²)</label><input type="number" id="form-lot" class="input-field"></div>
                         <div><label class="input-label">Ano Construção</label><input type="number" id="form-year" class="input-field"></div>
@@ -825,33 +1003,92 @@
 </main>
 
 <!-- ═══════════════ FOOTER ═══════════════ -->
-<footer class="bg-[#0a0a0a] text-white py-16 border-t border-white/5">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-10 mb-12">
+<footer class="bg-[#070707] text-white border-t border-white/5">
+    <!-- Top CTA row -->
+    <div class="border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-5">
             <div>
-                <img src="./Gemini_Generated_Image_op1pifop1pifop1p-removebg-preview.png" alt="Jorge Imóveis" class="h-14 w-auto mb-4">
-                <p class="text-slate-500 text-xs leading-relaxed">Segurança jurídica e comprometimento em cada negócio desde 1982.</p>
+                <p class="font-serif text-xl text-white mb-1">Pronto para encontrar seu imóvel?</p>
+                <p class="text-slate-500 text-sm">Fale agora com nossos consultores.</p>
             </div>
-            <div>
-                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-4">Links</p>
-                <div class="space-y-2 text-sm">
-                    <a href="javascript:void(0)" onclick="switchView('home')" class="block text-slate-400 hover:text-green-500 transition-colors">Home</a>
-                    <a href="javascript:void(0)" onclick="switchView('catalog')" class="block text-slate-400 hover:text-green-500 transition-colors">Imóveis</a>
-                    <a href="javascript:void(0)" onclick="switchView('empresa')" class="block text-slate-400 hover:text-green-500 transition-colors">Empresa</a>
-                    <a href="javascript:void(0)" onclick="switchView('contato')" class="block text-slate-400 hover:text-green-500 transition-colors">Contato</a>
+            <div class="flex gap-3 flex-shrink-0">
+                <a href="tel:+5598999731018" class="inline-flex items-center gap-2 bg-white/8 border border-white/12 text-white px-5 py-2.5 rounded-xl font-bold text-[10.5px] uppercase tracking-widest hover:bg-white/14 transition-all">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    Ligar
+                </a>
+                <button onclick="openWhatsApp('')" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white px-5 py-2.5 rounded-xl font-bold text-[10.5px] uppercase tracking-widest transition-all">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                    WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main footer content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+            <!-- Brand -->
+            <div class="lg:col-span-1">
+                <img src="./Gemini_Generated_Image_op1pifop1pifop1p-removebg-preview.png" alt="Jorge Imóveis" class="h-14 w-auto mb-5">
+                <p class="text-slate-500 text-xs leading-relaxed mb-5">Especialistas em compra, venda e aluguel de imóveis em São Luís e Maranhão desde 1982.</p>
+                <div class="inline-flex items-center gap-2 bg-green-900/40 border border-green-800/50 text-green-400 px-3 py-1.5 rounded-full text-[9.5px] font-bold uppercase tracking-widest">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    CRECI 663 · 20º RG
                 </div>
             </div>
+            <!-- Imóveis links -->
             <div>
-                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-4">Contato</p>
-                <div class="space-y-2 text-sm text-slate-400">
-                    <p>📞 (98) 99973-1018</p>
-                    <p>📍 Rua dos Professores, 13<br>Cohafuma, São Luís – MA</p>
-                    <p class="text-green-600">CRECI: 663 20º RG</p>
+                <p class="text-[9.5px] font-bold uppercase tracking-widest text-slate-500 mb-5">Imóveis</p>
+                <div class="space-y-2.5 text-sm">
+                    <a href="javascript:void(0)" onclick="filterCatalogByType('')" class="flex items-center gap-2 text-slate-400 hover:text-green-400 transition-colors group">
+                        <span class="w-1 h-1 bg-slate-600 rounded-full group-hover:bg-green-500 transition-colors"></span>Todos os imóveis
+                    </a>
+                    <a href="javascript:void(0)" onclick="filterCatalogByType('Venda')" class="flex items-center gap-2 text-slate-400 hover:text-green-400 transition-colors group">
+                        <span class="w-1 h-1 bg-slate-600 rounded-full group-hover:bg-green-500 transition-colors"></span>Imóveis à Venda
+                    </a>
+                    <a href="javascript:void(0)" onclick="filterCatalogByType('Aluguel')" class="flex items-center gap-2 text-slate-400 hover:text-green-400 transition-colors group">
+                        <span class="w-1 h-1 bg-slate-600 rounded-full group-hover:bg-green-500 transition-colors"></span>Para Alugar
+                    </a>
+                    <a href="javascript:void(0)" onclick="filterCatalogByType('Rural')" class="flex items-center gap-2 text-slate-400 hover:text-green-400 transition-colors group">
+                        <span class="w-1 h-1 bg-slate-600 rounded-full group-hover:bg-green-500 transition-colors"></span>Propriedades Rurais
+                    </a>
+                </div>
+            </div>
+            <!-- Empresa links -->
+            <div>
+                <p class="text-[9.5px] font-bold uppercase tracking-widest text-slate-500 mb-5">Empresa</p>
+                <div class="space-y-2.5 text-sm">
+                    <a href="javascript:void(0)" onclick="switchView('empresa')" class="flex items-center gap-2 text-slate-400 hover:text-green-400 transition-colors group"><span class="w-1 h-1 bg-slate-600 rounded-full group-hover:bg-green-500 transition-colors"></span>Quem Somos</a>
+                    <a href="javascript:void(0)" onclick="switchView('servicos')" class="flex items-center gap-2 text-slate-400 hover:text-green-400 transition-colors group"><span class="w-1 h-1 bg-slate-600 rounded-full group-hover:bg-green-500 transition-colors"></span>Serviços</a>
+                    <a href="javascript:void(0)" onclick="switchView('contato')" class="flex items-center gap-2 text-slate-400 hover:text-green-400 transition-colors group"><span class="w-1 h-1 bg-slate-600 rounded-full group-hover:bg-green-500 transition-colors"></span>Contato</a>
+                </div>
+            </div>
+            <!-- Contact -->
+            <div>
+                <p class="text-[9.5px] font-bold uppercase tracking-widest text-slate-500 mb-5">Contato</p>
+                <div class="space-y-3 text-sm text-slate-400">
+                    <a href="tel:+5598999731018" class="flex items-start gap-3 hover:text-green-400 transition-colors">
+                        <svg width="14" height="14" class="flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        (98) 99973-1018
+                    </a>
+                    <a href="mailto:jorge@jorgeimoveis.com.br" class="flex items-start gap-3 hover:text-green-400 transition-colors">
+                        <svg width="14" height="14" class="flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        jorge@jorgeimoveis.com.br
+                    </a>
+                    <div class="flex items-start gap-3">
+                        <svg width="14" height="14" class="flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span>Rua dos Professores, 13<br>Cohafuma — São Luís, MA</span>
+                    </div>
+                    <div class="pt-1 text-[10px] text-slate-500">
+                        Seg–Sex: 8h às 18h &nbsp;|&nbsp; Sáb: 8h às 12h
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="border-t border-white/8 pt-8 text-center">
-            <p class="text-slate-600 text-[9px] uppercase tracking-[.4em]">© 2025 Jorge Imóveis · Todos os direitos reservados</p>
+
+        <div class="border-t border-white/6 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-slate-600 text-[9px] uppercase tracking-[.35em]">© 2025 Jorge Imóveis · Todos os direitos reservados</p>
+            <p class="text-slate-700 text-[9px] uppercase tracking-widest">Desenvolvido com ♥ em São Luís, MA</p>
         </div>
     </div>
 </footer>
@@ -893,6 +1130,11 @@
         </div>
     </div>
 </div>
+
+<!-- FLOATING WHATSAPP -->
+<button class="whatsapp-fab" onclick="openWhatsApp('')" aria-label="WhatsApp" title="Falar no WhatsApp">
+    <svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+</button>
 
 <!-- ═══════════════ JAVASCRIPT ═══════════════ -->
 <!-- PLAIN SCRIPT: runs synchronously — all onclick-callable functions live here -->
@@ -1014,6 +1256,86 @@ function updatePreviewUrl(url) { if (window._mod) window._mod.updatePreviewUrl(u
 function generateAndDownloadSitemap() { if (window._mod) window._mod.generateAndDownloadSitemap(); }
 function initDistrictFilters() { if (window._mod) window._mod.initDistrictFilters(); }
 
+function maskPrice(el) {
+    // Keep only digits; reformat as Brazilian currency while typing
+    var cursor = el.selectionStart;
+    var digits = el.value.replace(/\D/g, '');
+    if (!digits) { el.value = ''; return; }
+    // Treat last two digits as cents only if value looks like it has decimals
+    // For real estate: just format with thousands dots, no forced decimals
+    var n = parseInt(digits, 10);
+    if (isNaN(n)) { el.value = ''; return; }
+    el.value = n.toLocaleString('pt-BR');
+}
+
+/* hidden input to store room filter value */
+function heroSearch() {
+    var type = document.getElementById('hero-type-select')?.value || '';
+    var q = (document.getElementById('hero-search-input')?.value || '').trim().toLowerCase();
+    _currentTypeFilter = type;
+    switchView('catalog');
+    // Update type chips
+    document.querySelectorAll('#view-catalog .filter-chip').forEach(function(b) { b.classList.remove('active'); });
+    var chipIds = {'':'filt-all','Venda':'filt-venda','Aluguel':'filt-aluguel','Rural':'filt-rural'};
+    var chip = document.getElementById(chipIds[type]||'filt-all'); if(chip) chip.classList.add('active');
+    // Store query for applyFilters to use
+    window._heroQuery = q;
+    if (window._mod) window._mod.applyFilters();
+}
+
+function setRoomFilter(n) {
+    // Store value in a hidden element and re-apply
+    var el = document.getElementById('catalog-room-filter');
+    if (!el) {
+        el = document.createElement('input');
+        el.type = 'hidden'; el.id = 'catalog-room-filter'; el.value = '0';
+        document.body.appendChild(el);
+    }
+    el.value = n;
+    // Highlight active chip
+    document.querySelectorAll('.room-chip').forEach(function(b) {
+        var isActive = b.id === 'rf-' + n;
+        b.classList.toggle('bg-[#0a0a0a]', isActive);
+        b.classList.toggle('text-white', isActive);
+        b.classList.toggle('border-[#0a0a0a]', isActive);
+        b.classList.toggle('text-slate-500', !isActive);
+        b.classList.toggle('border-[#e8e8e4]', !isActive);
+    });
+    if (window._mod) window._mod.applyFilters();
+}
+
+function clearAllFilters() {
+    // Clear type filter
+    _currentTypeFilter = '';
+    document.querySelectorAll('.filter-chip').forEach(function(b) { b.classList.remove('active'); });
+    var fa = document.getElementById('filt-all'); if (fa) fa.classList.add('active');
+    // Clear checkboxes
+    window._heroQuery = '';
+    var hsi = document.getElementById('hero-search-input'); if(hsi) hsi.value='';
+    var hts = document.getElementById('hero-type-select'); if(hts) hts.value='';
+    document.querySelectorAll('input[name="dist"],input[name="cat"],input[name="amenity-filter"]').forEach(function(c) { c.checked = false; });
+    // Clear price/area inputs
+    ['filter-price-min','filter-price-max','filter-area-min','filter-area-max'].forEach(function(id) {
+        var el = document.getElementById(id); if (el) el.value = '';
+    });
+    // Clear room filter
+    setRoomFilter(0);
+    // Clear district search
+    var ds = document.getElementById('filter-district-search'); if (ds) ds.value = '';
+    filterDistrictList('');
+    // Reset sort
+    var cs = document.getElementById('catalog-sort'); if (cs) cs.value = 'recent';
+    if (window._mod) window._mod.applyFilters();
+}
+
+function filterDistrictList(query) {
+    var q = (query||'').toLowerCase().trim();
+    document.querySelectorAll('#neighborhood-filters label').forEach(function(lbl) {
+        var text = lbl.textContent.toLowerCase();
+        lbl.style.display = (!q || text.includes(q)) ? '' : 'none';
+    });
+}
+
 function setMediaTab(tab) {
     var panels = ['upload','url'];
     panels.forEach(function(t) {
@@ -1070,7 +1392,7 @@ function setMediaTab(tab) {
     /* ── Expose module API to plain-script stubs via window._mod ── */
     window._mod = {
         initMap, resetSeo, renderCatalog, renderHomeSegment,
-        applyFilters, handleLogin, handleRegister, logout, handleFormSubmit,
+        applyFilters, parsePrice, handleLogin, handleRegister, logout, handleFormSubmit,
         viewPropertyDetails, resetForm, loadForEdit, deleteProperty,
         previewUpload, previewUploadMultiple, updatePreviewUrl,
         generateAndDownloadSitemap, initDistrictFilters
@@ -1223,10 +1545,19 @@ function setMediaTab(tab) {
             </div>
             <div class="p-5">
                 <h3 class="font-serif text-lg text-[#0a0a0a] mb-1 leading-snug line-clamp-2">${p.title||''}</h3>
-                ${loc?`<p class="text-slate-400 text-[10px] font-medium mb-4">📍 ${loc}</p>`:''}
-                <div class="flex items-center justify-between pt-4 border-t border-[#f0f0ec]">
-                    <span class="font-serif text-xl text-green-700">${p.price?'R$ '+p.price:'Consultar'}</span>
-                    <span class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">📐 ${p.size||p.area||'—'} m²</span>
+                ${loc?`<p class="text-slate-400 text-[10px] font-medium mb-3">📍 ${loc}</p>`:''}
+                ${(p.amenities&&p.amenities.length)?`<div class="flex flex-wrap gap-1 mb-3">${(p.amenities||[]).slice(0,3).map(a=>`<span class="text-[9px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-medium">${a}</span>`).join('')}${p.amenities.length>3?`<span class="text-[9px] bg-slate-100 text-slate-400 px-2 py-0.5 rounded-full font-medium">+${p.amenities.length-3}</span>`:''}</div>`:``}
+                <div class="pt-4 border-t border-[#f0f0ec]">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-serif text-xl text-green-700">${p.price?(()=>{const n=parseFloat(String(p.price).replace(/\./g,'').replace(',','.'));return isNaN(n)?'R$ '+p.price:'R$ '+n.toLocaleString('pt-BR')})():'Consultar'}</span>
+                        <span class="text-slate-400 text-[10px] font-bold">📐 ${p.size||p.area||'—'} m²</span>
+                    </div>
+                    ${(p.beds||p.baths||p.suites)?`<div class="flex gap-3 text-[10px] text-slate-400 font-medium">
+                        ${p.beds?`<span>🛏 ${p.beds} qto${p.beds>1?'s':''}</span>`:''}
+                        ${p.suites?`<span>🛁 ${p.suites} suíte${p.suites>1?'s':''}</span>`:''}
+                        ${p.baths?`<span>🚿 ${p.baths} bnh</span>`:''}
+                        ${p.garage?`<span>🚗 ${p.garage}</span>`:''}
+                    </div>`:''}
                 </div>
             </div>
         </article>`;
@@ -1234,11 +1565,8 @@ function setMediaTab(tab) {
 
     /* ── RENDER ── */
     function renderCatalog() {
-        const grid = document.getElementById('catalog-full-grid'); if (!grid) return;
-        const filtered = _allProperties.filter(p => p.isActive)
-            .filter(p => !_currentTypeFilter || String(p.type||'').toLowerCase() === _currentTypeFilter.toLowerCase());
-        grid.innerHTML = filtered.length ? filtered.map(createCard).join('')
-            : '<div class="col-span-full text-center py-16 text-slate-400"><p class="text-4xl mb-3">🏠</p><p class="font-bold text-sm uppercase tracking-widest">Nenhum imóvel encontrado</p></div>';
+        // Delegate to applyFilters so all active filter state is respected
+        applyFilters();
     }
 
     const renderHome = () => {
@@ -1257,26 +1585,122 @@ function setMediaTab(tab) {
         grid.innerHTML = items.length ? items.map(createCard).join('') : `<div class="col-span-full p-8 text-center text-slate-400 bg-slate-50 rounded-2xl">Sem imóveis de ${type.toLowerCase()} no momento.</div>`;
     }
 
+    /* ── Price parsing helper ── */
+    const parsePrice = raw => {
+        if (!raw) return null;
+        // Accept "1.200.000,50" or "1200000.50" or "1200000"
+        const s = String(raw).replace(/\./g,'').replace(',','.');
+        const n = parseFloat(s);
+        return isNaN(n) ? null : n;
+    };
+
+    /* ── Format price for display ── */
+    const fmtPrice = n => n ? 'R$ ' + n.toLocaleString('pt-BR', {minimumFractionDigits:0,maximumFractionDigits:2}) : 'Consultar';
+
+    const AMENITY_ICONS = {
+        'Piscina':'🏊','Academia':'💪','Churrasqueira':'🔥','Ar Condicionado':'❄️',
+        'Elevador':'🛗','Varanda':'🌅','Escritório':'💼','WiFi':'📶','Sauna':'♨️',
+        'Estacionamento':'🅿️','Playground':'🎠','Área de Lazer':'🌳',
+        'Cozinha Equipada':'🍳','TV a Cabo':'📺','Mezanino':'🏠','Poço Artesiano':'💧',
+        'Energia Elétrica':'⚡','Recepção':'🏨','Portão Eletrônico':'🔐'
+    };
+
     function initDistrictFilters() {
+        // Districts
         const districts = [...new Set(_allProperties.map(p=>p.district||p.neighborhood))].filter(Boolean).sort();
-        const el = document.getElementById('neighborhood-filters'); if (!el) return;
-        el.innerHTML = districts.map(d => `<label class="flex items-center gap-2.5 px-2 py-1.5 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors"><input type="checkbox" name="dist" value="${d}" onchange="applyFilters()" class="w-3.5 h-3.5 accent-green-600"><span class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">${d}</span></label>`).join('');
+        const el = document.getElementById('neighborhood-filters'); if (el) {
+            el.innerHTML = districts.map(d => `<label class="flex items-center gap-2 px-2 py-1.5 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors"><input type="checkbox" name="dist" value="${d}" onchange="applyFilters()" class="w-3.5 h-3.5 accent-green-600 flex-shrink-0"><span class="text-[11px] font-medium text-slate-600">${d}</span></label>`).join('');
+        }
+
+        // Categories
+        const cats = [...new Set(_allProperties.map(p=>p.category).filter(Boolean))].sort();
+        const catEl = document.getElementById('category-filters'); if (catEl) {
+            catEl.innerHTML = cats.map(cat => `<label class="flex items-center gap-2 px-2 py-1.5 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors"><input type="checkbox" name="cat" value="${cat}" onchange="applyFilters()" class="w-3.5 h-3.5 accent-green-600 flex-shrink-0"><span class="text-[11px] font-medium text-slate-600">${cat}</span></label>`).join('');
+        }
+
+        // Amenities — only show amenities that exist in at least one property
+        const allAmenities = [...new Set(_allProperties.flatMap(p=>p.amenities||[]))].filter(Boolean).sort();
+        const amenEl = document.getElementById('amenity-filters'); if (amenEl) {
+            amenEl.innerHTML = allAmenities.map(a => `<label class="flex items-center gap-1.5 px-2 py-1.5 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors col-span-1"><input type="checkbox" name="amenity-filter" value="${a}" onchange="applyFilters()" class="w-3.5 h-3.5 accent-green-600 flex-shrink-0"><span class="text-[10.5px] font-medium text-slate-600">${AMENITY_ICONS[a]||'•'} ${a}</span></label>`).join('');
+        }
     }
 
     function applyFilters() {
-        const dists = Array.from(document.querySelectorAll('input[name="dist"]:checked')).map(c=>c.value);
-        const prev = _currentTypeFilter;
-        _currentTypeFilter = '';
-        const filtered = dists.length ? _allProperties.filter(p=>dists.includes(p.district||p.neighborhood)) : _allProperties;
-        _currentTypeFilter = prev;
+        const dists    = Array.from(document.querySelectorAll('input[name="dist"]:checked')).map(c=>c.value);
+        const cats     = Array.from(document.querySelectorAll('input[name="cat"]:checked')).map(c=>c.value);
+        const amenReq  = Array.from(document.querySelectorAll('input[name="amenity-filter"]:checked')).map(c=>c.value);
+        const priceMin = parsePrice(document.getElementById('filter-price-min')?.value);
+        const priceMax = parsePrice(document.getElementById('filter-price-max')?.value);
+        const areaMin  = parseFloat(document.getElementById('filter-area-min')?.value||'') || null;
+        const areaMax  = parseFloat(document.getElementById('filter-area-max')?.value||'') || null;
+        const roomMin  = parseInt(document.getElementById('catalog-room-filter')?.value||'0') || 0;
+        const sortBy   = document.getElementById('catalog-sort')?.value || 'recent';
+
+        let list = _allProperties.filter(p => p.isActive);
+
+        // Type filter (top chips)
+        if (_currentTypeFilter) list = list.filter(p => String(p.type||'').toLowerCase() === _currentTypeFilter.toLowerCase());
+
+        // Category checkboxes
+        if (cats.length) list = list.filter(p => cats.includes(p.category));
+
+        // District checkboxes
+        if (dists.length) list = list.filter(p => dists.includes(p.district||p.neighborhood));
+
+        // Price range
+        if (priceMin !== null) list = list.filter(p => { const v=parsePrice(p.price); return v && v >= priceMin; });
+        if (priceMax !== null) list = list.filter(p => { const v=parsePrice(p.price); return v && v <= priceMax; });
+
+        // Area range
+        if (areaMin !== null) list = list.filter(p => { const v=parseFloat(p.size||p.area||0); return v >= areaMin; });
+        if (areaMax !== null) list = list.filter(p => { const v=parseFloat(p.size||p.area||0); return v <= areaMax; });
+
+        // Rooms
+        if (roomMin > 0) list = list.filter(p => parseInt(p.beds||0) >= roomMin);
+
+        // Amenities — property must have ALL selected amenities
+        if (amenReq.length) list = list.filter(p => amenReq.every(a => (p.amenities||[]).includes(a)));
+
+        // Hero search query
+        const hq = (window._heroQuery||'').toLowerCase().trim();
+        if (hq) {
+            list = list.filter(p => {
+                const txt = [p.title,p.district,p.neighborhood,p.city,p.state,p.category,p.description].join(' ').toLowerCase();
+                return txt.includes(hq);
+            });
+        }
+
+        // Sort
+        if (sortBy === 'price-asc')  list.sort((a,b) => (parsePrice(a.price)||Infinity) - (parsePrice(b.price)||Infinity));
+        if (sortBy === 'price-desc') list.sort((a,b) => (parsePrice(b.price)||0) - (parsePrice(a.price)||0));
+        if (sortBy === 'area-desc')  list.sort((a,b) => parseFloat(b.size||b.area||0) - parseFloat(a.size||a.area||0));
+        if (sortBy === 'featured')   list.sort((a,b) => (b.isFeatured?1:0) - (a.isFeatured?1:0));
+        if (sortBy === 'recent')     list.sort((a,b) => String(b.updatedAt||b.createdAt||'').localeCompare(String(a.updatedAt||a.createdAt||'')));
+
         const grid = document.getElementById('catalog-full-grid'); if (!grid) return;
-        const shown = filtered.filter(p=>p.isActive).filter(p=>!_currentTypeFilter||String(p.type||'').toLowerCase()===_currentTypeFilter.toLowerCase());
-        grid.innerHTML = shown.length ? shown.map(createCard).join('') : '<div class="col-span-full text-center py-16 text-slate-400">Nenhum imóvel encontrado.</div>';
+        grid.innerHTML = list.length ? list.map(createCard).join('')
+            : `<div class="col-span-full text-center py-20 text-slate-400">
+                <p class="text-5xl mb-4">🔍</p>
+                <p class="font-bold text-sm uppercase tracking-widest mb-2">Nenhum imóvel encontrado</p>
+                <p class="text-xs">Tente ajustar ou <button onclick="clearAllFilters()" class="text-green-600 font-bold underline">limpar os filtros</button></p>
+               </div>`;
+
+        const lbl = document.getElementById('catalog-results-label');
+        if (lbl) lbl.textContent = list.length + ' imóvel' + (list.length !== 1 ? 'is' : '') + ' encontrado' + (list.length !== 1 ? 's' : '');
     }
 
     /* ── STATS ── */
     const updateStats = () => {
         const $ = id => document.getElementById(id);
+
+        // Update home trust badges
+        const badgeTotal = $('stat-badge-total');
+        if (badgeTotal) badgeTotal.textContent = _allProperties.filter(p=>p.isActive).length + '+';
+        const badgeRegions = $('stat-badge-regions');
+        if (badgeRegions) {
+            const regions = new Set(_allProperties.map(p=>p.district||p.neighborhood||p.city).filter(Boolean));
+            badgeRegions.textContent = regions.size + '+';
+        }
         if ($('stat-total')) $('stat-total').textContent = _allProperties.length;
         if ($('stat-venda')) $('stat-venda').textContent = _allProperties.filter(p=>String(p.type||'').toLowerCase()==='venda').length;
         if ($('stat-aluguel')) $('stat-aluguel').textContent = _allProperties.filter(p=>String(p.type||'').toLowerCase()==='aluguel').length;
@@ -1330,23 +1754,47 @@ function setMediaTab(tab) {
         const lot = p.lot;
         const district = p.district||p.neighborhood||'';
         const desc = p.content||p.description||'';
-        const priceFormatted = p.price ? 'R$ ' + p.price : 'Consultar';
+        // Format price properly: parse stored value → BR locale
+        const _priceNum0 = (() => {
+            if (!p.price) return null;
+            const s = String(p.price).replace(/\./g,'').replace(',','.');
+            const n = parseFloat(s); return isNaN(n) ? null : n;
+        })();
+        const priceFormatted = _priceNum0
+            ? 'R$ ' + _priceNum0.toLocaleString('pt-BR', {minimumFractionDigits:0, maximumFractionDigits:0})
+            : 'Consultar';
         const typeLabel = p.type==='Venda'?'Venda':'Aluguel'+(p.type==='Aluguel'?' / mês':'');
         const waMsg = encodeURIComponent('Olá! Tenho interesse no imóvel "'+p.title+'" – '+priceFormatted+'. Vi no site Jorge Imóveis.');
         const propUrl = location.origin+location.pathname+'#imovel/'+(p.slug||id);
         window._shareSlug = p.slug||id;
 
+        // Use already-computed price number
+        const priceNum = _priceNum0;
+        const areaNum = parseFloat(area) || null;
+        const lotNum  = parseFloat(lot) || null;
+
+        // Price per m² (área útil)
+        const pricePerM2 = priceNum && areaNum && areaNum > 0
+            ? 'R$ ' + Math.round(priceNum / areaNum).toLocaleString('pt-BR') + '/m²' : null;
+
+        // Price per hectare (1 ha = 10.000 m²) — shown when lot exists or area >= 1.000 m²
+        const baseAreaForHa = lotNum || areaNum;
+        const pricePerHa = priceNum && baseAreaForHa && baseAreaForHa >= 1000
+            ? 'R$ ' + Math.round(priceNum / (baseAreaForHa / 10000)).toLocaleString('pt-BR') + '/ha' : null;
+
         // Build specs array — only show fields that have values
         const specs = [
-            p.price && {icon:'💰',label:'Valor',val:priceFormatted,big:true,green:true},
-            area     && {icon:'📐',label:'Área útil',val:area+' m²'},
-            lot      && {icon:'🌿',label:'Área lote',val:lot+' m²'},
-            p.beds   && {icon:'🛏',label:'Quartos',val:p.beds},
-            p.suites && {icon:'🛁',label:'Suítes',val:p.suites},
-            p.baths  && {icon:'🚿',label:'Banheiros',val:p.baths},
-            p.garage && {icon:'🚗',label:'Garagem',val:p.garage+' vaga'+(p.garage>1?'s':'')},
-            p.floors && {icon:'🏢',label:'Pavimentos',val:p.floors},
-            p.year   && {icon:'📅',label:'Ano',val:p.year},
+            p.price     && {icon:'💰',label:'Valor total',val:priceFormatted,green:true},
+            area        && {icon:'📐',label:'Área útil',val:area+' m²'},
+            lot         && {icon:'🌿',label:'Área total/lote',val:lot+' m²'},
+            pricePerM2  && {icon:'📊',label:'Preço por m²',val:pricePerM2},
+            pricePerHa  && {icon:'🗺',label:'Preço por hectare',val:pricePerHa},
+            p.beds      && {icon:'🛏',label:'Quartos',val:p.beds},
+            p.suites    && {icon:'🛁',label:'Suítes',val:p.suites},
+            p.baths     && {icon:'🚿',label:'Banheiros',val:p.baths},
+            p.garage    && {icon:'🚗',label:'Garagem',val:p.garage+' vaga'+(p.garage>1?'s':'')},
+            p.floors    && {icon:'🏢',label:'Pavimentos',val:p.floors},
+            p.year      && {icon:'📅',label:'Ano construção',val:p.year},
         ].filter(Boolean);
 
         const amenityIcons = {
@@ -1365,9 +1813,12 @@ function setMediaTab(tab) {
 
             <!-- HERO IMAGE -->
             <div class="relative rounded-3xl overflow-hidden bg-slate-900 shadow-2xl" style="padding-bottom:58%">
+              <div id="detail-img-skeleton" class="absolute inset-0 bg-slate-800 animate-pulse"></div>
               <img id="detail-main-img" src="${mainImg}"
                    alt="${(p.title||'').replace(/"/g,'&quot;')}"
-                   class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300">
+                   class="absolute inset-0 w-full h-full object-cover"
+                   onload="this.previousElementSibling.style.display='none'"
+                   onerror="this.previousElementSibling.style.display='none'">
               <!-- Gradient overlay -->
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none"></div>
               <!-- Badges top-left -->
@@ -1393,16 +1844,24 @@ function setMediaTab(tab) {
 
             <!-- GALLERY THUMBNAILS -->
             ${images.length>1?`
+            <!-- Preload full-size images into browser cache for instant switching -->
+            <div style="display:none">${images.map(u=>`<img src="${u}" loading="eager">`).join('')}</div>
             <div class="grid grid-cols-5 sm:grid-cols-8 gap-2">
               ${images.slice(0,16).map((u,i)=>`
               <button type="button" onclick="
                 var mi=document.getElementById('detail-main-img');
-                mi.style.opacity='0';
-                setTimeout(function(){mi.src='${u}';mi.style.opacity='1';},150);
-                document.querySelectorAll('.gthumb').forEach(function(t){t.classList.remove('ring-2','ring-green-500');});
-                this.querySelector('img').classList.add('ring-2','ring-green-500');
-              " class="rounded-xl overflow-hidden bg-slate-200 aspect-square">
-                <img src="${thumbs[i]||u}" class="gthumb w-full h-full object-cover ${i===0?'ring-2 ring-green-500':''}" loading="lazy" alt="">
+                var sk=document.getElementById('detail-img-skeleton');
+                if(sk){sk.style.display='block';}
+                mi.onload=function(){if(sk)sk.style.display='none';};
+                mi.src='${u}';
+                document.querySelectorAll('.gthumb').forEach(function(t){
+                  t.classList.remove('ring-2','ring-green-500','opacity-100');
+                  t.classList.add('opacity-60');
+                });
+                this.querySelector('img').classList.remove('opacity-60');
+                this.querySelector('img').classList.add('ring-2','ring-green-500','opacity-100');
+              " class="rounded-xl overflow-hidden bg-slate-200 aspect-square group">
+                <img src="${thumbs[i]||u}" class="gthumb w-full h-full object-cover transition-all duration-150 ${i===0?'ring-2 ring-green-500 opacity-100':'opacity-60 group-hover:opacity-100'}" loading="lazy" decoding="async" alt="">
               </button>`).join('')}
             </div>`:``}
 
