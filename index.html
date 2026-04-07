@@ -24,7 +24,7 @@
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Tahoma is a system font, no external import needed -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -37,8 +37,8 @@
             --border: #e8e8e4;
         }
         * { box-sizing: border-box; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--black); scroll-behavior: smooth; }
-        h1,h2,h3,.serif { font-family: 'Playfair Display', serif; }
+        body { font-family: Tahoma, 'Trebuchet MS', Geneva, sans-serif; background: var(--cream); color: var(--black); scroll-behavior: smooth; }
+        h1,h2,h3,.serif { font-family: Tahoma, 'Trebuchet MS', Geneva, sans-serif; font-weight: 700; }
 
         /* VIEWS */
         .view-section { display: none; }
@@ -61,7 +61,7 @@
         .section-title { font-size:.7rem; font-weight:800; text-transform:uppercase; letter-spacing:.12em; color:#6b7280; margin-bottom:1.25rem; display:flex; align-items:center; gap:.6rem; }
         .section-title::before { content:''; width:3px; height:16px; background:var(--green); border-radius:4px; flex-shrink:0; }
         .input-label { font-size:.65rem; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:.08em; margin-bottom:.4rem; display:block; }
-        .input-field { width:100%; background:#f9fafb; border:1.5px solid #e5e7eb; border-radius:.75rem; padding:.7rem 1rem; font-size:.875rem; font-family:'DM Sans',sans-serif; transition:all .2s; }
+        .input-field { width:100%; background:#f9fafb; border:1.5px solid #e5e7eb; border-radius:.75rem; padding:.7rem 1rem; font-size:.875rem; font-family:Tahoma,'Trebuchet MS',Geneva,sans-serif; transition:all .2s; }
         .input-field:focus { border-color:var(--green); outline:none; box-shadow:0 0 0 3px rgba(22,163,74,.15); background:#fff; }
         .checkbox-item { display:flex; align-items:center; gap:.6rem; padding:.65rem; border-radius:.65rem; background:#f9fafb; border:1px solid #f3f4f6; cursor:pointer; transition:.2s; }
         .checkbox-item:hover { border-color:var(--green); background:#f0fdf4; }
@@ -125,7 +125,7 @@
         .hero-search-bar input { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); color:#fff; border-radius:.75rem; padding:.65rem 1rem; font-size:.875rem; width:100%; outline:none; transition:all .2s; font-family:'DM Sans',sans-serif; }
         .hero-search-bar input::placeholder { color:rgba(255,255,255,.45); }
         .hero-search-bar input:focus { background:rgba(255,255,255,.15); border-color:rgba(255,255,255,.35); }
-        .hero-search-bar select { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); color:#fff; border-radius:.75rem; padding:.65rem 1rem; font-size:.875rem; outline:none; font-family:'DM Sans',sans-serif; cursor:pointer; }
+        .hero-search-bar select { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15); color:#fff; border-radius:.75rem; padding:.65rem 1rem; font-size:.875rem; outline:none; font-family:Tahoma,'Trebuchet MS',Geneva,sans-serif; cursor:pointer; }
         .hero-search-bar select option { background:#1a1a1a; color:#fff; }
 
         /* FLOATING WHATSAPP */
@@ -333,8 +333,8 @@
     <section class="pt-4 pb-6 max-w-7xl mx-auto px-4 sm:px-6">
         <div class="flex items-center justify-between mb-5">
             <div>
-                <p class="section-eyebrow">Explorar por tipo</p>
-                <h2 class="font-serif text-2xl sm:text-3xl text-[#0a0a0a]">Encontre o que procura</h2>
+                <p class="section-eyebrow">Encontre o que procura</p>
+                <h2 class="font-serif text-2xl sm:text-3xl text-[#0a0a0a]">Filtre pelo perfil ideal</h2>
             </div>
             <button onclick="switchView('catalog')" class="hidden sm:flex items-center gap-1.5 text-[10.5px] font-bold text-slate-400 uppercase tracking-widest hover:text-green-600 transition-colors">
                 Ver catálogo completo
@@ -452,29 +452,95 @@
     <div class="max-w-5xl mx-auto px-4 sm:px-6 py-14">
         <p class="text-green-600 text-[10px] font-bold uppercase tracking-[.2em] mb-2">✦ O Que Fazemos</p>
         <h1 class="font-serif text-4xl sm:text-6xl text-[#0a0a0a] mb-10">Serviços</h1>
-        <div class="bg-white border border-[#e8e8e4] rounded-[2rem] p-8 sm:p-12 shadow-sm">
-            <p class="text-slate-600 leading-relaxed mb-8">Especializada em Aluguel, Compra e Venda de Imóveis Residencial, Comercial e Industrial, em área Urbana e Rural.</p>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                <div class="bg-[#fafaf8] border border-[#e8e8e4] rounded-2xl p-7">
-                    <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mb-4">
-                        <svg class="text-green-600" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <div class="bg-white border border-[#e8e8e4] rounded-[2rem] p-8 sm:p-12 shadow-sm space-y-10">
+            <p class="text-slate-600 leading-relaxed">A Jorge Imóveis é especializada em Aluguel, Compra e Venda de Imóveis Residencial, Comercial e Industrial, em área Urbana e Rural, prestando serviços completos no mercado imobiliário do Maranhão desde 1982.</p>
+
+            <!-- Serviços principais -->
+            <div>
+                <p class="text-[9.5px] font-bold uppercase tracking-widest text-slate-400 mb-5 flex items-center gap-2"><span class="w-4 h-0.5 bg-green-500 inline-block"></span>Negócios Imobiliários</p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-[#fafaf8] border border-[#e8e8e4] rounded-2xl p-6">
+                        <div class="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                            <svg class="text-green-600" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                        </div>
+                        <h3 class="font-bold text-[11px] uppercase tracking-widest mb-2 text-[#0a0a0a]">Compra e Venda</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed">Curadoria, negociação e suporte jurídico completo do início ao fim.</p>
                     </div>
-                    <h3 class="font-bold text-[11px] uppercase tracking-widest mb-2">Compra e Venda</h3>
-                    <p class="text-slate-500 text-sm leading-relaxed">Curadoria, negociação e suporte jurídico do início ao fim.</p>
+                    <div class="bg-[#fafaf8] border border-[#e8e8e4] rounded-2xl p-6">
+                        <div class="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                            <svg class="text-green-600" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        </div>
+                        <h3 class="font-bold text-[11px] uppercase tracking-widest mb-2 text-[#0a0a0a]">Locação e Administração</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed">Cobrança de aluguel, contratos, vistoria e administração de imóveis.</p>
+                    </div>
+                    <div class="bg-[#fafaf8] border border-[#e8e8e4] rounded-2xl p-6">
+                        <div class="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                            <svg class="text-green-600" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+                        </div>
+                        <h3 class="font-bold text-[11px] uppercase tracking-widest mb-2 text-[#0a0a0a]">Construção Civil</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed">Residencial, Comercial e Industrial — acompanhamento e intermediação de projetos construtivos.</p>
+                    </div>
                 </div>
-                <div class="bg-[#fafaf8] border border-[#e8e8e4] rounded-2xl p-7">
-                    <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mb-4">
-                        <svg class="text-green-600" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+
+            <!-- Serviços jurídicos e documentais -->
+            <div class="border-t border-[#e8e8e4] pt-8">
+                <p class="text-[9.5px] font-bold uppercase tracking-widest text-slate-400 mb-5 flex items-center gap-2"><span class="w-4 h-0.5 bg-green-500 inline-block"></span>Documentação & Jurídico</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="flex gap-3 bg-[#fafaf8] border border-[#e8e8e4] rounded-2xl p-5">
+                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg class="text-green-600" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-[11px] uppercase tracking-widest text-[#0a0a0a] mb-1">Regularização de Imóveis</h4>
+                            <p class="text-slate-500 text-xs leading-relaxed">Legalização e regularização de documentação de imóveis.</p>
+                        </div>
                     </div>
-                    <h3 class="font-bold text-[11px] uppercase tracking-widest mb-2">Locação e Adm.</h3>
-                    <p class="text-slate-500 text-sm leading-relaxed">Cobrança, contratos, vistoria e acompanhamento transparente.</p>
-                </div>
-                <div class="bg-[#fafaf8] border border-[#e8e8e4] rounded-2xl p-7">
-                    <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mb-4">
-                        <svg class="text-green-600" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <div class="flex gap-3 bg-[#fafaf8] border border-[#e8e8e4] rounded-2xl p-5">
+                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg class="text-green-600" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-[11px] uppercase tracking-widest text-[#0a0a0a] mb-1">Averbação de Construção</h4>
+                            <p class="text-slate-500 text-xs leading-relaxed">Registro e averbação de construções junto ao cartório de imóveis.</p>
+                        </div>
                     </div>
-                    <h3 class="font-bold text-[11px] uppercase tracking-widest mb-2">Documentação</h3>
-                    <p class="text-slate-500 text-sm leading-relaxed">Regularização, averbação, consultoria e avaliação de imóveis.</p>
+                    <div class="flex gap-3 bg-[#fafaf8] border border-[#e8e8e4] rounded-2xl p-5">
+                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg class="text-green-600" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-[11px] uppercase tracking-widest text-[#0a0a0a] mb-1">Consultoria Jurídica</h4>
+                            <p class="text-slate-500 text-xs leading-relaxed">Consultoria completa em direito imobiliário e contratos.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 bg-[#fafaf8] border border-[#e8e8e4] rounded-2xl p-5">
+                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg class="text-green-600" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-[11px] uppercase tracking-widest text-[#0a0a0a] mb-1">Usucapião Judicial e/ou Extrajudicial</h4>
+                            <p class="text-slate-500 text-xs leading-relaxed">Assessoria completa no processo de usucapião para regularização de posse.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 bg-[#fafaf8] border border-[#e8e8e4] rounded-2xl p-5">
+                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg class="text-green-600" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><line x1="12" y1="22" x2="12" y2="12"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-[11px] uppercase tracking-widest text-[#0a0a0a] mb-1">Financiamento de Imóveis</h4>
+                            <p class="text-slate-500 text-xs leading-relaxed">Novos e usados junto ao Sistema Financeiro de Habitação (SFH).</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-3 bg-[#fafaf8] border border-[#e8e8e4] rounded-2xl p-5">
+                        <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <svg class="text-green-600" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-[11px] uppercase tracking-widest text-[#0a0a0a] mb-1">Avaliação de Imóveis</h4>
+                            <p class="text-slate-500 text-xs leading-relaxed">Avaliação Residencial, Comercial, Rural e Urbano. Georreferenciamento.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -823,15 +889,39 @@
                     <h3 class="section-title">Dados Técnicos</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         <div><label class="input-label">Tipo Negócio</label><select id="form-type" class="input-field"><option value="Venda">Venda</option><option value="Aluguel">Aluguel</option><option value="Rural">Rural</option></select></div>
-                        <div><label class="input-label">Preço (R$)</label><input type="text" id="form-price" class="input-field" placeholder="1.200.000,00" oninput="maskPrice(this)" inputmode="numeric"></div>
-                        <div><label class="input-label">Área Útil (m²)</label><input type="number" id="form-size" class="input-field"></div>
-                        <div><label class="input-label">Área Lote (m²)</label><input type="number" id="form-lot" class="input-field"></div>
+                        <div><label class="input-label">Preço Total (R$)</label><input type="text" id="form-price" class="input-field" placeholder="1.200.000,00" oninput="maskPrice(this);calcUnitPrices()" inputmode="numeric"></div>
+                        <div><label class="input-label">Área Útil (m²)</label><input type="number" id="form-size" class="input-field" oninput="calcUnitPrices()"></div>
+                        <div><label class="input-label">Área Total / Lote (m²)</label><input type="number" id="form-lot" class="input-field" oninput="calcUnitPrices()"></div>
                         <div><label class="input-label">Ano Construção</label><input type="number" id="form-year" class="input-field"></div>
                         <div><label class="input-label">Pisos</label><input type="number" id="form-floors" class="input-field"></div>
                         <div><label class="input-label">Quartos</label><input type="number" id="form-beds" class="input-field"></div>
                         <div><label class="input-label">Suítes</label><input type="number" id="form-suites" class="input-field"></div>
                         <div><label class="input-label">Banheiros</label><input type="number" id="form-baths" class="input-field"></div>
                         <div><label class="input-label">Garagem (vagas)</label><input type="number" id="form-garage" class="input-field"></div>
+                    </div>
+
+                    <!-- CALCULADORA DE PREÇO UNITÁRIO (readonly, calculado automaticamente) -->
+                    <div class="mt-5 p-4 bg-green-50 border border-green-100 rounded-2xl">
+                        <p class="text-[9.5px] font-bold uppercase tracking-widest text-green-700 mb-3 flex items-center gap-2">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            Valores Unitários — Calculados Automaticamente
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="input-label">Preço por m² (área útil)</label>
+                                <input type="text" id="form-price-m2" readonly class="input-field bg-white text-green-700 font-bold cursor-default" placeholder="Preencha preço + área útil">
+                                <p class="text-[9px] text-slate-400 mt-1">Preço Total ÷ Área Útil</p>
+                            </div>
+                            <div>
+                                <label class="input-label">Preço por hectare (1 ha = 10.000 m²)</label>
+                                <input type="text" id="form-price-ha" readonly class="input-field bg-white text-green-700 font-bold cursor-default" placeholder="Preencha preço + área ≥ 1.000 m²">
+                                <p class="text-[9px] text-slate-400 mt-1">Preço Total ÷ Área Total em hectares</p>
+                            </div>
+                        </div>
+                        <p class="text-[9px] text-slate-400 mt-3 italic">💡 Estes valores são calculados e salvos automaticamente. Aparecem na ficha do imóvel para os visitantes.</p>
+                    </div>
+
+
                     </div>
                     <div class="mt-5">
                         <label class="input-label">Descrição do Imóvel*</label>
@@ -1275,6 +1365,39 @@ function maskPrice(el) {
 }
 
 /* hidden input to store room filter value */
+function calcUnitPrices() {
+    var priceRaw = (document.getElementById('form-price')?.value || '').replace(/\./g,'').replace(',','.');
+    var priceNum = parseFloat(priceRaw);
+    var areaNum  = parseFloat(document.getElementById('form-size')?.value || 0);
+    var lotNum   = parseFloat(document.getElementById('form-lot')?.value || 0);
+    var m2El     = document.getElementById('form-price-m2');
+    var haEl     = document.getElementById('form-price-ha');
+
+    if (!m2El || !haEl) return;
+
+    // Price per m² — needs total price + useful area
+    if (!isNaN(priceNum) && priceNum > 0 && areaNum > 0) {
+        var perM2 = Math.round(priceNum / areaNum);
+        m2El.value = 'R$ ' + perM2.toLocaleString('pt-BR') + ' / m²';
+    } else {
+        m2El.value = '';
+        m2El.placeholder = 'Preencha preço + área útil';
+    }
+
+    // Price per hectare — use lot area if available, otherwise useful area; must be ≥ 1.000 m²
+    var baseArea = lotNum > 0 ? lotNum : areaNum;
+    if (!isNaN(priceNum) && priceNum > 0 && baseArea >= 1000) {
+        var hectares = baseArea / 10000;
+        var perHa = Math.round(priceNum / hectares);
+        haEl.value = 'R$ ' + perHa.toLocaleString('pt-BR') + ' / ha';
+    } else {
+        haEl.value = '';
+        haEl.placeholder = baseArea > 0 && baseArea < 1000
+            ? 'Área mínima para hectare: 1.000 m²'
+            : 'Preencha preço + área ≥ 1.000 m²';
+    }
+}
+
 function heroSearch() {
     var type = document.getElementById('hero-type-select')?.value || '';
     var q = (document.getElementById('hero-search-input')?.value || '').trim().toLowerCase();
@@ -1808,14 +1931,14 @@ function setMediaTab(tab) {
         const areaNum = parseFloat(area) || null;
         const lotNum  = parseFloat(lot) || null;
 
-        // Price per m² (área útil)
-        const pricePerM2 = priceNum && areaNum && areaNum > 0
-            ? 'R$ ' + Math.round(priceNum / areaNum).toLocaleString('pt-BR') + '/m²' : null;
+        // Price per m² — use stored value or calculate
+        const pricePerM2 = p.pricePerM2 || (priceNum && areaNum && areaNum > 0
+            ? 'R$ ' + Math.round(priceNum / areaNum).toLocaleString('pt-BR') + '/m²' : null);
 
-        // Price per hectare (1 ha = 10.000 m²) — shown when lot exists or area >= 1.000 m²
+        // Price per hectare — use stored value or calculate
         const baseAreaForHa = lotNum || areaNum;
-        const pricePerHa = priceNum && baseAreaForHa && baseAreaForHa >= 1000
-            ? 'R$ ' + Math.round(priceNum / (baseAreaForHa / 10000)).toLocaleString('pt-BR') + '/ha' : null;
+        const pricePerHa = p.pricePerHa || (priceNum && baseAreaForHa && baseAreaForHa >= 1000
+            ? 'R$ ' + Math.round(priceNum / (baseAreaForHa / 10000)).toLocaleString('pt-BR') + '/ha' : null);
 
         // Build specs array — only show fields that have values
         const specs = [
@@ -2161,7 +2284,7 @@ function setMediaTab(tab) {
                 title:g('form-title').trim(),slug,category:g('form-category'),agent:g('form-agent'),
                 isFeatured:chk('form-featured'),isActive:chk('form-active'),
                 seoTitle,seoDescription,seoDesc:seoDescription,seoKeys,
-                type:g('form-type'),price:g('form-price'),size:g('form-size'),area:g('form-size'),
+                type:g('form-type'),price:g('form-price'),pricePerM2:document.getElementById('form-price-m2')?.value||'',pricePerHa:document.getElementById('form-price-ha')?.value||'',size:g('form-size'),area:g('form-size'),
                 lot:g('form-lot'),year:g('form-year'),floors:g('form-floors'),beds:g('form-beds'),
                 suites:g('form-suites'),baths:g('form-baths'),garage:g('form-garage'),
                 description:g('form-description'),content:g('form-description'),
@@ -2210,6 +2333,9 @@ function setMediaTab(tab) {
         if($('form-category'))$('form-category').value=p.category||'Casa';
         if($('form-type'))$('form-type').value=p.type||'Venda';
         if($('form-price'))$('form-price').value=p.price||'';
+        if($('form-price-m2'))$('form-price-m2').value=p.pricePerM2||'';
+        if($('form-price-ha'))$('form-price-ha').value=p.pricePerHa||'';
+        setTimeout(function(){calcUnitPrices();},50);
         if($('form-size'))$('form-size').value=p.size||p.area||'';
         if($('form-lot'))$('form-lot').value=p.lot||'';
         if($('form-year'))$('form-year').value=p.year||'';
