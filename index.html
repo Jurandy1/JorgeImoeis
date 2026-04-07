@@ -172,6 +172,7 @@
                 <a href="javascript:void(0)" onclick="switchView('home')" id="nav-home" class="nav-item relative active-link text-black">Home</a>
                 <a href="javascript:void(0)" onclick="switchView('empresa')" id="nav-empresa" class="nav-item relative text-slate-400 hover:text-green-600 transition-colors">Empresa</a>
                 <a href="javascript:void(0)" onclick="switchView('servicos')" id="nav-servicos" class="nav-item relative text-slate-400 hover:text-green-600 transition-colors">Serviços</a>
+                <a href="javascript:void(0)" onclick="switchView('simulador')" id="nav-simulador" class="nav-item relative text-slate-400 hover:text-green-600 transition-colors">Simulador</a>
 
                 <div class="relative group">
                     <button id="nav-catalog" type="button" onclick="switchView('catalog')" class="nav-item relative text-slate-400 hover:text-green-600 transition-colors flex items-center gap-1.5">
@@ -234,6 +235,10 @@
             <a href="javascript:void(0)" onclick="switchView('servicos');toggleMobileMenu();" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[12px] font-bold uppercase tracking-widest text-slate-700 hover:bg-white hover:text-green-600 transition-all">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                 Serviços
+            </a>
+            <a href="javascript:void(0)" onclick="switchView('simulador');toggleMobileMenu();" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[12px] font-bold uppercase tracking-widest text-slate-700 hover:bg-white hover:text-green-600 transition-all">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Simulador
             </a>
             <div class="border-t border-[#e8e8e4] my-1 pt-1">
                 <p class="px-4 py-2 text-[9px] font-black uppercase tracking-widest text-slate-400">Imóveis</p>
@@ -575,6 +580,183 @@
                     <p class="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">Horário de Atendimento</p>
                     <p class="font-bold text-sm">Seg–Sex: 8h às 18h</p>
                     <p class="text-slate-500 text-xs">Sábado: 8h às 12h</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- ═══════════════ VIEW: SIMULADOR DE FINANCIAMENTO ═══════════════ -->
+<main id="view-simulador" class="view-section main-top pt-[68px]">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-14">
+        <p class="section-eyebrow mb-3">Simulador Gratuito</p>
+        <h1 class="font-serif text-4xl sm:text-5xl text-[#0a0a0a] mb-3">Calculadora de Financiamento</h1>
+        <p class="text-slate-500 text-sm mb-10 max-w-xl leading-relaxed">Simule o financiamento do seu imóvel usando as tabelas Price e SAC, os dois sistemas mais usados no Brasil. Os valores são estimativas — consulte um banco para condições exatas.</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8">
+
+            <!-- FORM DE ENTRADA -->
+            <div class="space-y-5">
+
+                <!-- Dados do Imóvel -->
+                <div class="bg-white border border-[#e8e8e4] rounded-3xl p-7">
+                    <h2 class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-5 flex items-center gap-2">
+                        <span class="w-1 h-5 bg-green-500 rounded-full"></span> Dados do Imóvel
+                    </h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="input-label">Valor do Imóvel (R$)</label>
+                            <input type="text" id="sim-preco" class="input-field" placeholder="500.000" oninput="maskPrice(this);simCalc()" inputmode="numeric">
+                        </div>
+                        <div>
+                            <label class="input-label">Valor da Entrada (R$)</label>
+                            <input type="text" id="sim-entrada" class="input-field" placeholder="100.000" oninput="maskPrice(this);simCalc()" inputmode="numeric">
+                            <p id="sim-entrada-pct" class="text-[10px] text-green-600 font-bold mt-1 h-4"></p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label class="input-label">Entrada Rápida (% do valor)</label>
+                        <div class="flex gap-2 flex-wrap mt-1">
+                            <button onclick="setEntradaPct(10)" class="pct-btn px-3 py-1.5 rounded-lg border border-[#e8e8e4] text-[10.5px] font-bold text-slate-500 hover:border-green-500 hover:text-green-600 transition-all">10%</button>
+                            <button onclick="setEntradaPct(20)" class="pct-btn px-3 py-1.5 rounded-lg border border-[#e8e8e4] text-[10.5px] font-bold text-slate-500 hover:border-green-500 hover:text-green-600 transition-all">20%</button>
+                            <button onclick="setEntradaPct(30)" class="pct-btn px-3 py-1.5 rounded-lg border border-[#e8e8e4] text-[10.5px] font-bold text-slate-500 hover:border-green-500 hover:text-green-600 transition-all">30%</button>
+                            <button onclick="setEntradaPct(50)" class="pct-btn px-3 py-1.5 rounded-lg border border-[#e8e8e4] text-[10.5px] font-bold text-slate-500 hover:border-green-500 hover:text-green-600 transition-all">50%</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Condições -->
+                <div class="bg-white border border-[#e8e8e4] rounded-3xl p-7">
+                    <h2 class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-5 flex items-center gap-2">
+                        <span class="w-1 h-5 bg-green-500 rounded-full"></span> Condições do Financiamento
+                    </h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                        <div>
+                            <label class="input-label">Prazo (anos)</label>
+                            <select id="sim-prazo" class="input-field" onchange="simCalc()">
+                                <option value="10">10 anos</option>
+                                <option value="15">15 anos</option>
+                                <option value="20">20 anos</option>
+                                <option value="25">25 anos</option>
+                                <option value="30" selected>30 anos</option>
+                                <option value="35">35 anos</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="input-label">Taxa de Juros (% ao ano)</label>
+                            <input type="number" id="sim-taxa" class="input-field" value="10.99" step="0.01" min="0.1" max="30" oninput="simCalc()">
+                        </div>
+                        <div>
+                            <label class="input-label">Sistema</label>
+                            <select id="sim-sistema" class="input-field" onchange="simCalc()">
+                                <option value="price">Price (parcelas fixas)</option>
+                                <option value="sac">SAC (parcelas decrescentes)</option>
+                                <option value="ambos">Comparar ambos</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Taxa predefinida -->
+                    <div class="mt-5">
+                        <label class="input-label">Taxa de Referência</label>
+                        <div class="flex flex-wrap gap-2 mt-1">
+                            <button onclick="setTaxa(8.16)" class="taxa-btn px-3 py-1.5 rounded-lg border border-[#e8e8e4] text-[10px] font-bold text-slate-500 hover:border-green-500 hover:text-green-600 transition-all text-left">
+                                FGTS<br><span class="text-[9px] font-normal">8,16% a.a.</span>
+                            </button>
+                            <button onclick="setTaxa(10.99)" class="taxa-btn px-3 py-1.5 rounded-lg border border-[#e8e8e4] text-[10px] font-bold text-slate-500 hover:border-green-500 hover:text-green-600 transition-all text-left">
+                                Caixa SFH<br><span class="text-[9px] font-normal">10,99% a.a.</span>
+                            </button>
+                            <button onclick="setTaxa(12.00)" class="taxa-btn px-3 py-1.5 rounded-lg border border-[#e8e8e4] text-[10px] font-bold text-slate-500 hover:border-green-500 hover:text-green-600 transition-all text-left">
+                                Bancos Privados<br><span class="text-[9px] font-normal">12,00% a.a.</span>
+                            </button>
+                            <button onclick="setTaxa(14.50)" class="taxa-btn px-3 py-1.5 rounded-lg border border-[#e8e8e4] text-[10px] font-bold text-slate-500 hover:border-green-500 hover:text-green-600 transition-all text-left">
+                                Mercado Livre<br><span class="text-[9px] font-normal">14,50% a.a.</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabela de amortização resumida -->
+                <div class="bg-white border border-[#e8e8e4] rounded-3xl p-7" id="sim-tabela-box" style="display:none">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-[10px] font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                            <span class="w-1 h-5 bg-green-500 rounded-full"></span> Evolução do Financiamento
+                        </h2>
+                        <button onclick="toggleSimTabela()" id="btn-tabela" class="text-[10px] font-bold text-green-600 hover:text-green-700 uppercase tracking-widest">Ver tabela</button>
+                    </div>
+                    <div id="sim-tabela-content" style="display:none">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-[11px]" id="sim-tabela"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESULTADOS -->
+            <div>
+                <div id="sim-resultado" class="sticky top-[80px] space-y-4">
+                    <div class="bg-[#0a0a0a] text-white rounded-3xl p-7">
+                        <p class="text-white/50 text-[9px] font-bold uppercase tracking-widest mb-5">Resultado da Simulação</p>
+
+                        <div id="sim-placeholder" class="text-center py-8">
+                            <svg class="mx-auto mb-4 text-white/20" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            <p class="text-white/40 text-sm">Preencha os dados ao lado para simular</p>
+                        </div>
+
+                        <div id="sim-output" style="display:none" class="space-y-4">
+                            <!-- Valor financiado -->
+                            <div class="bg-white/8 rounded-2xl p-4">
+                                <p class="text-white/50 text-[9px] uppercase tracking-widest mb-1">Valor Financiado</p>
+                                <p class="font-serif text-2xl text-white" id="res-financiado">—</p>
+                            </div>
+
+                            <!-- Price -->
+                            <div id="res-price-box" class="bg-green-900/40 border border-green-700/40 rounded-2xl p-4">
+                                <p class="text-green-400 text-[9px] font-bold uppercase tracking-widest mb-2">Tabela Price — Parcela fixa</p>
+                                <p class="font-serif text-2xl text-white" id="res-price-parcela">—</p>
+                                <p class="text-white/50 text-[10px] mt-1" id="res-price-sub">—</p>
+                            </div>
+
+                            <!-- SAC -->
+                            <div id="res-sac-box" class="bg-blue-900/40 border border-blue-700/40 rounded-2xl p-4">
+                                <p class="text-blue-400 text-[9px] font-bold uppercase tracking-widest mb-2">SAC — 1ª à última parcela</p>
+                                <p class="font-serif text-xl text-white" id="res-sac-parcela">—</p>
+                                <p class="text-white/50 text-[10px] mt-1" id="res-sac-sub">—</p>
+                            </div>
+
+                            <!-- Totais -->
+                            <div class="space-y-2 pt-2 border-t border-white/10">
+                                <div class="flex justify-between text-xs">
+                                    <span class="text-white/50">Total pago (Price)</span>
+                                    <span class="text-white font-bold" id="res-total-price">—</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="text-white/50">Total pago (SAC)</span>
+                                    <span class="text-white font-bold" id="res-total-sac">—</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="text-white/50">Juros totais (Price)</span>
+                                    <span class="text-amber-400 font-bold" id="res-juros-price">—</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="text-white/50">Juros totais (SAC)</span>
+                                    <span class="text-amber-400 font-bold" id="res-juros-sac">—</span>
+                                </div>
+                            </div>
+
+                            <button onclick="openWhatsApp('Olá! Simulei um financiamento no site Jorge Imóveis e gostaria de saber mais sobre as opções disponíveis.')" class="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-500 text-white font-bold py-3.5 rounded-2xl transition-all text-[11px] uppercase tracking-widest mt-2">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                                Falar com Consultor
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Aviso legal -->
+                    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4">
+                        <p class="text-[10px] text-amber-700 leading-relaxed">
+                            ⚠️ <strong>Simulação estimada.</strong> Os valores são calculados matematicamente e não incluem seguros (MIP/DFI), tarifas bancárias, ITBI, cartório ou correção pelo IPCA/TR. Consulte um banco ou a Jorge Imóveis para condições reais.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1398,6 +1580,164 @@ function calcUnitPrices() {
     }
 }
 
+/* ─────────────────────────────────────────────────────
+   CALCULADORA DE FINANCIAMENTO
+   Tabela Price: PMT = PV × [i(1+i)^n] / [(1+i)^n - 1]
+   SAC: amortização fixa = PV/n; juros decrescentes
+───────────────────────────────────────────────────── */
+function brNum(n) {
+    return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function brR(n) { return 'R$ ' + brNum(n); }
+
+function parseBR(str) {
+    if (!str) return 0;
+    var s = String(str).replace(/\./g, '').replace(',', '.');
+    var n = parseFloat(s);
+    return isNaN(n) ? 0 : n;
+}
+
+function setEntradaPct(pct) {
+    var preco = parseBR(document.getElementById('sim-preco')?.value);
+    if (!preco) return;
+    var entrada = Math.round(preco * pct / 100);
+    var el = document.getElementById('sim-entrada');
+    if (el) { el.value = entrada.toLocaleString('pt-BR'); }
+    simCalc();
+}
+
+function setTaxa(taxa) {
+    var el = document.getElementById('sim-taxa');
+    if (el) { el.value = taxa; }
+    simCalc();
+}
+
+function toggleSimTabela() {
+    var box = document.getElementById('sim-tabela-content');
+    var btn = document.getElementById('btn-tabela');
+    if (!box) return;
+    var visible = box.style.display !== 'none';
+    box.style.display = visible ? 'none' : 'block';
+    if (btn) btn.textContent = visible ? 'Ver tabela' : 'Ocultar tabela';
+}
+
+function simCalc() {
+    var preco   = parseBR(document.getElementById('sim-preco')?.value);
+    var entrada = parseBR(document.getElementById('sim-entrada')?.value);
+    var anos    = parseInt(document.getElementById('sim-prazo')?.value || 30);
+    var taxaAA  = parseFloat(document.getElementById('sim-taxa')?.value || 10.99);
+
+    // Update entry percentage label
+    var pctEl = document.getElementById('sim-entrada-pct');
+    if (pctEl && preco > 0) {
+        var pct = (entrada / preco * 100).toFixed(1);
+        pctEl.textContent = pct + '% do valor do imóvel';
+        pctEl.style.color = entrada >= preco * 0.2 ? '#16a34a' : '#ef4444';
+    }
+
+    var financiado = preco - entrada;
+    if (financiado <= 0 || preco <= 0) {
+        document.getElementById('sim-placeholder')?.style.removeProperty('display');
+        if (document.getElementById('sim-output')) document.getElementById('sim-output').style.display = 'none';
+        return;
+    }
+
+    var n = anos * 12;                    // total de parcelas
+    var i = taxaAA / 100 / 12;           // taxa mensal
+
+    // ── PRICE (parcelas fixas) ──
+    var pmt = financiado * (i * Math.pow(1+i, n)) / (Math.pow(1+i, n) - 1);
+    var totalPrice = pmt * n;
+    var jurosPrice = totalPrice - financiado;
+
+    // ── SAC (Sistema de Amortização Constante) ──
+    var amort     = financiado / n;
+    var sacFirst  = amort + financiado * i;
+    var sacLast   = amort + amort * i;
+    var totalSac  = 0;
+    for (var k = 0; k < n; k++) { totalSac += amort + (financiado - k * amort) * i; }
+    var jurosSac = totalSac - financiado;
+
+    // ── OUTPUT ──
+    var out = document.getElementById('sim-output');
+    var ph  = document.getElementById('sim-placeholder');
+    if (ph) ph.style.display = 'none';
+    if (out) out.style.display = 'block';
+
+    var set = function(id, txt) { var el=document.getElementById(id); if(el) el.textContent=txt; };
+
+    set('res-financiado', brR(financiado));
+    set('res-price-parcela', brR(pmt) + '/mês');
+    set('res-price-sub', n + ' parcelas fixas de ' + brR(pmt));
+    set('res-sac-parcela', brR(sacFirst) + ' → ' + brR(sacLast));
+    set('res-sac-sub', '1ª parcela ' + brR(sacFirst) + ' · última ' + brR(sacLast));
+    set('res-total-price', brR(totalPrice));
+    set('res-total-sac', brR(totalSac));
+    set('res-juros-price', brR(jurosPrice));
+    set('res-juros-sac', brR(jurosSac));
+
+    // Show/hide boxes based on selected system
+    var sistema = document.getElementById('sim-sistema')?.value || 'price';
+    var priceBox = document.getElementById('res-price-box');
+    var sacBox   = document.getElementById('res-sac-box');
+    if (priceBox) priceBox.style.display = (sistema === 'sac') ? 'none' : 'block';
+    if (sacBox)   sacBox.style.display   = (sistema === 'price') ? 'none' : 'block';
+
+    // Build amortization table (yearly summary)
+    buildSimTabela(financiado, i, n, amort, pmt, sistema);
+}
+
+function buildSimTabela(pv, i, n, amort, pmt, sistema) {
+    var tabelaBox = document.getElementById('sim-tabela-box');
+    var tabela = document.getElementById('sim-tabela');
+    if (!tabelaBox || !tabela) return;
+    tabelaBox.style.display = 'block';
+
+    var rows = '<thead><tr class="border-b border-[#e8e8e4] text-[9px] text-slate-400 uppercase tracking-wider">' +
+        '<th class="py-2 text-left">Ano</th>' +
+        (sistema !== 'sac' ? '<th class="py-2 text-right">Parcela (Price)</th>' : '') +
+        (sistema !== 'price' ? '<th class="py-2 text-right">Parcela (SAC)</th>' : '') +
+        '<th class="py-2 text-right">Saldo Devedor</th>' +
+        '</tr></thead><tbody>';
+
+    var saldoPrice = pv;
+    var saldoSac   = pv;
+
+    for (var ano = 1; ano <= Math.ceil(n/12); ano += (n/12 > 15 ? 5 : 1)) {
+        var mesInicio = (ano-1)*12;
+        var mesFim    = Math.min(ano*12, n);
+
+        for (var m = mesInicio; m < mesFim; m++) {
+            saldoPrice = saldoPrice * (1 + i) - pmt;
+            saldoSac   = saldoSac - amort;
+        }
+        if (saldoPrice < 0) saldoPrice = 0;
+        if (saldoSac   < 0) saldoSac   = 0;
+
+        var sacParc = amort + saldoSac * i;
+
+        rows += '<tr class="border-b border-[#f0f0ec] hover:bg-slate-50">' +
+            '<td class="py-2 text-[11px] font-bold">' + ano + 'º</td>' +
+            (sistema !== 'sac' ? '<td class="py-2 text-right text-[11px] text-green-700 font-bold">R$ ' + brNum(pmt) + '</td>' : '') +
+            (sistema !== 'price' ? '<td class="py-2 text-right text-[11px] text-blue-700 font-bold">R$ ' + brNum(sacParc) + '</td>' : '') +
+            '<td class="py-2 text-right text-[11px] text-slate-500">R$ ' + brNum(Math.max(0,saldoPrice)) + '</td>' +
+            '</tr>';
+    }
+    rows += '</tbody>';
+    tabela.innerHTML = rows;
+}
+
+function openSimuladorFromDetail(priceValue) {
+    switchView('simulador');
+    setTimeout(function() {
+        var el = document.getElementById('sim-preco');
+        if (el) {
+            el.value = Math.round(priceValue).toLocaleString('pt-BR');
+            setEntradaPct(20);
+        }
+    }, 150);
+}
+
 function heroSearch() {
     var type = document.getElementById('hero-type-select')?.value || '';
     var q = (document.getElementById('hero-search-input')?.value || '').trim().toLowerCase();
@@ -2135,6 +2475,15 @@ function setMediaTab(tab) {
                   <p class="text-[10px] text-slate-500 mt-0.5">Desde 1982</p>
                 </div>
               </div>
+
+              <!-- SIMULADOR QUICK LINK -->
+              ${p.type!=='Aluguel'&&priceNum?`
+              <button onclick="openSimuladorFromDetail(${priceNum})"
+                      class="w-full flex items-center justify-center gap-2.5 bg-white border-2 border-green-500 text-green-700 hover:bg-green-600 hover:text-white font-bold py-4 rounded-2xl transition-all text-[11px] uppercase tracking-widest group">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="group-hover:scale-110 transition-transform"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Simular Financiamento
+              </button>
+              `:''}
 
             </div>
           </div>
