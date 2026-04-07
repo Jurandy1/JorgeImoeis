@@ -1363,7 +1363,7 @@
         </div>
 
         <div class="border-t border-white/6 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p class="text-slate-600 text-[9px] uppercase tracking-[.35em]">© 2025 Jorge Imóveis · Todos os direitos reservados</p>
+            <p class="text-slate-600 text-[9px] uppercase tracking-[.35em]">© 2026 Jorge Imóveis · Todos os direitos reservados</p>
             <p class="text-slate-700 text-[9px] uppercase tracking-widest">Desenvolvido com ♥ em São Luís, MA</p>
         </div>
     </div>
@@ -1467,12 +1467,12 @@ function switchView(name) {
         n.classList.remove('active-link', 'text-black');
         n.classList.add('text-slate-400');
     });
-    var navIds = { home:'nav-home', empresa:'nav-empresa', servicos:'nav-servicos', catalog:'nav-catalog', contato:'nav-contato' };
+    var navIds = { home:'nav-home', empresa:'nav-empresa', servicos:'nav-servicos', simulador:'nav-simulador', catalog:'nav-catalog', contato:'nav-contato' };
     var navEl = document.getElementById(navIds[name]);
     if (navEl) { navEl.classList.add('active-link','text-black'); navEl.classList.remove('text-slate-400'); }
 
     document.querySelectorAll('.bottom-nav a').forEach(function(a) { a.classList.remove('active'); });
-    var bnIds = { home:'bn-home', catalog:'bn-catalog', contato:'bn-contato', admin:'bn-admin' };
+    var bnIds = { home:'bn-home', catalog:'bn-catalog', contato:'bn-contato', admin:'bn-admin', simulador:'' };
     if (bnIds[name]) { var bn = document.getElementById(bnIds[name]); if (bn) bn.classList.add('active'); }
 
     window.scrollTo({ top:0, behavior:'smooth' });
@@ -1488,6 +1488,7 @@ function goToHomeSection(id) { switchView(id); }
 
 function filterCatalogByType(type) {
     _currentTypeFilter = type || '';
+    window._heroQuery = '';  // clear any hero search query
     switchView('catalog');
     document.querySelectorAll('#view-catalog .filter-chip').forEach(function(b) { b.classList.remove('active'); });
     var chipIds = { '':'filt-all','Venda':'filt-venda','Aluguel':'filt-aluguel','Rural':'filt-rural' };
@@ -1506,6 +1507,14 @@ function showAdminTab(tab) {
     var tc = document.getElementById('admin-tab-' + tab); if (tc) tc.classList.add('active');
     var tb = document.getElementById('atab-' + tab); if (tb) tb.classList.add('active');
     switchView('admin');
+    // Bug 16 fix: invalidate Leaflet map when switching to form tab (fixes grey tiles)
+    if (tab === 'form') {
+        setTimeout(function() {
+            if (window._leafletMap && typeof window._leafletMap.invalidateSize === 'function') {
+                window._leafletMap.invalidateSize();
+            }
+        }, 120);
+    }
 }
 
 function setHomeSegment(type) {
@@ -1577,6 +1586,9 @@ function calcUnitPrices() {
             : 'Preencha preço + área ≥ 1.000 m²';
     }
 }
+
+/* Initialize _heroQuery to avoid undefined reference */
+if (typeof window._heroQuery === 'undefined') window._heroQuery = '';
 
 /* ─────────────────────────────────────────────────────
    CALCULADORA DE FINANCIAMENTO
@@ -1975,7 +1987,11 @@ function setMediaTab(tab) {
         console.error('[Firebase]', err);
         // Show error in admin panel if visible
         const adminErr = document.getElementById('firebase-error-banner');
-        if (adminErr) { adminErr.textContent = msg; adminErr.classList.remove('hidden'); }
+        if (adminErr) {
+            const span = adminErr.querySelector('span:last-child') || adminErr;
+            span.textContent = msg;
+            adminErr.classList.remove('hidden');
+        }
         // Show toast
         showToast(msg.slice(0,80));
     };
@@ -2028,6 +2044,7 @@ function setMediaTab(tab) {
         mapInstance = L.map('map-selector',{zoomControl:false}).setView([-2.5307,-44.3068],13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapInstance);
         mapMarker = L.marker([-2.5307,-44.3068],{draggable:true}).addTo(mapInstance);
+        window._leafletMap = mapInstance; // expose for invalidateSize
         mapMarker.on('dragend', e => {
             const pos = e.target.getLatLng();
             const la = document.getElementById('form-lat'); if (la) la.value = pos.lat.toFixed(6);
@@ -2183,6 +2200,9 @@ function setMediaTab(tab) {
 
         const lbl = document.getElementById('catalog-results-label');
         if (lbl) lbl.textContent = list.length + ' imóvel' + (list.length !== 1 ? 'is' : '') + ' encontrado' + (list.length !== 1 ? 's' : '');
+        // Also update the header count shown next to title
+        const cnt = document.getElementById('catalog-count');
+        if (cnt) cnt.textContent = list.length + ' imóvel' + (list.length !== 1 ? 'is' : '');
     }
 
     /* ── STATS ── */
@@ -2659,14 +2679,28 @@ function setMediaTab(tab) {
     function resetForm() {
         document.getElementById('property-form')?.reset();
         activeImage='';activeThumb='';activeImages=[];activeThumbs=[];
+        // Clear previews
         const prev=document.getElementById('preview-img'); if(prev)prev.style.display='none';
+        const prevUrl=document.getElementById('preview-img-url'); if(prevUrl){prevUrl.src='';prevUrl.style.display='none';}
         const gal=document.getElementById('images-preview'); if(gal)gal.innerHTML='';
         const st=document.getElementById('upload-status'); if(st)st.textContent='';
+        // Clear IDs and labels
         const ei=document.getElementById('edit-id'); if(ei)ei.value='';
         const sl=document.getElementById('form-slug'); if(sl)sl.value='';
         const sb=document.getElementById('submit-btn'); if(sb)sb.textContent='Publicar Imóvel';
         const ml=document.getElementById('form-mode-label'); if(ml)ml.textContent='Novo Imóvel';
         const th=document.getElementById('form-title-heading'); if(th)th.textContent='Preencha os dados';
+        // Clear computed unit price fields
+        const pm2=document.getElementById('form-price-m2'); if(pm2)pm2.value='';
+        const pha=document.getElementById('form-price-ha'); if(pha)pha.value='';
+        // Clear URL image field
+        const fimg=document.getElementById('form-img'); if(fimg)fimg.value='';
+        // Restore default location values (form.reset() clears them)
+        const fcity=document.getElementById('form-city'); if(fcity)fcity.value='São Luís';
+        const fstate=document.getElementById('form-state'); if(fstate)fstate.value='Maranhão';
+        const fcountry=document.getElementById('form-country'); if(fcountry)fcountry.value='Brasil';
+        // Reset media tab to upload mode
+        if (typeof setMediaTab === 'function') setMediaTab('upload');
         refreshSeo();
     }
 
