@@ -190,6 +190,10 @@
                 </div>
 
                 <a href="javascript:void(0)" onclick="switchView('contato')" id="nav-contato" class="nav-item relative text-slate-400 hover:text-green-600 transition-colors">Contato</a>
+                <button onclick="openCadastre()" class="inline-flex items-center gap-1.5 bg-green-600 text-white px-4 py-2 rounded-full font-bold text-[10px] uppercase tracking-widest hover:bg-green-700 transition-all">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                    Cadastre Seu Imóvel
+                </button>
             </div>
 
             <div class="flex items-center gap-2.5">
@@ -247,6 +251,10 @@
                 <a href="javascript:void(0)" onclick="filterCatalogByType('Aluguel');toggleMobileMenu();" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[12px] font-bold uppercase tracking-widest text-slate-500 hover:text-green-600 transition-all">Para Alugar</a>
                 <a href="javascript:void(0)" onclick="filterCatalogByType('Rural');toggleMobileMenu();" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[12px] font-bold uppercase tracking-widest text-slate-500 hover:text-green-600 transition-all">Rurais</a>
             </div>
+            <a href="javascript:void(0)" onclick="openCadastre();toggleMobileMenu();" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[12px] font-bold uppercase tracking-widest text-green-700 bg-green-50 hover:bg-green-100 transition-all">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                Cadastre Seu Imóvel
+            </a>
             <a href="javascript:void(0)" onclick="switchView('contato');toggleMobileMenu();" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[12px] font-bold uppercase tracking-widest text-slate-700 hover:bg-white hover:text-green-600 transition-all">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                 Contato
@@ -308,19 +316,25 @@
                 <p class="text-white/75 text-sm font-medium mb-8 max-w-md leading-relaxed">
                     Segurança jurídica e experiência de quem trabalha há mais de 40 anos no mercado imobiliário do Maranhão.
                 </p>
-                <!-- SEARCH BAR -->
+                <!-- SEARCH BAR + SIMULADOR -->
                 <div class="hero-search-bar p-3 max-w-xl">
                     <div class="flex gap-2 flex-col sm:flex-row">
-                        <select id="hero-type-select" class="flex-shrink-0 rounded-xl">
-                            <option value="">Todos os tipos</option>
-                            <option value="Venda">Comprar</option>
-                            <option value="Aluguel">Alugar</option>
-                            <option value="Rural">Rural</option>
-                        </select>
                         <input id="hero-search-input" type="text" placeholder="Buscar por bairro, cidade ou tipo..." class="flex-1 min-w-0" onkeydown="if(event.key==='Enter')heroSearch()">
                         <button onclick="heroSearch()" class="flex-shrink-0 bg-green-600 hover:bg-green-500 text-white px-5 py-2 rounded-xl font-bold text-[11px] uppercase tracking-widest transition-all flex items-center gap-1.5">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                             Buscar
+                        </button>
+                    </div>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                        <button onclick="filterCatalogByType('Venda')" class="text-[9.5px] font-bold text-white/70 hover:text-white uppercase tracking-widest transition-colors">🏠 À Venda</button>
+                        <span class="text-white/30">·</span>
+                        <button onclick="filterCatalogByType('Aluguel')" class="text-[9.5px] font-bold text-white/70 hover:text-white uppercase tracking-widest transition-colors">🔑 Aluguel</button>
+                        <span class="text-white/30">·</span>
+                        <button onclick="filterCatalogByType('Rural')" class="text-[9.5px] font-bold text-white/70 hover:text-white uppercase tracking-widest transition-colors">🌿 Rural</button>
+                        <span class="text-white/30">·</span>
+                        <button onclick="switchView('simulador')" class="text-[9.5px] font-bold text-green-400 hover:text-green-300 uppercase tracking-widest transition-colors flex items-center gap-1">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            Simulador de Financiamento
                         </button>
                     </div>
                 </div>
@@ -334,27 +348,8 @@
         </div>
     </section>
 
-    <!-- QUICK BROWSE SECTION -->
-    <section class="pt-4 pb-6 max-w-7xl mx-auto px-4 sm:px-6">
-        <div class="flex items-center justify-between mb-5">
-            <div>
-                <p class="section-eyebrow">Encontre o que procura</p>
-                <h2 class="font-serif text-2xl sm:text-3xl text-[#0a0a0a]">Filtre pelo perfil ideal</h2>
-            </div>
-            <button onclick="switchView('catalog')" class="hidden sm:flex items-center gap-1.5 text-[10.5px] font-bold text-slate-400 uppercase tracking-widest hover:text-green-600 transition-colors">
-                Ver catálogo completo
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </button>
-        </div>
-        <div class="bg-white border border-[#e8e8e4] rounded-2xl p-3 shadow-sm">
-            <div class="flex gap-2 overflow-x-auto scrollbar-none mb-1">
-                <button id="seg-venda" onclick="setHomeSegment('Venda')" class="seg-btn filter-chip active flex-shrink-0">🏠 À Venda</button>
-                <button id="seg-aluguel" onclick="setHomeSegment('Aluguel')" class="seg-btn filter-chip flex-shrink-0">🔑 Para Alugar</button>
-                <button id="seg-rural" onclick="setHomeSegment('Rural')" class="seg-btn filter-chip flex-shrink-0">🌿 Rurais</button>
-            </div>
-            <div id="home-segment-grid" class="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-        </div>
-    </section>
+    <!-- home-segment-grid kept hidden for JS compatibility -->
+    <div id="home-segment-grid" style="display:none"></div>
 
     <!-- FEATURED -->
     <section class="pb-8 sm:pb-10 max-w-7xl mx-auto px-4 sm:px-6">
@@ -365,20 +360,44 @@
             </div>
             <button onclick="switchView('catalog')" class="text-[10.5px] font-bold text-slate-400 uppercase tracking-widest hover:text-green-600 transition-colors">Ver todos →</button>
         </div>
-        <div id="home-featured-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+        <!-- Mobile: scroll horizontal; Desktop: grid 3 colunas -->
+        <div id="home-featured-grid" class="flex gap-5 overflow-x-auto pb-3 snap-x snap-mandatory scrollbar-none sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible"></div>
     </section>
 
-    <!-- LATEST -->
-    <section class="pb-14 max-w-7xl mx-auto px-4 sm:px-6">
-        <div class="flex items-end justify-between mb-6">
-            <div>
-                <p class="section-eyebrow">Novidades</p>
-                <h3 class="font-serif text-3xl sm:text-4xl text-[#0a0a0a]">Últimos Imóveis</h3>
-            </div>
-            <button onclick="switchView('catalog')" class="text-[10.5px] font-bold text-slate-400 uppercase tracking-widest hover:text-green-600 transition-colors">Catálogo →</button>
+    <!-- CATEGORY SECTIONS -->
+    <section class="pb-8 max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="flex items-end justify-between mb-5">
+            <div><p class="section-eyebrow">Comprar</p><h3 class="font-serif text-3xl sm:text-4xl text-[#0a0a0a]">Imóveis à Venda</h3></div>
+            <button onclick="filterCatalogByType('Venda')" class="text-[10.5px] font-bold text-slate-400 uppercase tracking-widest hover:text-green-600 transition-colors">Ver todos →</button>
         </div>
-        <div id="home-latest-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+        <div id="home-venda-grid" class="flex gap-5 overflow-x-auto pb-3 snap-x snap-mandatory scrollbar-none sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible"></div>
     </section>
+
+    <section class="pb-8 max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="flex items-end justify-between mb-5">
+            <div><p class="section-eyebrow">Alugar</p><h3 class="font-serif text-3xl sm:text-4xl text-[#0a0a0a]">Imóveis para Alugar</h3></div>
+            <button onclick="filterCatalogByType('Aluguel')" class="text-[10.5px] font-bold text-slate-400 uppercase tracking-widest hover:text-green-600 transition-colors">Ver todos →</button>
+        </div>
+        <div id="home-aluguel-grid" class="flex gap-5 overflow-x-auto pb-3 snap-x snap-mandatory scrollbar-none sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible"></div>
+    </section>
+
+    <section class="pb-8 max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="flex items-end justify-between mb-5">
+            <div><p class="section-eyebrow">Rural</p><h3 class="font-serif text-3xl sm:text-4xl text-[#0a0a0a]">Propriedades Rurais</h3><p class="text-slate-400 text-sm mt-1">Venda, Aluguel ou Arrendamento</p></div>
+            <button onclick="filterCatalogByType('Rural')" class="text-[10.5px] font-bold text-slate-400 uppercase tracking-widest hover:text-green-600 transition-colors">Ver todos →</button>
+        </div>
+        <div id="home-rural-grid" class="flex gap-5 overflow-x-auto pb-3 snap-x snap-mandatory scrollbar-none sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible"></div>
+    </section>
+
+    <section class="pb-14 max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="flex items-end justify-between mb-5">
+            <div><p class="section-eyebrow">Agronegócio</p><h3 class="font-serif text-3xl sm:text-4xl text-[#0a0a0a]">Fazendas</h3><p class="text-slate-400 text-sm mt-1">Venda, Aluguel ou Arrendamento</p></div>
+            <button onclick="filterCatalogByType('Venda')" class="text-[10.5px] font-bold text-slate-400 uppercase tracking-widest hover:text-green-600 transition-colors">Ver catálogo →</button>
+        </div>
+        <div id="home-fazenda-grid" class="flex gap-5 overflow-x-auto pb-3 snap-x snap-mandatory scrollbar-none sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible"></div>
+    </section>
+    <!-- home-latest-grid kept for JS compat -->
+    <div id="home-latest-grid" style="display:none"></div>
 
     <!-- TRUST BADGES -->
     <section class="py-10 max-w-7xl mx-auto px-4 sm:px-6">
@@ -432,21 +451,26 @@
         <p class="text-green-600 text-[10px] font-bold uppercase tracking-[.2em] mb-2">✦ Nossa História</p>
         <h1 class="font-serif text-4xl sm:text-6xl text-[#0a0a0a] mb-10">Quem Somos</h1>
         <div class="bg-white border border-[#e8e8e4] rounded-[2rem] p-8 sm:p-12 shadow-sm space-y-8">
-            <p class="text-slate-600 leading-relaxed">A Jorge Imóveis atua no mercado imobiliário desde 1982, com endereço comercial localizado na Rua dos Professores, 13 – Altos – Cohafuma – São Luís, Capital do Estado do Maranhão. Nosso objetivo é atender as expectativas e exigências dos nossos clientes, viabilizando e concretizando a tão sonhada casa própria.</p>
+            <p class="text-slate-600 leading-relaxed">A Jorge Imóveis – Atuante no mercado imobiliário desde 1982, com endereço comercial localizada na Rua dos Professores, 13 – Altos – Cohafuma – São Luís, Capital do Estado do Maranhão, a única cidade brasileira fundada por franceses, no dia 8 de setembro de 1612, tendo sido posteriormente invadida por holandeses. Em seguida, foi colonizada pelos portugueses. População de 1.255.879 habitantes (2.010), e com área de 1.410,015 km², compreendendo a metropolização, 04 (Quatro) Municípios, que são: Paço do Lumiar, Raposa, São José de Ribamar e São Luís.</p>
+            <p class="text-slate-600 leading-relaxed">Cujo nosso objetivo, é atender as expectativas e exigências, no sentido de viabilizar e concretizar a tão sonhada casa Própria.</p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div class="bg-[#fafaf8] border border-[#e8e8e4] rounded-2xl p-7">
                     <p class="text-[10px] font-bold uppercase tracking-widest text-green-600 mb-3">Nossa Missão</p>
-                    <p class="text-slate-600 text-sm leading-relaxed">Vender o imóvel de nossos proprietários ao melhor preço de mercado, no menor tempo possível, utilizando as mais modernas técnicas de divulgação e marketing.</p>
+                    <p class="text-slate-600 text-sm leading-relaxed">Vender o imóvel de nossos proprietários ao melhor preço de mercado, no menor tempo possível, utilizando para isso as mais modernas técnicas de divulgação e marketing. Prestar um serviço de excelência, atuar com profissionalismo, transparência e ética, e assumir uma postura de compromisso para com nossos clientes. Tudo isso só é possível, pois trabalhamos com pessoas que têm sonhos e objetivos, e para nós é um prazer saber que fazemos parte da transformação de histórias e conquistas.</p>
                 </div>
                 <div class="bg-[#fafaf8] border border-[#e8e8e4] rounded-2xl p-7">
                     <p class="text-[10px] font-bold uppercase tracking-widest text-green-600 mb-3">Nossa Visão</p>
-                    <p class="text-slate-600 text-sm leading-relaxed">Ser referência no mercado imobiliário, prestando assessoria inovadora, com qualidade e comprometimento em todos os segmentos.</p>
+                    <p class="text-slate-600 text-sm leading-relaxed">Ser referência no mercado imobiliário, prestando um assessoria inovadora, com qualidade e de comprometimento em todos os nossos seguimentos. A união de esforços com nossos parceiros e colaboradores resultará sempre em grandes conquistas para todas as partes.</p>
                     <div class="mt-5 space-y-1.5">
                         <div class="flex items-center gap-2 text-xs font-medium text-slate-600"><span class="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></span>Ética e Transparência</div>
                         <div class="flex items-center gap-2 text-xs font-medium text-slate-600"><span class="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></span>Satisfação do Cliente</div>
                         <div class="flex items-center gap-2 text-xs font-medium text-slate-600"><span class="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></span>Excelência com Simplicidade</div>
                     </div>
                 </div>
+            </div>
+            <div class="border-t border-[#e8e8e4] pt-6">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-3">Área de Atuação</p>
+                <p class="text-slate-600 text-sm leading-relaxed">A Jorge Imóveis é uma empresa especializada em Aluguel, Compra e Venda de Imóveis Residencial, Comercial e Industrial, em área Urbana e Rural, tais como: Casas, Apartamentos, Lojas, Salas, Prédios Residencial e Comercial, Terrenos, Fazendas, Propriedades Rurais, Glebas e Outros, além de Cobrança de Aluguel, Administração de Imóveis, Legalização e Regularização da Documentação de Imóveis, Averbação de Construção, Consultoria Jurídica Completa, Avaliação de Imóveis Residencial, Comercial, Rural e Urbano, Georreferenciamento de Imóvel Rural e Urbano, Financiamento de Imóveis novos e usados, junto ao Sistema Financeiro de Habitação, e atividades afins.</p>
             </div>
         </div>
     </div>
@@ -1032,6 +1056,8 @@
                                 <option value="Casa">Casa</option>
                                 <option value="Apartamento">Apartamento</option>
                                 <option value="Chácara">Chácara</option>
+                                <option value="Sítio">Sítio</option>
+                                <option value="Fazenda">Fazenda</option>
                                 <option value="Galpão">Galpão</option>
                                 <option value="Loja Comercial">Loja Comercial</option>
                                 <option value="Pousada">Pousada</option>
@@ -1071,7 +1097,21 @@
                     <h3 class="section-title">Dados Técnicos</h3>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         <div><label class="input-label">Tipo Negócio</label><select id="form-type" class="input-field"><option value="Venda">Venda</option><option value="Aluguel">Aluguel</option><option value="Rural">Rural</option></select></div>
-                        <div><label class="input-label">Preço Total (R$)</label><input type="text" id="form-price" class="input-field" placeholder="1.200.000,00" oninput="maskPrice(this);calcUnitPrices()" inputmode="numeric"></div>
+                        <!-- PREÇO: valor + unidade automática -->
+                        <div class="sm:col-span-2">
+                            <label class="input-label">Valor (R$)</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="form-price" class="input-field flex-1" placeholder="Ex: 1.200.000" oninput="maskPrice(this);calcUnitPrices()" inputmode="numeric">
+                                <select id="form-price-unit" class="input-field w-auto" onchange="calcUnitPrices()" title="Unidade do valor">
+                                    <option value="total">Total</option>
+                                    <option value="m2">Por m²</option>
+                                    <option value="ha">Por Hectare</option>
+                                    <option value="mes">Por Mês</option>
+                                    <option value="arrendamento">Arrendamento</option>
+                                </select>
+                            </div>
+                            <p class="text-[9px] text-slate-400 mt-1" id="form-price-calc-hint"></p>
+                        </div>
                         <div><label class="input-label">Área Útil (m²)</label><input type="number" id="form-size" class="input-field" oninput="calcUnitPrices()"></div>
                         <div><label class="input-label">Área Total / Lote (m²)</label><input type="number" id="form-lot" class="input-field" oninput="calcUnitPrices()"></div>
                         <div><label class="input-label">Ano Construção</label><input type="number" id="form-year" class="input-field"></div>
@@ -1080,28 +1120,13 @@
                         <div><label class="input-label">Suítes</label><input type="number" id="form-suites" class="input-field"></div>
                         <div><label class="input-label">Banheiros</label><input type="number" id="form-baths" class="input-field"></div>
                         <div><label class="input-label">Garagem (vagas)</label><input type="number" id="form-garage" class="input-field"></div>
+                        <div><label class="input-label">IPTU (R$/ano)</label><input type="text" id="form-iptu" class="input-field" placeholder="Ex: 1.200,00" oninput="maskPrice(this)"></div>
+                        <div><label class="input-label">Condomínio (R$/mês)</label><input type="text" id="form-condo" class="input-field" placeholder="Ex: 800,00" oninput="maskPrice(this)"></div>
                     </div>
 
-                    <!-- CALCULADORA DE PREÇO UNITÁRIO (readonly, calculado automaticamente) -->
-                    <div class="mt-5 p-4 bg-green-50 border border-green-100 rounded-2xl">
-                        <p class="text-[9.5px] font-bold uppercase tracking-widest text-green-700 mb-3 flex items-center gap-2">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                            Valores Unitários — Calculados Automaticamente
-                        </p>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="input-label">Preço por m² (área útil)</label>
-                                <input type="text" id="form-price-m2" readonly class="input-field bg-white text-green-700 font-bold cursor-default" placeholder="Preencha preço + área útil">
-                                <p class="text-[9px] text-slate-400 mt-1">Preço Total ÷ Área Útil</p>
-                            </div>
-                            <div>
-                                <label class="input-label">Preço por hectare (1 ha = 10.000 m²)</label>
-                                <input type="text" id="form-price-ha" readonly class="input-field bg-white text-green-700 font-bold cursor-default" placeholder="Preencha preço + área ≥ 1.000 m²">
-                                <p class="text-[9px] text-slate-400 mt-1">Preço Total ÷ Área Total em hectares</p>
-                            </div>
-                        </div>
-                        <p class="text-[9px] text-slate-400 mt-3 italic">💡 Estes valores são calculados e salvos automaticamente. Aparecem na ficha do imóvel para os visitantes.</p>
-                    </div>
+                    <!-- price-m2 / price-ha kept as hidden fields for DB compat -->
+                    <input type="hidden" id="form-price-m2">
+                    <input type="hidden" id="form-price-ha">
 
                     <div class="mt-5">
                         <label class="input-label">Descrição do Imóvel*</label>
@@ -1169,30 +1194,22 @@
                         </button>
                     </div>
 
-                    <!-- UPLOAD PANEL -->
+                    <!-- UPLOAD PANEL: galeria unificada, 1ª foto = capa -->
                     <div id="media-panel-upload">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            <div>
-                                <label class="input-label">Foto de Capa</label>
-                                <div class="upload-zone" onclick="document.getElementById('form-file').click()">
-                                    <svg class="mx-auto text-slate-300 mb-2" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase">Clique ou arraste a foto</p>
-                                    <p class="text-[9px] text-slate-300 mt-1">Otimizada e comprimida automaticamente</p>
-                                </div>
-                                <input type="file" id="form-file" accept="image/*" class="hidden" onchange="previewUpload(event)">
-                                <img id="preview-img" class="preview-box">
-                                <div id="upload-status" class="mt-2 text-[10px] font-bold tracking-widest text-slate-400 min-h-[1.25rem]"></div>
-                            </div>
-                            <div>
-                                <label class="input-label">Galeria de Fotos (múltiplas)</label>
-                                <div class="upload-zone h-[108px] flex flex-col items-center justify-center" onclick="document.getElementById('form-files').click()">
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase">+ Selecionar várias fotos</p>
-                                    <p class="text-[9px] text-slate-300 mt-1">Todas serão otimizadas automaticamente</p>
-                                </div>
-                                <input type="file" id="form-files" accept="image/*" multiple class="hidden" onchange="previewUploadMultiple(event)">
-                                <div id="images-preview" class="grid grid-cols-4 gap-2 mt-3"></div>
-                            </div>
+                        <div class="upload-zone" onclick="document.getElementById('form-files').click()">
+                            <svg class="mx-auto text-slate-300 mb-2" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Selecionar Fotos</p>
+                            <p class="text-[9px] text-slate-300 mt-1">Pode selecionar várias de uma vez — a 1ª será a capa</p>
                         </div>
+                        <input type="file" id="form-files" accept="image/*" multiple class="hidden" onchange="previewUploadMultiple(event)">
+                        <!-- hidden compat field -->
+                        <input type="file" id="form-file" accept="image/*" class="hidden" onchange="previewUpload(event)">
+                        <div id="upload-status" class="mt-2 text-[10px] font-bold tracking-widest text-slate-400 min-h-[1.25rem]"></div>
+                        <!-- Gallery preview: click to set cover -->
+                        <div id="images-preview" class="grid grid-cols-4 sm:grid-cols-6 gap-2 mt-3"></div>
+                        <p id="cover-hint" class="text-[9px] text-green-600 font-bold mt-2 hidden">💡 Clique em qualquer foto para definir como CAPA</p>
+                        <!-- Hidden preview-img for compat -->
+                        <img id="preview-img" style="display:none">
                     </div>
 
                     <!-- URL PANEL (hidden by default) -->
@@ -1368,6 +1385,42 @@
         </div>
     </div>
 </footer>
+
+<!-- ═══════════════ CADASTRE MODAL ═══════════════ -->
+<div id="cadastre-modal" class="fixed inset-0 z-[200] hidden">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeCadastre()"></div>
+    <div class="relative max-w-md mx-auto mt-20 px-4">
+        <div class="bg-white rounded-[2rem] border border-[#e8e8e4] shadow-2xl overflow-hidden">
+            <div class="p-8">
+                <div class="flex items-start justify-between mb-6">
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Anunciar</p>
+                        <h3 class="font-serif text-2xl text-[#0a0a0a]">Cadastre Seu Imóvel</h3>
+                    </div>
+                    <button onclick="closeCadastre()" class="w-9 h-9 rounded-full border border-[#e8e8e4] flex items-center justify-center text-slate-400 hover:text-black transition-colors">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+                <p class="text-slate-500 text-sm leading-relaxed mb-6">Envie as informações do seu imóvel pelo WhatsApp ou por e-mail. Nossa equipe entrará em contato rapidamente.</p>
+                <div class="space-y-3">
+                    <a href="https://wa.me/5598999731018?text=Olá!%20Gostaria%20de%20cadastrar%20meu%20imóvel%20na%20Jorge%20Imóveis." target="_blank" rel="noopener"
+                       class="w-full flex items-center justify-center gap-3 bg-green-600 hover:bg-green-700 text-white py-4 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all shadow-lg shadow-green-700/20">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                        Enviar pelo WhatsApp
+                    </a>
+                    <a href="mailto:jorge@jorgeimoveis.com.br?subject=Cadastro%20de%20Im%C3%B3vel&body=Olá!%20Gostaria%20de%20cadastrar%20meu%20imóvel%20na%20Jorge%20Imóveis.%0A%0ATipo:%20%0AEndereço:%20%0AValor:%20%0ATelefone:%20"
+                       class="w-full flex items-center justify-center gap-3 bg-white border border-[#e8e8e4] text-slate-700 py-4 rounded-2xl font-bold text-sm uppercase tracking-widest hover:border-green-500 hover:text-green-600 transition-all">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        Enviar por E-mail
+                    </a>
+                </div>
+            </div>
+            <div class="px-8 py-5 bg-slate-50 border-t border-[#e8e8e4]">
+                <p class="text-[11px] text-slate-400">Também é possível cadastrar diretamente pelo painel admin se você for corretor cadastrado. <button onclick="closeCadastre();openLoginModal();" class="text-green-600 font-bold hover:underline">Entrar aqui →</button></p>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- ═══════════════ LOGIN MODAL ═══════════════ -->
 <div id="login-modal" class="fixed inset-0 z-[200] hidden">
@@ -1559,31 +1612,52 @@ function calcUnitPrices() {
     var priceNum = parseFloat(priceRaw);
     var areaNum  = parseFloat(document.getElementById('form-size')?.value || 0);
     var lotNum   = parseFloat(document.getElementById('form-lot')?.value || 0);
+    var unit     = document.getElementById('form-price-unit')?.value || 'total';
+    var hintEl   = document.getElementById('form-price-calc-hint');
     var m2El     = document.getElementById('form-price-m2');
     var haEl     = document.getElementById('form-price-ha');
 
-    if (!m2El || !haEl) return;
+    if (!isNaN(priceNum) && priceNum > 0) {
+        var baseArea = lotNum > 0 ? lotNum : areaNum;
+        var hint = '';
+        var calcM2 = '', calcHa = '';
 
-    // Price per m² — needs total price + useful area
-    if (!isNaN(priceNum) && priceNum > 0 && areaNum > 0) {
-        var perM2 = Math.round(priceNum / areaNum);
-        m2El.value = 'R$ ' + perM2.toLocaleString('pt-BR') + ' / m²';
+        if (unit === 'm2' && areaNum > 0) {
+            // Price IS per m² — calculate total
+            var total = priceNum * areaNum;
+            hint = 'Total estimado: R$ ' + Math.round(total).toLocaleString('pt-BR');
+            calcM2 = 'R$ ' + priceNum.toLocaleString('pt-BR') + ' / m²';
+            if (baseArea >= 1000) {
+                var perHa = priceNum * 10000;
+                calcHa = 'R$ ' + Math.round(perHa).toLocaleString('pt-BR') + ' / ha';
+            }
+        } else if (unit === 'ha' && baseArea > 0) {
+            // Price IS per hectare — calculate total
+            var totalHa = priceNum * (baseArea / 10000);
+            hint = 'Total estimado: R$ ' + Math.round(totalHa).toLocaleString('pt-BR');
+            calcHa = 'R$ ' + priceNum.toLocaleString('pt-BR') + ' / ha';
+            if (areaNum > 0) {
+                var perM2 = priceNum / 10000;
+                calcM2 = 'R$ ' + Math.round(perM2).toLocaleString('pt-BR') + ' / m²';
+            }
+        } else {
+            // Price is total — derive per-unit
+            if (areaNum > 0) {
+                calcM2 = 'R$ ' + Math.round(priceNum/areaNum).toLocaleString('pt-BR') + ' / m²';
+            }
+            if (baseArea >= 1000) {
+                calcHa = 'R$ ' + Math.round(priceNum/(baseArea/10000)).toLocaleString('pt-BR') + ' / ha';
+            }
+            if (unit === 'mes') hint = 'Valor mensal de aluguel';
+            if (unit === 'arrendamento') hint = 'Valor de arrendamento';
+        }
+        if (hintEl) hintEl.textContent = hint;
+        if (m2El) m2El.value = calcM2;
+        if (haEl) haEl.value = calcHa;
     } else {
-        m2El.value = '';
-        m2El.placeholder = 'Preencha preço + área útil';
-    }
-
-    // Price per hectare — use lot area if available, otherwise useful area; must be ≥ 1.000 m²
-    var baseArea = lotNum > 0 ? lotNum : areaNum;
-    if (!isNaN(priceNum) && priceNum > 0 && baseArea >= 1000) {
-        var hectares = baseArea / 10000;
-        var perHa = Math.round(priceNum / hectares);
-        haEl.value = 'R$ ' + perHa.toLocaleString('pt-BR') + ' / ha';
-    } else {
-        haEl.value = '';
-        haEl.placeholder = baseArea > 0 && baseArea < 1000
-            ? 'Área mínima para hectare: 1.000 m²'
-            : 'Preencha preço + área ≥ 1.000 m²';
+        if (hintEl) hintEl.textContent = '';
+        if (m2El) m2El.value = '';
+        if (haEl) haEl.value = '';
     }
 }
 
@@ -1748,8 +1822,15 @@ function openSimuladorFromDetail(priceValue) {
     }, 150);
 }
 
+function openCadastre() {
+    document.getElementById('cadastre-modal')?.classList.remove('hidden');
+}
+function closeCadastre() {
+    document.getElementById('cadastre-modal')?.classList.add('hidden');
+}
+
 function heroSearch() {
-    var type = document.getElementById('hero-type-select')?.value || '';
+    var type = ''; // type filter removed from hero, use quick buttons
     var q = (document.getElementById('hero-search-input')?.value || '').trim().toLowerCase();
     _currentTypeFilter = type;
     switchView('catalog');
@@ -1791,7 +1872,7 @@ function clearAllFilters() {
     // Clear checkboxes
     window._heroQuery = '';
     var hsi = document.getElementById('hero-search-input'); if(hsi) hsi.value='';
-    var hts = document.getElementById('hero-type-select'); if(hts) hts.value='';
+
     document.querySelectorAll('input[name="dist"],input[name="cat"],input[name="amenity-filter"]').forEach(function(c) { c.checked = false; });
     // Clear price/area inputs
     ['filter-price-min','filter-price-max','filter-area-min','filter-area-max'].forEach(function(id) {
@@ -2092,14 +2173,28 @@ function setMediaTab(tab) {
         applyFilters();
     }
 
+    const EMPTY_MSG = (msg) => `<div class="w-[85vw] sm:w-auto shrink-0 sm:shrink p-10 text-center text-slate-400 bg-white rounded-2xl border border-[#e8e8e4]">${msg}</div>`;
+
+    const fillGrid = (id, list, emptyMsg) => {
+        const el = document.getElementById(id); if (!el) return;
+        if (!list.length) { el.innerHTML = EMPTY_MSG(emptyMsg); return; }
+        // Add snap-start class to each card for mobile carousel
+        el.innerHTML = list.map(p => createCard(p).replace('prop-card ', 'prop-card snap-start shrink-0 w-[80vw] sm:w-auto ')).join('');
+    };
+
     const renderHome = () => {
-        const featured = _allProperties.filter(p=>p.isFeatured&&p.isActive).slice(0,3);
-        const latest = [..._allProperties].filter(p=>p.isActive).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))).slice(0,6);
-        const fg = document.getElementById('home-featured-grid');
-        if (fg) fg.innerHTML = featured.length ? featured.map(createCard).join('') : '<div class="col-span-full p-10 text-center text-slate-400 bg-white rounded-2xl border border-[#e8e8e4]">Sem imóveis em destaque.</div>';
-        const lg = document.getElementById('home-latest-grid');
-        if (lg) lg.innerHTML = latest.length ? latest.map(createCard).join('') : '<div class="col-span-full p-10 text-center text-slate-400 bg-white rounded-2xl border border-[#e8e8e4]">Nenhum imóvel publicado ainda.</div>';
-        renderHomeSegment('Venda');
+        const active = _allProperties.filter(p => p.isActive);
+        const featured = active.filter(p => p.isFeatured).slice(0, 6);
+        const venda    = active.filter(p => String(p.type||'').toLowerCase()==='venda').slice(0, 6);
+        const aluguel  = active.filter(p => String(p.type||'').toLowerCase()==='aluguel').slice(0, 6);
+        const rural    = active.filter(p => String(p.type||'').toLowerCase()==='rural').slice(0, 6);
+        const fazenda  = active.filter(p => ['fazenda','sítio','sitio'].includes(String(p.category||'').toLowerCase())).slice(0, 6);
+
+        fillGrid('home-featured-grid', featured, 'Sem imóveis em destaque.');
+        fillGrid('home-venda-grid',    venda,    'Nenhum imóvel à venda no momento.');
+        fillGrid('home-aluguel-grid',  aluguel,  'Nenhum imóvel para alugar no momento.');
+        fillGrid('home-rural-grid',    rural,    'Nenhuma propriedade rural no momento.');
+        fillGrid('home-fazenda-grid',  fazenda,  'Nenhuma fazenda ou sítio cadastrado.');
     };
 
     function renderHomeSegment(type) {
@@ -2311,6 +2406,8 @@ function setMediaTab(tab) {
             p.garage    && {icon:'🚗',label:'Garagem',val:p.garage+' vaga'+(p.garage>1?'s':'')},
             p.floors    && {icon:'🏢',label:'Pavimentos',val:p.floors},
             p.year      && {icon:'📅',label:'Ano construção',val:p.year},
+            p.iptu      && {icon:'📋',label:'IPTU (ano)',val:'R$ '+p.iptu},
+            p.condo     && {icon:'🏢',label:'Condomínio (mês)',val:'R$ '+p.condo},
         ].filter(Boolean);
 
         const amenityIcons = {
@@ -2598,25 +2695,60 @@ function setMediaTab(tab) {
     async function previewUploadMultiple(e) {
         const files=Array.from(e.target.files||[]); if(!files.length) return;
         const wrap=document.getElementById('images-preview');
-        if(wrap) wrap.innerHTML=files.map(f=>`<div class="aspect-square rounded-xl overflow-hidden bg-slate-100"><img src="${URL.createObjectURL(f)}" class="w-full h-full object-cover" loading="lazy"></div>`).join('');
         const statusEl=document.getElementById('upload-status'), submitBtn=document.getElementById('submit-btn');
+        const hint=document.getElementById('cover-hint');
+        // Show local previews with spinners
+        if(wrap) wrap.innerHTML=files.map((f,i)=>`
+            <div class="relative aspect-square rounded-xl overflow-hidden bg-slate-100 border-2 ${i===0?'border-green-500':'border-transparent'}" id="tp-${i}">
+                <img src="${URL.createObjectURL(f)}" class="w-full h-full object-cover">
+                ${i===0?'<span class="absolute bottom-1 left-1 bg-green-500 text-white text-[8px] font-bold px-1 py-0.5 rounded">Capa</span>':''}
+                <div class="absolute inset-0 bg-black/50 flex items-center justify-center" id="sp-${i}">
+                    <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            </div>`).join('');
+        if(hint) hint.classList.add('hidden');
         if(submitBtn) submitBtn.disabled=true;
         try {
             const urls=[],thumbUrls=[];
             for(let i=0;i<files.length;i++){
-                if(statusEl) statusEl.textContent=`⬆ Galeria ${i+1}/${files.length}...`;
-                const ts=Date.now(), safe=(files[i].name||`img_${i}`).replace(/[^\w.\-]+/g,'_');
+                if(statusEl) statusEl.textContent=`⬆ Enviando foto ${i+1} de ${files.length}...`;
+                const ts=Date.now(), safe=(files[i].name||'img_'+i).replace(/[^\w.\-]+/g,'_');
                 urls.push(await uploadToStorage(await optimizeImage(files[i],{maxDim:1600,maxBytes:700*1024,preferJpeg:true}),{ts,safeName:safe,folder:'properties'}));
                 thumbUrls.push(await uploadToStorage(await optimizeImage(files[i],{maxDim:700,maxBytes:180*1024,preferJpeg:true}),{ts,safeName:safe,folder:'properties/thumbs'}));
+                const sp=document.getElementById('sp-'+i); if(sp) sp.remove();
             }
             activeImages=urls; activeThumbs=thumbUrls;
-            if(urls[0]){activeImage=urls[0];activeThumb=thumbUrls[0];}
-            if(statusEl) statusEl.textContent=`✓ ${urls.length} imagem(ns) enviadas!`;
-        } catch(err){ if(statusEl) statusEl.textContent='✗ Falha ao enviar galeria.'; }
-        finally{ if(submitBtn) submitBtn.disabled=false; }
+            activeImage=urls[0]||''; activeThumb=thumbUrls[0]||'';
+            if(statusEl) statusEl.textContent='✓ '+urls.length+' foto(s) enviadas! Clique para escolher a capa.';
+            // Render clickable gallery
+            if(wrap) wrap.innerHTML=urls.map((url,i)=>`
+                <div class="relative aspect-square rounded-xl overflow-hidden bg-slate-100 border-2 cursor-pointer transition-all ${i===0?'border-green-500':'border-transparent hover:border-green-300'}"
+                     id="td-${i}" onclick="setCoverFromGallery(${i})" title="Definir como capa">
+                    <img src="${thumbUrls[i]||url}" class="w-full h-full object-cover" loading="lazy">
+                    <span id="cb-${i}" class="${i===0?'':'hidden'} absolute bottom-1 left-1 bg-green-500 text-white text-[8px] font-bold px-1 py-0.5 rounded">Capa</span>
+                </div>`).join('');
+            if(hint) hint.classList.remove('hidden');
+        } catch(err){
+            console.error(err);
+            if(statusEl) statusEl.textContent='✗ Erro ao enviar. Verifique o Firebase Storage e seu login.';
+        } finally{ if(submitBtn) submitBtn.disabled=false; }
     }
 
-    /* ── SEO FORM AUTO-FILL ── */
+    window.setCoverFromGallery = (idx) => {
+        if(!activeImages[idx]) return;
+        activeImage=activeImages[idx];
+        activeThumb=activeThumbs[idx]||activeImages[idx];
+        document.querySelectorAll('[id^="td-"]').forEach((el,i) => {
+            el.classList.toggle('border-green-500', i===idx);
+            el.classList.toggle('border-transparent', i!==idx);
+            const badge=document.getElementById('cb-'+i);
+            if(badge) badge.classList.toggle('hidden', i!==idx);
+        });
+        const st=document.getElementById('upload-status');
+        if(st) st.textContent='✓ Foto '+(idx+1)+' definida como capa!';
+    };
+
+        /* ── SEO FORM AUTO-FILL ── */
     const buildSeo = () => {
         const g = id => (document.getElementById(id)?.value||'').trim();
         const title=g('form-title'),type=g('form-type'),category=g('form-category'),district=g('form-district'),city=g('form-city'),state=g('form-state'),size=g('form-size'),price=g('form-price');
@@ -2653,6 +2785,7 @@ function setMediaTab(tab) {
                 seoTitle,seoDescription,seoDesc:seoDescription,seoKeys,
                 type:g('form-type'),price:g('form-price'),pricePerM2:document.getElementById('form-price-m2')?.value||'',pricePerHa:document.getElementById('form-price-ha')?.value||'',size:g('form-size'),area:g('form-size'),
                 lot:g('form-lot'),year:g('form-year'),floors:g('form-floors'),beds:g('form-beds'),
+                iptu:g('form-iptu'),condo:g('form-condo'),priceUnit:g('form-price-unit'),
                 suites:g('form-suites'),baths:g('form-baths'),garage:g('form-garage'),
                 description:g('form-description'),content:g('form-description'),
                 country:g('form-country'),state:g('form-state'),city:g('form-city'),
@@ -2724,6 +2857,9 @@ function setMediaTab(tab) {
         if($('form-baths'))$('form-baths').value=p.baths||'';
         if($('form-suites'))$('form-suites').value=p.suites||'';
         if($('form-garage'))$('form-garage').value=p.garage||'';
+        if($('form-iptu'))$('form-iptu').value=p.iptu||'';
+        if($('form-condo'))$('form-condo').value=p.condo||'';
+        if($('form-price-unit'))$('form-price-unit').value=p.priceUnit||'total';
         if($('form-zip'))$('form-zip').value=p.zip||p.cep||'';
         if($('form-district'))$('form-district').value=p.district||p.neighborhood||'';
         if($('form-city'))$('form-city').value=p.city||'';
