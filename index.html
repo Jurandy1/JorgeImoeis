@@ -316,27 +316,19 @@
                 <p class="text-white/75 text-sm font-medium mb-8 max-w-md leading-relaxed">
                     Segurança jurídica e experiência de quem trabalha há mais de 40 anos no mercado imobiliário do Maranhão.
                 </p>
-                <!-- SEARCH BAR + SIMULADOR -->
-                <div class="hero-search-bar p-3 max-w-xl">
-                    <div class="flex gap-2 flex-col sm:flex-row">
-                        <input id="hero-search-input" type="text" placeholder="Buscar por bairro, cidade ou tipo..." class="flex-1 min-w-0" onkeydown="if(event.key==='Enter')heroSearch()">
-                        <button onclick="heroSearch()" class="flex-shrink-0 bg-green-600 hover:bg-green-500 text-white px-5 py-2 rounded-xl font-bold text-[11px] uppercase tracking-widest transition-all flex items-center gap-1.5">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                            Buscar
-                        </button>
-                    </div>
-                    <div class="mt-2 flex flex-wrap gap-2">
-                        <button onclick="filterCatalogByType('Venda')" class="text-[9.5px] font-bold text-white/70 hover:text-white uppercase tracking-widest transition-colors">🏠 À Venda</button>
-                        <span class="text-white/30">·</span>
-                        <button onclick="filterCatalogByType('Aluguel')" class="text-[9.5px] font-bold text-white/70 hover:text-white uppercase tracking-widest transition-colors">🔑 Aluguel</button>
-                        <span class="text-white/30">·</span>
-                        <button onclick="filterCatalogByType('Rural')" class="text-[9.5px] font-bold text-white/70 hover:text-white uppercase tracking-widest transition-colors">🌿 Rural</button>
-                        <span class="text-white/30">·</span>
-                        <button onclick="switchView('simulador')" class="text-[9.5px] font-bold text-green-400 hover:text-green-300 uppercase tracking-widest transition-colors flex items-center gap-1">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                            Simulador de Financiamento
-                        </button>
-                    </div>
+                <!-- HERO BUTTONS -->
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="switchView('catalog')" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-7 py-3.5 rounded-2xl font-bold text-[11px] uppercase tracking-widest transition-all shadow-lg shadow-green-700/30">
+                        Ver Imóveis
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </button>
+                    <button onclick="switchView('simulador')" class="inline-flex items-center gap-2 bg-white/10 border border-white/25 text-white px-7 py-3.5 rounded-2xl font-bold text-[11px] uppercase tracking-widest hover:bg-white/20 transition-all">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        Simulador de Financiamento
+                    </button>
+                    <button id="new-hero-btn" onclick="switchView('admin')" class="hidden inline-flex items-center gap-2 bg-white/10 border border-white/25 text-white px-7 py-3.5 rounded-2xl font-bold text-[11px] uppercase tracking-widest hover:bg-white/20 transition-all">
+                        + Anunciar
+                    </button>
                 </div>
 
                 <div class="flex flex-wrap gap-3 mt-2">
@@ -1822,6 +1814,66 @@ function openSimuladorFromDetail(priceValue) {
     }, 150);
 }
 
+/* ── AUTO-SCROLL CAROUSEL ──
+   Desliza automaticamente cada grid de imóveis no mobile.
+   Para quando o usuário toca, retoma depois de 4s.
+─────────────────────────────────────────────────── */
+var _scrollTimers = {};
+var _scrollPaused = {};
+
+function startAutoScroll(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+
+    // Only on mobile (< 640px)
+    if (window.innerWidth >= 640) return;
+
+    // Don't start if no overflow
+    if (el.scrollWidth <= el.clientWidth + 4) return;
+
+    // Clear any existing timer
+    if (_scrollTimers[id]) clearInterval(_scrollTimers[id]);
+
+    _scrollPaused[id] = false;
+
+    // Pause on touch
+    el.addEventListener('touchstart', function() {
+        _scrollPaused[id] = true;
+        clearInterval(_scrollTimers[id]);
+        // Resume after 4s
+        clearTimeout(_scrollTimers[id + '_resume']);
+        _scrollTimers[id + '_resume'] = setTimeout(function() {
+            _scrollPaused[id] = false;
+            startAutoScroll(id);
+        }, 4000);
+    }, { passive: true });
+
+    _scrollTimers[id] = setInterval(function() {
+        if (_scrollPaused[id]) return;
+        var maxScroll = el.scrollWidth - el.clientWidth;
+        var next = el.scrollLeft + 1.5;
+        // When reaching end, smoothly loop back to start
+        if (next >= maxScroll - 2) {
+            el.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+            el.scrollLeft = next;
+        }
+    }, 20);
+}
+
+function startAllCarousels() {
+    ['home-featured-grid','home-venda-grid','home-aluguel-grid','home-rural-grid','home-fazenda-grid'].forEach(function(id) {
+        startAutoScroll(id);
+    });
+}
+
+// Re-init carousels on resize
+window.addEventListener('resize', function() {
+    Object.keys(_scrollTimers).forEach(function(id) { clearInterval(_scrollTimers[id]); });
+    _scrollTimers = {};
+    setTimeout(startAllCarousels, 300);
+});
+
 function openCadastre() {
     document.getElementById('cadastre-modal')?.classList.remove('hidden');
 }
@@ -2195,6 +2247,8 @@ function setMediaTab(tab) {
         fillGrid('home-aluguel-grid',  aluguel,  'Nenhum imóvel para alugar no momento.');
         fillGrid('home-rural-grid',    rural,    'Nenhuma propriedade rural no momento.');
         fillGrid('home-fazenda-grid',  fazenda,  'Nenhuma fazenda ou sítio cadastrado.');
+        // Start auto-scroll on all carousels after a short render delay
+        setTimeout(function() { if (typeof startAllCarousels === 'function') startAllCarousels(); }, 400);
     };
 
     function renderHomeSegment(type) {
