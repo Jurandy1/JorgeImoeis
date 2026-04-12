@@ -25,6 +25,76 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate sitemap.xml
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const index = fs.readFileSync('index.html', 'utf8');
+          const apiKey = (index.match(/apiKey:\s*"([^"]+)"/) || [])[1];
+          const projectId = (index.match(/projectId:\s*"([^"]+)"/) || [])[1];
+          const dbAppId = (index.match(/const DB_APP_ID\s*=\s*'([^']+)'/) || [])[1] || 'jorge-imoveis';
+          const base = 'https://jorgeimoveis.com.br';
+          if (!apiKey || !projectId) throw new Error('Não foi possível extrair apiKey/projectId do index.html');
+          const today = new Date().toISOString().slice(0, 10);
+          const statics = ['', '#empresa', '#servicos', '#catalog', '#contato'].map((h, i) => ({
+            url: base + '/' + h,
+            priority: i === 0 ? '1.0' : '0.7',
+            changefreq: i === 0 ? 'daily' : 'monthly',
+            lastmod: today
+          }));
+          async function listAllProperties() {
+            const all = [];
+            let pageToken = '';
+            for (;;) {
+              const url = new URL(`https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/artifacts/${dbAppId}/public/data/properties`);
+              url.searchParams.set('pageSize', '1000');
+              url.searchParams.set('key', apiKey);
+              if (pageToken) url.searchParams.set('pageToken', pageToken);
+              const res = await fetch(url.toString());
+              if (!res.ok) throw new Error(`Firestore HTTP ${res.status}: ${await res.text()}`);
+              const json = await res.json();
+              for (const doc of (json.documents || [])) all.push(doc);
+              if (!json.nextPageToken) break;
+              pageToken = json.nextPageToken;
+            }
+            return all;
+          }
+          const getString = (f) => (f && (f.stringValue ?? f.integerValue ?? f.doubleValue ?? f.booleanValue ?? f.timestampValue)) ?? '';
+          const getBool = (f) => (f && typeof f.booleanValue === 'boolean') ? f.booleanValue : null;
+          const docs = await listAllProperties();
+          const props = docs.map(d => d.fields || {}).filter(f => {
+            const active = getBool(f.isActive);
+            const slug = getString(f.slug);
+            return (active !== false) && Boolean(slug);
+          }).map(f => {
+            const slug = getString(f.slug);
+            const updatedAt = getString(f.updatedAt);
+            const createdAt = getString(f.createdAt);
+            const lastmodRaw = updatedAt || createdAt || today;
+            const lastmod = String(lastmodRaw).slice(0, 10);
+            const featured = getBool(f.isFeatured) === true;
+            return {
+              url: `${base}/#imovel/${slug}`,
+              priority: featured ? '0.9' : '0.8',
+              changefreq: 'weekly',
+              lastmod
+            };
+          });
+          const all = [...statics, ...props];
+          const xml =
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+            all.map(p => `  <url>\n    <loc>${p.url}</loc>\n    <lastmod>${p.lastmod}</lastmod>\n    <changefreq>${p.changefreq}</changefreq>\n    <priority>${p.priority}</priority>\n  </url>`).join('\n') +
+            '\n</urlset>\n';
+          fs.writeFileSync('sitemap.xml', xml);
+          console.log('sitemap.xml gerado com ' + all.length + ' URLs');
+          NODE
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

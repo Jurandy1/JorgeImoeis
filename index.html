@@ -1278,7 +1278,24 @@
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                         Baixar sitemap.xml
                     </button>
+                    <div class="mt-3 bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between gap-3">
+                        <a href="/sitemap.xml" target="_blank" class="text-[11px] font-bold text-green-700 hover:underline truncate">https://jorgeimoveis.com.br/sitemap.xml</a>
+                        <button type="button" onclick="copySitemapLink()" class="px-3 py-1.5 rounded-lg border border-slate-200 text-[10px] font-bold text-slate-600 hover:border-green-400 hover:text-green-700 transition-all flex-shrink-0">Copiar</button>
+                    </div>
                 </div>
+            </div>
+
+            <div class="bg-white border border-[#e8e8e4] rounded-2xl p-6 mb-6">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Economia de Storage</p>
+                <p class="text-sm text-slate-500 leading-relaxed mb-5">Reduz a dependência das miniaturas antigas no banco (thumbs) para você poder apagar a pasta <code class="bg-slate-100 px-1.5 py-0.5 rounded text-[11px]">properties/thumbs</code> no Firebase Storage sem quebrar as imagens no site.</p>
+                <button onclick="migrateThumbsEconomy()" class="w-full flex items-center justify-center gap-2 bg-green-600 text-white py-3.5 rounded-xl font-bold text-[11px] uppercase tracking-widest hover:bg-green-700 transition-all">
+                    Aplicar economia (thumbs)
+                </button>
+                <p class="text-xs text-slate-500 leading-relaxed mt-4 mb-3">Opcional: recomprime e substitui fotos antigas para reduzir o tamanho no Storage. Pode consumir banda durante a execução.</p>
+                <button onclick="optimizeOldPhotosEconomy()" class="w-full flex items-center justify-center gap-2 bg-[#0a0a0a] text-white py-3.5 rounded-xl font-bold text-[11px] uppercase tracking-widest hover:bg-green-700 transition-all">
+                    Otimizar fotos antigas
+                </button>
+                <div id="storage-status" class="mt-3 text-[10px] font-bold tracking-widest text-slate-400 min-h-[1.25rem]"></div>
             </div>
 
             <!-- META TAGS PREVIEW -->
@@ -1300,7 +1317,7 @@
                 <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-6 mb-3">Guia de Envio ao Google</p>
                 <ol class="space-y-2 text-sm text-slate-500 list-decimal list-inside">
                     <li>Baixe o sitemap.xml usando o botão acima</li>
-                    <li>Faça upload do arquivo na raiz do seu site (mesma pasta do index.html)</li>
+                    <li>Coloque o arquivo na raiz do seu site e publique (GitHub Pages / Hosting)</li>
                     <li>Acesse <strong>Google Search Console</strong> → Sitemaps</li>
                     <li>Envie: <code class="bg-slate-100 px-1.5 py-0.5 rounded">https://jorgeimoveis.com.br/sitemap.xml</code></li>
                 </ol>
@@ -1527,6 +1544,13 @@ function copyPropertyLink(slug) {
         .catch(function() { prompt('Copie o link:', url); });
 }
 
+function copySitemapLink() {
+    var url = 'https://jorgeimoveis.com.br/sitemap.xml';
+    navigator.clipboard.writeText(url)
+        .then(function() { showToast('Link do sitemap copiado! ✓'); })
+        .catch(function() { prompt('Copie o link:', url); });
+}
+
 function switchView(name) {
     document.querySelectorAll('.view-section').forEach(function(v) { v.classList.remove('active'); });
     var el = document.getElementById('view-' + name);
@@ -1608,6 +1632,8 @@ function previewUpload(e) { if (window._mod) window._mod.previewUpload(e); }
 function previewUploadMultiple(e) { if (window._mod) window._mod.previewUploadMultiple(e); }
 function updatePreviewUrl(url) { if (window._mod) window._mod.updatePreviewUrl(url); }
 function generateAndDownloadSitemap() { if (window._mod) window._mod.generateAndDownloadSitemap(); }
+function migrateThumbsEconomy() { if (window._mod) window._mod.migrateThumbsEconomy(); }
+function optimizeOldPhotosEconomy() { if (window._mod) window._mod.optimizeOldPhotosEconomy(); }
 function initDistrictFilters() { if (window._mod) window._mod.initDistrictFilters(); }
 
 function maskPrice(el) {
@@ -2000,7 +2026,7 @@ function setMediaTab(tab) {
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
     import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
     import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
-    import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js';
+    import { getStorage, ref, uploadBytes, getDownloadURL, getBlob, deleteObject } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js';
 
     const firebaseConfig = {
         apiKey: "AIzaSyBNk_yttqJQdUKuhtzS7mrp5_dC9JGvVW4",
@@ -2042,7 +2068,7 @@ function setMediaTab(tab) {
         applyFilters, handleLogin, handleRegister, logout, handleFormSubmit,
         viewPropertyDetails, resetForm, loadForEdit, deleteProperty,
         previewUpload, previewUploadMultiple, updatePreviewUrl,
-        generateAndDownloadSitemap, initDistrictFilters
+        generateAndDownloadSitemap, migrateThumbsEconomy, optimizeOldPhotosEconomy, initDistrictFilters
     };
 
     /* ── UTILITIES ── */
@@ -2234,7 +2260,7 @@ function setMediaTab(tab) {
                                 const n=parseFloat(String(p.price||'').replace(/\./g,'').replace(',','.'));
                                 const val=p.price?(isNaN(n)?'R$ '+p.price:'R$ '+n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})):'Consultar';
                                 const labels={m2:'por m²',ha:'por Hectare',mes:'por Mês',arrendamento:'por Arrendamento'};
-                                const unit=p.priceUnit&&p.priceUnit!=='total'?', '+(labels[p.priceUnit]||''):'';
+                                const unit=p.priceUnit&&p.priceUnit!=='total'?' '+(labels[p.priceUnit]||''):'';
                                 return val+unit;
                             })()}</span>
                         </div>
@@ -2704,6 +2730,36 @@ function setMediaTab(tab) {
         showToast('Sitemap gerado com '+all.length+' URLs!');
     }
 
+    async function migrateThumbsEconomy() {
+        const statusEl=document.getElementById('storage-status');
+        if(!auth.currentUser||auth.currentUser.isAnonymous){openLoginModal();return;}
+        if(statusEl) statusEl.textContent='⏳ Preparando...';
+        try {
+            const colRef=collection(db,'artifacts',DB_APP_ID,'public','data','properties');
+            const snap=await getDocs(colRef);
+            const docs=snap.docs;
+            let updated=0, skipped=0;
+            for(let i=0;i<docs.length;i++){
+                const d=docs[i].data()||{};
+                const imgs=(Array.isArray(d.images)&&d.images.length)?d.images:(d.img?[d.img]:[]);
+                const cover=(d.img||imgs[0]||'');
+                const thumbs=imgs;
+                const sameThumb=String(d.thumb||'')===String(cover||'');
+                const sameThumbs=Array.isArray(d.thumbs)&&d.thumbs.length===thumbs.length&&d.thumbs.every((u,idx)=>String(u)===String(thumbs[idx]));
+                if(sameThumb&&sameThumbs){skipped++; if(statusEl) statusEl.textContent=`⏳ Verificando ${i+1} de ${docs.length}...`; continue;}
+                if(statusEl) statusEl.textContent=`⬆ Atualizando ${i+1} de ${docs.length}...`;
+                await updateDoc(docs[i].ref,{img:cover,thumb:cover,thumbs,updatedAt:new Date().toISOString()});
+                updated++;
+            }
+            if(statusEl) statusEl.textContent=`✓ Concluído: ${updated} atualizado(s), ${skipped} sem mudança.`;
+            showToast('Economia aplicada. Agora você pode apagar properties/thumbs no Storage.');
+        } catch(err) {
+            console.error(err);
+            if(statusEl) statusEl.textContent='✗ Falha ao aplicar economia.';
+            showToast('Erro ao aplicar economia.');
+        }
+    }
+
     /* ── IMAGE OPTIMIZATION ── */
     const loadImgBitmap = async (file) => {
         if (typeof createImageBitmap==='function') { try { return await createImageBitmap(file,{imageOrientation:'from-image'}); } catch { return await createImageBitmap(file); } }
@@ -2737,6 +2793,76 @@ function setMediaTab(tab) {
         return getDownloadURL(sRef);
     };
 
+    async function optimizeOldPhotosEconomy() {
+        const statusEl=document.getElementById('storage-status');
+        if(!auth.currentUser||auth.currentUser.isAnonymous){openLoginModal();return;}
+        const ok=confirm('Isso vai baixar, otimizar e reenviar as fotos antigas do Storage. Pode demorar e consumir banda. Deseja continuar?');
+        if(!ok) return;
+        const doDelete=confirm('Depois de atualizar os links no banco, deseja apagar os arquivos antigos no Storage para liberar espaço?');
+        if(statusEl) statusEl.textContent='⏳ Preparando...';
+        try {
+            const colRef=collection(db,'artifacts',DB_APP_ID,'public','data','properties');
+            const snap=await getDocs(colRef);
+            const docs=snap.docs;
+            let propsUpdated=0, imgsOptimized=0, imgsSkipped=0, imgsFailed=0, deletesOk=0, deletesFail=0;
+            for(let di=0;di<docs.length;di++){
+                const d=docs[di].data()||{};
+                const images=(Array.isArray(d.images)&&d.images.length)?d.images:((d.img)?[d.img]:[]);
+                if(!images.length){continue;}
+                if(statusEl) statusEl.textContent=`⏳ Imóvel ${di+1} de ${docs.length}...`;
+                const map=new Map();
+                const oldRefs=[];
+                for(let ii=0;ii<images.length;ii++){
+                    const u=String(images[ii]||'').trim();
+                    if(!u){imgsSkipped++; continue;}
+                    const isHttp=/^https?:\/\//i.test(u);
+                    const looksStorage=u.includes('firebasestorage')||u.includes('storage.googleapis.com')||u.startsWith('gs://');
+                    if(!isHttp||!looksStorage){imgsSkipped++; map.set(u,u); continue;}
+                    try {
+                        if(statusEl) statusEl.textContent=`⬆ Foto ${ii+1} de ${images.length} (imóvel ${di+1}/${docs.length})...`;
+                        const r=ref(storage,u);
+                        const blob=await getBlob(r);
+                        const file=new File([blob],`img_${docs[di].id}_${ii}.jpg`,{type:blob.type||'image/jpeg',lastModified:Date.now()});
+                        const opt=await optimizeImage(file,{maxDim:1200,maxBytes:280*1024,preferJpeg:true});
+                        const newUrl=await uploadToStorage(opt,{ts:Date.now(),safeName:`opt_${docs[di].id}_${ii}.jpg`,folder:'properties'});
+                        map.set(u,newUrl);
+                        imgsOptimized++;
+                        oldRefs.push(u);
+                    } catch(e) {
+                        console.error('Falha ao otimizar', u, e);
+                        imgsFailed++;
+                        map.set(u,u);
+                    }
+                }
+                const newImages=images.map(u=>map.get(String(u||'').trim())||u).filter(Boolean);
+                const oldImg=String(d.img||newImages[0]||'');
+                const cover=map.get(oldImg)||oldImg||newImages[0]||'';
+                const hasChange=newImages.some((u,idx)=>String(u)!==String(images[idx]||'')) || String(d.img||'')!==String(cover||'');
+                if(!hasChange) continue;
+                await updateDoc(docs[di].ref,{
+                    images:newImages,
+                    thumbs:newImages,
+                    img:cover,
+                    thumb:cover,
+                    updatedAt:new Date().toISOString()
+                });
+                propsUpdated++;
+                if(doDelete){
+                    for(const oldUrl of oldRefs){
+                        try { await deleteObject(ref(storage,oldUrl)); deletesOk++; }
+                        catch(e){ deletesFail++; console.error('Falha ao apagar', oldUrl, e); }
+                    }
+                }
+            }
+            if(statusEl) statusEl.textContent=`✓ Concluído: ${propsUpdated} imóvel(is) atualizados, ${imgsOptimized} foto(s) otimizadas, ${imgsSkipped} ignoradas, ${imgsFailed} falharam. Apagadas: ${deletesOk} ok, ${deletesFail} falha.`;
+            showToast('Otimização concluída.');
+        } catch(err) {
+            console.error(err);
+            if(statusEl) statusEl.textContent='✗ Falha ao otimizar fotos antigas.';
+            showToast('Erro ao otimizar fotos antigas.');
+        }
+    }
+
     async function previewUpload(e) {
         const file=e.target.files[0]; if(!file) return;
         const prev=document.getElementById('preview-img'); if(prev){prev.src=URL.createObjectURL(file);prev.style.display='block';}
@@ -2745,13 +2871,11 @@ function setMediaTab(tab) {
         if(submitBtn) submitBtn.disabled=true;
         try {
             const ts=Date.now(), safe=(file.name||'img').replace(/[^\w.\-]+/g,'_');
-            const opt=await optimizeImage(file,{maxDim:1600,maxBytes:700*1024,preferJpeg:true});
-            const th=await optimizeImage(file,{maxDim:700,maxBytes:180*1024,preferJpeg:true});
+            const opt=await optimizeImage(file,{maxDim:1200,maxBytes:280*1024,preferJpeg:true});
             if(statusEl) statusEl.textContent='⬆ Enviando...';
             const url=await uploadToStorage(opt,{ts,safeName:safe,folder:'properties'});
-            const thumb=await uploadToStorage(th,{ts,safeName:safe,folder:'properties/thumbs'});
-            activeImage=url; activeThumb=thumb;
-            if(!activeImages.includes(url)){activeImages=[url,...activeImages];activeThumbs=[thumb,...activeThumbs];}
+            activeImage=url; activeThumb=url;
+            if(!activeImages.includes(url)){activeImages=[url,...activeImages];activeThumbs=[url,...activeThumbs];}
             if(statusEl) statusEl.textContent='✓ Capa enviada com sucesso!';
             // NOTE: form-img (URL manual) is intentionally NOT auto-filled by upload
         } catch(err) {
@@ -2784,42 +2908,61 @@ function setMediaTab(tab) {
         const wrap=document.getElementById('images-preview');
         const statusEl=document.getElementById('upload-status'), submitBtn=document.getElementById('submit-btn');
         const hint=document.getElementById('cover-hint');
-        // Show local previews with spinners
-        if(wrap) wrap.innerHTML=files.map((f,i)=>`
-            <div class="relative aspect-square rounded-xl overflow-hidden bg-slate-100 border-2 ${i===0?'border-green-500':'border-transparent'}" id="tp-${i}">
+        // Show local previews with spinners, appending to existing
+        if(wrap) {
+            wrap.innerHTML = activeImages.map((url,i)=>`
+                <div class="relative aspect-square rounded-xl overflow-hidden bg-slate-100 border-2 ${url===activeImage?'border-green-500':'border-transparent hover:border-green-300'}" id="td-${i}" title="Definir como capa">
+                    <img src="${activeThumbs[i]||url}" class="w-full h-full object-cover">
+                    <span class="${url===activeImage?'':'hidden'} absolute bottom-1 left-1 bg-green-500 text-white text-[8px] font-bold px-1 py-0.5 rounded">Capa</span>
+                </div>`).join('') + files.map((f,i)=>`
+            <div class="relative aspect-square rounded-xl overflow-hidden bg-slate-100 border-2 border-transparent" id="tp-${i}">
                 <img src="${URL.createObjectURL(f)}" class="w-full h-full object-cover">
-                ${i===0?'<span class="absolute bottom-1 left-1 bg-green-500 text-white text-[8px] font-bold px-1 py-0.5 rounded">Capa</span>':''}
                 <div class="absolute inset-0 bg-black/50 flex items-center justify-center" id="sp-${i}">
                     <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 </div>
             </div>`).join('');
+        }
         if(hint) hint.classList.add('hidden');
         if(submitBtn) submitBtn.disabled=true;
         try {
             const urls=[],thumbUrls=[];
+            let successCount=0;
             for(let i=0;i<files.length;i++){
                 if(statusEl) statusEl.textContent=`⬆ Enviando foto ${i+1} de ${files.length}...`;
-                const ts=Date.now(), safe=(files[i].name||'img_'+i).replace(/[^\w.\-]+/g,'_');
-                urls.push(await uploadToStorage(await optimizeImage(files[i],{maxDim:1600,maxBytes:700*1024,preferJpeg:true}),{ts,safeName:safe,folder:'properties'}));
-                thumbUrls.push(await uploadToStorage(await optimizeImage(files[i],{maxDim:700,maxBytes:180*1024,preferJpeg:true}),{ts,safeName:safe,folder:'properties/thumbs'}));
+                try {
+                    const ts=Date.now(), safe=(files[i].name||'img_'+i).replace(/[^\w.\-]+/g,'_');
+                     const url=await uploadToStorage(await optimizeImage(files[i],{maxDim:1200,maxBytes:280*1024,preferJpeg:true}),{ts,safeName:safe,folder:'properties'});
+                     urls.push(url);
+                     thumbUrls.push(url);
+                    successCount++;
+                } catch(e) {
+                    console.error("Erro ao enviar foto " + i, e);
+                }
                 const sp=document.getElementById('sp-'+i); if(sp) sp.remove();
             }
-            activeImages=urls; activeThumbs=thumbUrls;
-            activeImage=urls[0]||''; activeThumb=thumbUrls[0]||'';
-            if(statusEl) statusEl.textContent='✓ '+urls.length+' foto(s) enviadas! Clique para escolher a capa.';
+            activeImages=[...activeImages, ...urls]; activeThumbs=[...activeThumbs, ...thumbUrls];
+            if(!activeImage) { activeImage=urls[0]||''; activeThumb=thumbUrls[0]||''; }
+            if(statusEl) statusEl.textContent='✓ '+successCount+' de '+files.length+' nova(s) foto(s) enviadas! Clique para escolher a capa.';
             // Render clickable gallery
-            if(wrap) wrap.innerHTML=urls.map((url,i)=>`
-                <div class="relative aspect-square rounded-xl overflow-hidden bg-slate-100 border-2 cursor-pointer transition-all ${i===0?'border-green-500':'border-transparent hover:border-green-300'}"
-                     id="td-${i}" onclick="setCoverFromGallery(${i})" title="Definir como capa">
-                    <img src="${thumbUrls[i]||url}" class="w-full h-full object-cover" loading="lazy">
-                    <span id="cb-${i}" class="${i===0?'':'hidden'} absolute bottom-1 left-1 bg-green-500 text-white text-[8px] font-bold px-1 py-0.5 rounded">Capa</span>
-                </div>`).join('');
-            if(hint) hint.classList.remove('hidden');
+            if(window.renderGallery) window.renderGallery();
         } catch(err){
             console.error(err);
             if(statusEl) statusEl.textContent='✗ Erro ao enviar. Verifique o Firebase Storage e seu login.';
         } finally{ if(submitBtn) submitBtn.disabled=false; }
     }
+
+    window.renderGallery = () => {
+        const wrap=document.getElementById('images-preview');
+        const hint=document.getElementById('cover-hint');
+        if(!wrap) return;
+        wrap.innerHTML=activeImages.map((url,i)=>`
+            <div class="relative aspect-square rounded-xl overflow-hidden bg-slate-100 border-2 cursor-pointer transition-all ${url===activeImage?'border-green-500':'border-transparent hover:border-green-300'}"
+                 id="td-${i}" onclick="setCoverFromGallery(${i})" title="Definir como capa">
+                <img src="${activeThumbs[i]||url}" class="w-full h-full object-cover" loading="lazy">
+                <span id="cb-${i}" class="${url===activeImage?'':'hidden'} absolute bottom-1 left-1 bg-green-500 text-white text-[8px] font-bold px-1 py-0.5 rounded">Capa</span>
+            </div>`).join('');
+        if(hint && activeImages.length > 0) hint.classList.remove('hidden');
+    };
 
     window.setCoverFromGallery = (idx) => {
         if(!activeImages[idx]) return;
@@ -2962,6 +3105,7 @@ function setMediaTab(tab) {
         if(_prev&&_prevImg){_prev.src=_prevImg;_prev.style.display='block';}
         document.querySelectorAll('input[name="amenity"]').forEach(cb=>{cb.checked=(p.amenities||[]).includes(cb.value);});
         activeImages=p.images||[]; activeThumbs=p.thumbs||[]; activeImage=p.img||''; activeThumb=p.thumb||'';
+        if(window.renderGallery) window.renderGallery();
         const sb=$('submit-btn'); if(sb)sb.textContent='Atualizar Imóvel';
         const ml=$('form-mode-label'); if(ml)ml.textContent='Editando Imóvel';
         const th=$('form-title-heading'); if(th)th.textContent=p.title||'';
