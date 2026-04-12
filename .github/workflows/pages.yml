@@ -33,7 +33,7 @@ jobs:
       - name: Generate sitemap.xml
         run: |
           node <<'NODE'
-          const fs = require('fs');
+          import fs from 'node:fs';
           const index = fs.readFileSync('index.html', 'utf8');
           const apiKey = (index.match(/apiKey:\s*"([^"]+)"/) || [])[1];
           const projectId = (index.match(/projectId:\s*"([^"]+)"/) || [])[1];
