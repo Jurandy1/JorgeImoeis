@@ -38,7 +38,7 @@ jobs:
           const apiKey = (index.match(/apiKey:\s*"([^"]+)"/) || [])[1];
           const projectId = (index.match(/projectId:\s*"([^"]+)"/) || [])[1];
           const dbAppId = (index.match(/const DB_APP_ID\s*=\s*'([^']+)'/) || [])[1] || 'jorge-imoveis';
-          const base = 'https://jorgeimoveis.com.br';
+          const base = 'https://jurandy1.github.io/JorgeImoeis';
           if (!apiKey || !projectId) throw new Error('Não foi possível extrair apiKey/projectId do index.html');
           const today = new Date().toISOString().slice(0, 10);
           const statics = ['', '#empresa', '#servicos', '#catalog', '#contato'].map((h, i) => ({

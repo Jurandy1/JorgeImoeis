@@ -10,17 +10,17 @@
     <meta name="author" content="Jorge Imóveis">
     <meta property="og:site_name" content="Jorge Imóveis">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://jorgeimoveis.com.br/">
+    <meta property="og:url" content="https://jurandy1.github.io/JorgeImoeis/">
     <meta property="og:title" content="Jorge Imóveis — Compra, Venda e Aluguel em São Luís, MA">
     <meta property="og:description" content="Especialistas em imóveis desde 1982. Encontre casas, apartamentos, terrenos e propriedades rurais em São Luís e Maranhão.">
-    <meta property="og:image" content="https://jorgeimoveis.com.br/1BBD56BC-1AD3-493A-88A5-397D8F0DEBBA-1024x576.jpeg">
+    <meta property="og:image" content="https://jurandy1.github.io/JorgeImoeis/1BBD56BC-1AD3-493A-88A5-397D8F0DEBBA-1024x576.jpeg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Jorge Imóveis — São Luís, MA">
     <meta name="twitter:description" content="Especialistas em imóveis desde 1982 em São Luís, Maranhão.">
-    <link rel="canonical" href="https://jorgeimoveis.com.br/">
+    <link rel="canonical" href="https://jurandy1.github.io/JorgeImoeis/">
 
     <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"RealEstateAgent","name":"Jorge Imóveis","url":"https://jorgeimoveis.com.br","logo":"https://jorgeimoveis.com.br/Gemini_Generated_Image_op1pifop1pifop1p-removebg-preview.png","description":"Especialistas em compra, venda e aluguel de imóveis em São Luís desde 1982","address":{"@type":"PostalAddress","streetAddress":"Rua dos Professores, 13 – Altos – Cohafuma","addressLocality":"São Luís","addressRegion":"MA","addressCountry":"BR"},"telephone":"+55 98 99973-1018","foundingDate":"1982"}
+    {"@context":"https://schema.org","@type":"RealEstateAgent","name":"Jorge Imóveis","url":"https://jurandy1.github.io/JorgeImoeis/","logo":"https://jurandy1.github.io/JorgeImoeis/Gemini_Generated_Image_op1pifop1pifop1p-removebg-preview.png","description":"Especialistas em compra, venda e aluguel de imóveis em São Luís desde 1982","address":{"@type":"PostalAddress","streetAddress":"Rua dos Professores, 13 – Altos – Cohafuma","addressLocality":"São Luís","addressRegion":"MA","addressCountry":"BR"},"telephone":"+55 98 99973-1018","foundingDate":"1982"}
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -975,8 +975,9 @@
         <div class="bg-white border border-[#e8e8e4] rounded-2xl p-1.5 flex gap-1 overflow-x-auto mb-6">
             <button onclick="showAdminTab('dashboard')" class="admin-tab-btn active" id="atab-dashboard">📊 Dashboard</button>
             <button onclick="showAdminTab('list')" class="admin-tab-btn" id="atab-list">📋 Imóveis</button>
-            <button onclick="showAdminTab('form')" class="admin-tab-btn" id="atab-form">➕ Novo Imóvel</button>
+            <button onclick="showAdminTab('form');resetForm();" class="admin-tab-btn" id="atab-form">➕ Novo Imóvel</button>
             <button onclick="showAdminTab('seo')" class="admin-tab-btn" id="atab-seo">🔍 SEO & Sitemap</button>
+            <button onclick="showAdminTab('backup')" class="admin-tab-btn" id="atab-backup">💾 Backup</button>
         </div>
 
         <!-- TAB: DASHBOARD -->
@@ -1279,8 +1280,8 @@
                         Baixar sitemap.xml
                     </button>
                     <div class="mt-3 bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between gap-3">
-                        <a href="/sitemap.xml" target="_blank" class="text-[11px] font-bold text-green-700 hover:underline truncate">https://jorgeimoveis.com.br/sitemap.xml</a>
-                        <button type="button" onclick="copySitemapLink()" class="px-3 py-1.5 rounded-lg border border-slate-200 text-[10px] font-bold text-slate-600 hover:border-green-400 hover:text-green-700 transition-all flex-shrink-0">Copiar</button>
+                        <a href="./sitemap.xml" target="_blank" class="text-[11px] font-bold text-green-700 hover:underline truncate">Abrir sitemap.xml</a>
+                        <button type="button" onclick="copySitemapLink()" class="px-3 py-1.5 rounded-lg border border-slate-200 text-[10px] font-bold text-slate-600 hover:border-green-400 hover:text-green-700 transition-all flex-shrink-0">Copiar link</button>
                     </div>
                 </div>
             </div>
@@ -1291,7 +1292,7 @@
                 <button onclick="migrateThumbsEconomy()" class="w-full flex items-center justify-center gap-2 bg-green-600 text-white py-3.5 rounded-xl font-bold text-[11px] uppercase tracking-widest hover:bg-green-700 transition-all">
                     Aplicar economia (thumbs)
                 </button>
-                <p class="text-xs text-slate-500 leading-relaxed mt-4 mb-3">Opcional: recomprime e substitui fotos antigas para reduzir o tamanho no Storage. Pode consumir banda durante a execução.</p>
+                <p class="text-xs text-slate-500 leading-relaxed mt-4 mb-3">Opcional: recomprime e substitui fotos antigas para reduzir o tamanho no Storage. Pode consumir banda durante a execução e requer CORS liberado no Firebase Storage para o seu domínio.</p>
                 <button onclick="optimizeOldPhotosEconomy()" class="w-full flex items-center justify-center gap-2 bg-[#0a0a0a] text-white py-3.5 rounded-xl font-bold text-[11px] uppercase tracking-widest hover:bg-green-700 transition-all">
                     Otimizar fotos antigas
                 </button>
@@ -1319,10 +1320,82 @@
                     <li>Baixe o sitemap.xml usando o botão acima</li>
                     <li>Coloque o arquivo na raiz do seu site e publique (GitHub Pages / Hosting)</li>
                     <li>Acesse <strong>Google Search Console</strong> → Sitemaps</li>
-                    <li>Envie: <code class="bg-slate-100 px-1.5 py-0.5 rounded">https://jorgeimoveis.com.br/sitemap.xml</code></li>
+                    <li>Envie o link do sitemap (use o botão “Copiar link” acima)</li>
                 </ol>
             </div>
         </div><!-- end admin tabs -->
+
+        <div id="admin-tab-backup" class="admin-tab-content">
+            <div class="bg-white border border-[#e8e8e4] rounded-2xl p-6 mb-6">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Backup & Restauração</p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Backup (JSON)</p>
+                        <p class="text-sm text-slate-500 leading-relaxed mb-4">Baixa um arquivo JSON com os imóveis do Firestore para guardar com segurança.</p>
+                        <button onclick="downloadDbBackup()" class="w-full flex items-center justify-center gap-2 bg-[#0a0a0a] text-white py-3.5 rounded-xl font-bold text-[11px] uppercase tracking-widest hover:bg-green-700 transition-all">
+                            Baixar backup
+                        </button>
+                        <button onclick="downloadPhotosBackup()" class="w-full mt-3 flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 py-3.5 rounded-xl font-bold text-[11px] uppercase tracking-widest hover:border-green-500 hover:text-green-700 transition-all">
+                            Baixar fotos (Storage)
+                        </button>
+                        <div class="mt-4 bg-white border border-slate-200 rounded-xl p-3">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-3">Backup completo (ZIP)</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                                <div>
+                                    <label class="input-label">Fotos</label>
+                                    <select id="backup-photos-mode" class="input-field bg-white">
+                                        <option value="cover">Apenas capa</option>
+                                        <option value="all">Todas as fotos</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="input-label">Lote</label>
+                                    <select id="backup-batch-size" class="input-field bg-white">
+                                        <option value="5">5 imóveis por ZIP</option>
+                                        <option value="10" selected>10 imóveis por ZIP</option>
+                                        <option value="20">20 imóveis por ZIP</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button onclick="downloadBackupPackage()" class="w-full flex items-center justify-center gap-2 bg-green-600 text-white py-3.5 rounded-xl font-bold text-[11px] uppercase tracking-widest hover:bg-green-700 transition-all">
+                                Baixar pacote (JSON + fotos)
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Restaurar</p>
+                        <p class="text-sm text-slate-500 leading-relaxed mb-4">Selecione um arquivo de backup e restaure no Firestore.</p>
+                        <input type="file" id="backup-file" accept="application/json,.json" class="input-field bg-white mb-3">
+                        <label class="flex items-center gap-3 cursor-pointer mb-4">
+                            <input type="checkbox" id="backup-delete-missing" class="w-5 h-5 accent-green-600">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Apagar imóveis não presentes no backup</span>
+                        </label>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <button type="button" onclick="restoreDbBackup('merge')" class="flex-1 flex items-center justify-center gap-2 bg-green-600 text-white py-3.5 rounded-xl font-bold text-[11px] uppercase tracking-widest hover:bg-green-700 transition-all">
+                                Restaurar (mesclar)
+                            </button>
+                            <button type="button" onclick="restoreDbBackup('replace')" class="flex-1 flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 py-3.5 rounded-xl font-bold text-[11px] uppercase tracking-widest hover:border-green-500 hover:text-green-700 transition-all">
+                                Restaurar (substituir)
+                            </button>
+                        </div>
+                        <div class="mt-5 pt-5 border-t border-slate-200">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Restaurar pacote (ZIP)</p>
+                            <p class="text-sm text-slate-500 leading-relaxed mb-4">Restaura a ficha completa e faz upload das fotos do ZIP para o Storage automaticamente (sem precisar fazer manual).</p>
+                            <input type="file" id="backup-zip-file" accept="application/zip,.zip" class="input-field bg-white mb-3">
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <button type="button" onclick="restoreBackupPackage('merge')" class="flex-1 flex items-center justify-center gap-2 bg-[#0a0a0a] text-white py-3.5 rounded-xl font-bold text-[11px] uppercase tracking-widest hover:bg-green-700 transition-all">
+                                    Restaurar ZIP (mesclar)
+                                </button>
+                                <button type="button" onclick="restoreBackupPackage('replace')" class="flex-1 flex items-center justify-center gap-2 bg-white border border-slate-200 text-slate-700 py-3.5 rounded-xl font-bold text-[11px] uppercase tracking-widest hover:border-green-500 hover:text-green-700 transition-all">
+                                    Restaurar ZIP (substituir)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="backup-status" class="mt-4 text-[10px] font-bold tracking-widest text-slate-400 min-h-[1.25rem]"></div>
+            </div>
+        </div>
 
         </div><!-- end admin-main-content -->
     </div>
@@ -1545,7 +1618,7 @@ function copyPropertyLink(slug) {
 }
 
 function copySitemapLink() {
-    var url = 'https://jorgeimoveis.com.br/sitemap.xml';
+    var url = new URL('sitemap.xml', new URL('.', location.href)).href;
     navigator.clipboard.writeText(url)
         .then(function() { showToast('Link do sitemap copiado! ✓'); })
         .catch(function() { prompt('Copie o link:', url); });
@@ -1634,6 +1707,11 @@ function updatePreviewUrl(url) { if (window._mod) window._mod.updatePreviewUrl(u
 function generateAndDownloadSitemap() { if (window._mod) window._mod.generateAndDownloadSitemap(); }
 function migrateThumbsEconomy() { if (window._mod) window._mod.migrateThumbsEconomy(); }
 function optimizeOldPhotosEconomy() { if (window._mod) window._mod.optimizeOldPhotosEconomy(); }
+function downloadDbBackup() { if (window._mod) window._mod.downloadDbBackup(); }
+function restoreDbBackup(mode) { if (window._mod) window._mod.restoreDbBackup(mode); }
+function downloadPhotosBackup() { if (window._mod) window._mod.downloadPhotosBackup(); }
+function downloadBackupPackage() { if (window._mod) window._mod.downloadBackupPackage(); }
+function restoreBackupPackage(mode) { if (window._mod) window._mod.restoreBackupPackage(mode); }
 function initDistrictFilters() { if (window._mod) window._mod.initDistrictFilters(); }
 
 function maskPrice(el) {
@@ -2025,7 +2103,7 @@ function setMediaTab(tab) {
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
     import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
-    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, getDocs, query, where, writeBatch } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
     import { getStorage, ref, uploadBytes, getDownloadURL, getBlob, deleteObject } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js';
 
     const firebaseConfig = {
@@ -2068,7 +2146,8 @@ function setMediaTab(tab) {
         applyFilters, handleLogin, handleRegister, logout, handleFormSubmit,
         viewPropertyDetails, resetForm, loadForEdit, deleteProperty,
         previewUpload, previewUploadMultiple, updatePreviewUrl,
-        generateAndDownloadSitemap, migrateThumbsEconomy, optimizeOldPhotosEconomy, initDistrictFilters
+        generateAndDownloadSitemap, migrateThumbsEconomy, optimizeOldPhotosEconomy,
+        downloadDbBackup, restoreDbBackup, downloadPhotosBackup, downloadBackupPackage, restoreBackupPackage, initDistrictFilters
     };
 
     /* ── UTILITIES ── */
@@ -2084,33 +2163,83 @@ function setMediaTab(tab) {
     };
 
     /* ── SEO ── */
+    const siteBase = () => new URL('.', location.href).href;
+    const absUrl = (u) => { try { return new URL(String(u||''), siteBase()).href; } catch { return String(u||''); } };
+    const setLinkRel = (rel, href) => {
+        let el = document.querySelector('link[rel="'+rel+'"]');
+        if (!el) { el = document.createElement('link'); el.setAttribute('rel', rel); document.head.appendChild(el); }
+        el.setAttribute('href', href);
+    };
     function resetSeo() {
+        const base = siteBase();
         document.title = 'Jorge Imóveis — Compra, Venda e Aluguel em São Luís, MA';
         setMeta('description','Jorge Imóveis — Especialistas em compra, venda e aluguel de imóveis em São Luís e Maranhão desde 1982. CRECI: 663 20º RG.');
-        setOgProp('og:url','https://jorgeimoveis.com.br/');
+        setMeta('twitter:title','Jorge Imóveis — Compra, Venda e Aluguel em São Luís, MA');
+        setMeta('twitter:description','Especialistas em imóveis desde 1982. Encontre casas, apartamentos, terrenos e propriedades rurais em São Luís e Maranhão.');
+        setMeta('twitter:image', absUrl('1BBD56BC-1AD3-493A-88A5-397D8F0DEBBA-1024x576.jpeg'));
+        setOgProp('og:title','Jorge Imóveis — Compra, Venda e Aluguel em São Luís, MA');
+        setOgProp('og:description','Especialistas em imóveis desde 1982. Encontre casas, apartamentos, terrenos e propriedades rurais em São Luís e Maranhão.');
+        setOgProp('og:image', absUrl('1BBD56BC-1AD3-493A-88A5-397D8F0DEBBA-1024x576.jpeg'));
+        setOgProp('og:type','website');
+        setOgProp('og:url', base);
+        setLinkRel('canonical', base);
         const jld = document.getElementById('jld-property'); if (jld) jld.remove();
     }
 
     const setSeo = (p) => {
+        const base = siteBase();
+        const url = base + '#imovel/' + (p.slug||p.id);
         document.title = p.seoTitle || (p.title + ' | Jorge Imóveis');
-        setMeta('description', p.seoDescription || (p.title + ' em ' + (p.city||'São Luís') + ' | Jorge Imóveis'));
+        const city = p.city||'São Luís';
+        const state = p.state||'MA';
+        const district = p.district||p.neighborhood||'';
+        const size = p.size||p.area||'';
+        const beds = p.beds||'';
+        const type = p.type||'';
+        const priceText = p.price?('R$ '+String(p.price).trim()):'';
+        const descFallback = [p.title, type, district, city].filter(Boolean).join(' · ') + (size?(' · '+size+' m²'):'') + (beds?(' · '+beds+' quartos'):'') + (priceText?(' · '+priceText):'');
+        setMeta('description', p.seoDescription || descFallback);
         setMeta('keywords', p.seoKeys || ((p.category||'') + ', imóveis ' + (p.city||'São Luís')));
         setOgProp('og:title', p.seoTitle || p.title);
-        setOgProp('og:description', p.seoDescription || '');
-        setOgProp('og:url', 'https://jorgeimoveis.com.br/#imovel/' + (p.slug||p.id));
-        setOgProp('og:image', (p.images&&p.images[0]) || p.img || '');
+        setOgProp('og:description', p.seoDescription || descFallback);
+        setOgProp('og:type','article');
+        setOgProp('og:url', url);
+        const img0 = (p.images&&p.images[0]) || p.img || '';
+        setOgProp('og:image', absUrl(img0));
+        setMeta('twitter:title', p.seoTitle || p.title);
+        setMeta('twitter:description', p.seoDescription || descFallback);
+        setMeta('twitter:image', absUrl(img0));
+        setLinkRel('canonical', url);
         const jld = document.getElementById('jld-property') || (() => {
             const s = document.createElement('script'); s.type='application/ld+json'; s.id='jld-property';
             document.head.appendChild(s); return s;
         })();
+        const priceNum = parsePrice(p.price);
+        const geo = (p.lat && p.lng) ? {"@type":"GeoCoordinates","latitude":String(p.lat),"longitude":String(p.lng)} : undefined;
+        const floorSize = size ? {"@type":"QuantitativeValue","value":String(size).replace(',','.'),"unitCode":"MTK"} : undefined;
         jld.textContent = JSON.stringify({
             "@context":"https://schema.org","@type":"RealEstateListing",
-            "name":p.title, "description":p.seoDescription||p.description||'',
-            "url":"https://jorgeimoveis.com.br/#imovel/"+(p.slug||p.id),
-            "image":(p.images&&p.images[0])||p.img||'',
-            "address":{"@type":"PostalAddress","streetAddress":p.address||"",
-                "addressLocality":p.city||"São Luís","addressRegion":p.state||"MA","addressCountry":"BR"},
-            "offers":p.price?{"@type":"Offer","price":p.price,"priceCurrency":"BRL"}:undefined
+            "name":p.title,
+            "description":p.seoDescription||p.description||p.content||'',
+            "url":url,
+            "image":absUrl(img0),
+            "datePosted":p.createdAt||undefined,
+            "dateModified":p.updatedAt||undefined,
+            "mainEntityOfPage":{"@type":"WebPage","@id":url},
+            "address":{"@type":"PostalAddress",
+                "streetAddress":p.address||"",
+                "addressLocality":city,
+                "addressRegion":state,
+                "addressCountry":"BR"},
+            "geo":geo,
+            "offers":priceNum?{"@type":"Offer","price":priceNum,"priceCurrency":"BRL","availability":"https://schema.org/InStock","url":url}:undefined,
+            "itemOffered":{
+                "@type":"Residence",
+                "name":p.title,
+                "floorSize":floorSize,
+                "numberOfRooms":beds?parseInt(beds,10)||undefined:undefined,
+                "address":{"@type":"PostalAddress","addressLocality":city,"addressRegion":state,"addressCountry":"BR"}
+            }
         });
     };
 
@@ -2720,7 +2849,7 @@ function setMediaTab(tab) {
 
     /* ── SITEMAP ── */
     function generateAndDownloadSitemap() {
-        const base = 'https://jorgeimoveis.com.br', today = new Date().toISOString().slice(0,10);
+        const base = siteBase().replace(/\/$/,''), today = new Date().toISOString().slice(0,10);
         const statics = ['','#empresa','#servicos','#catalog','#contato'].map((h,i)=>({url:base+'/'+h,priority:i===0?'1.0':'0.7',changefreq:i===0?'daily':'monthly',lastmod:today}));
         const props = _allProperties.filter(p=>p.isActive&&p.slug).map(p=>({url:`${base}/#imovel/${p.slug}`,priority:p.isFeatured?'0.9':'0.8',changefreq:'weekly',lastmod:(p.updatedAt||p.createdAt||today).slice(0,10)}));
         const all = [...statics,...props];
@@ -2728,6 +2857,401 @@ function setMediaTab(tab) {
         const a = Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([xml],{type:'application/xml'})),download:'sitemap.xml'});
         a.click();
         showToast('Sitemap gerado com '+all.length+' URLs!');
+    }
+
+    async function downloadDbBackup() {
+        const statusEl=document.getElementById('backup-status');
+        if(!auth.currentUser||auth.currentUser.isAnonymous){openLoginModal();return;}
+        if(statusEl) statusEl.textContent='⏳ Gerando backup...';
+        try {
+            const colRef=collection(db,'artifacts',DB_APP_ID,'public','data','properties');
+            const snap=await getDocs(colRef);
+            const docs=snap.docs.map(d=>({id:d.id,data:d.data()||{}}));
+            const payload={version:1,exportedAt:new Date().toISOString(),collection:'properties',count:docs.length,docs};
+            const json=JSON.stringify(payload,null,2);
+            const fname='backup_properties_'+new Date().toISOString().slice(0,10)+'.json';
+            const href=URL.createObjectURL(new Blob([json],{type:'application/json'}));
+            const a=Object.assign(document.createElement('a'),{href,download:fname});
+            a.click();
+            setTimeout(()=>{ try{URL.revokeObjectURL(href);}catch{} },1500);
+            if(statusEl) statusEl.textContent='✓ Backup gerado ('+docs.length+' imóvel(is)).';
+            showToast('Backup baixado.');
+        } catch(err) {
+            console.error(err);
+            if(statusEl) statusEl.textContent='✗ Falha ao gerar backup.';
+            showToast('Erro ao gerar backup.');
+        }
+    }
+
+    async function downloadPhotosBackup() {
+        const statusEl=document.getElementById('backup-status');
+        if(!auth.currentUser||auth.currentUser.isAnonymous){openLoginModal();return;}
+        storageBlocked=false;
+        const isCorsBlocked = (e) => {
+            const m=String(e?.message||e||'').toLowerCase();
+            return m.includes('access-control-allow-origin') || m.includes('cross-origin') || m.includes('cors');
+        };
+        const ok=confirm('Isso vai baixar todas as fotos dos imóveis (Storage) para o seu computador. Pode abrir muitos downloads. Deseja continuar?');
+        if(!ok) return;
+        if(statusEl) statusEl.textContent='⏳ Preparando lista de fotos...';
+        const safe = (s) => String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w.\-]+/g,'_').replace(/_+/g,'_').replace(/^_+|_+$/g,'').slice(0,80);
+        const extFrom = (type, url) => {
+            const t=String(type||'').toLowerCase();
+            if(t.includes('jpeg')) return '.jpg';
+            if(t.includes('png')) return '.png';
+            if(t.includes('webp')) return '.webp';
+            if(t.includes('gif')) return '.gif';
+            const u=String(url||'');
+            const m=u.match(/\.(jpg|jpeg|png|webp|gif)(\?|$)/i);
+            if(m) return '.'+m[1].toLowerCase().replace('jpeg','jpg');
+            return '.jpg';
+        };
+        try {
+            const colRef=collection(db,'artifacts',DB_APP_ID,'public','data','properties');
+            const snap=await getDocs(colRef);
+            const docs=snap.docs;
+            const items=[];
+            const seen=new Set();
+            for(const docSnap of docs){
+                const d=docSnap.data()||{};
+                const slug=safe(d.slug||docSnap.id);
+                const title=safe(d.title||'imovel');
+                const imgs=(Array.isArray(d.images)&&d.images.length)?d.images:(d.img?[d.img]:[]);
+                for(let i=0;i<imgs.length;i++){
+                    const u=String(imgs[i]||'').trim();
+                    if(!u) continue;
+                    if(seen.has(u)) continue;
+                    seen.add(u);
+                    items.push({url:u, base:`${slug||docSnap.id}_${title||'imovel'}_${String(i+1).padStart(2,'0')}`});
+                }
+            }
+            if(!items.length){if(statusEl) statusEl.textContent='⚠ Nenhuma foto encontrada.'; showToast('Nenhuma foto para baixar.'); return;}
+            if(statusEl) statusEl.textContent=`⬇ Baixando 0 de ${items.length}...`;
+            let okCount=0, failCount=0;
+            for(let i=0;i<items.length;i++){
+                const it=items[i];
+                try {
+                    if(statusEl) statusEl.textContent=`⬇ Baixando ${i+1} de ${items.length}...`;
+                    const r=ref(storage,it.url);
+                    const blob=await getBlob(r);
+                    const ext=extFrom(blob.type,it.url);
+                    const href=URL.createObjectURL(blob);
+                    const a=document.createElement('a');
+                    a.href=href;
+                    a.download=(it.base||('foto_'+(i+1)))+ext;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    setTimeout(()=>{ try{URL.revokeObjectURL(href);}catch{} },3000);
+                    okCount++;
+                    await new Promise(res=>setTimeout(res,80));
+                } catch(e) {
+                    if(isCorsBlocked(e)){
+                        if(statusEl) statusEl.textContent='⚠ CORS bloqueado no Storage. Corrija o CORS do bucket e tente novamente.';
+                        showToast('CORS bloqueado no Storage.');
+                        return;
+                    }
+                    console.error('Falha ao baixar foto', it.url, e);
+                    failCount++;
+                }
+            }
+            if(statusEl) statusEl.textContent=`✓ Fotos baixadas: ${okCount} ok, ${failCount} falha.`;
+            showToast('Download de fotos concluído.');
+        } catch(err) {
+            console.error(err);
+            if(statusEl) statusEl.textContent='✗ Falha ao baixar fotos.';
+            showToast('Erro ao baixar fotos.');
+        }
+    }
+
+    async function downloadBackupPackage() {
+        const statusEl=document.getElementById('backup-status');
+        if(!auth.currentUser||auth.currentUser.isAnonymous){openLoginModal();return;}
+        storageBlocked=false;
+        const photosMode=(document.getElementById('backup-photos-mode')?.value||'cover').toString();
+        const batchSize=Math.max(1,parseInt(document.getElementById('backup-batch-size')?.value||'10',10)||10);
+        const isCorsBlocked = (e) => {
+            const m=String(e?.message||e||'').toLowerCase();
+            return m.includes('access-control-allow-origin') || m.includes('cross-origin') || m.includes('cors');
+        };
+        const ok=confirm('Isso vai gerar um ou mais arquivos .zip com JSON + fotos dentro. Pode ficar grande e consumir banda. Deseja continuar?');
+        if(!ok) return;
+        if(statusEl) statusEl.textContent='⏳ Carregando imóveis...';
+        const safe = (s) => String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w.\-]+/g,'_').replace(/_+/g,'_').replace(/^_+|_+$/g,'').slice(0,90);
+        const extFrom = (type, url) => {
+            const t=String(type||'').toLowerCase();
+            if(t.includes('jpeg')) return '.jpg';
+            if(t.includes('png')) return '.png';
+            if(t.includes('webp')) return '.webp';
+            if(t.includes('gif')) return '.gif';
+            const u=String(url||'');
+            const m=u.match(/\.(jpg|jpeg|png|webp|gif)(\?|$)/i);
+            if(m) return '.'+m[1].toLowerCase().replace('jpeg','jpg');
+            return '.jpg';
+        };
+        const sanitize=(v)=>{
+            if(v===undefined) return undefined;
+            if(v===null) return null;
+            if(Array.isArray(v)) return v.map(sanitize).filter(x=>x!==undefined);
+            if(typeof v==='object'){
+                const o={};
+                Object.keys(v).forEach(k=>{
+                    const sv=sanitize(v[k]);
+                    if(sv!==undefined) o[k]=sv;
+                });
+                return o;
+            }
+            return v;
+        };
+        try {
+            const { default: JSZip } = await import('https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm');
+            const colRef=collection(db,'artifacts',DB_APP_ID,'public','data','properties');
+            const snap=await getDocs(colRef);
+            const docs=snap.docs;
+            if(!docs.length){if(statusEl) statusEl.textContent='⚠ Nenhum imóvel encontrado.'; return;}
+            const totalParts=Math.ceil(docs.length/batchSize);
+            for(let part=0;part<totalParts;part++){
+                const start=part*batchSize;
+                const slice=docs.slice(start,start+batchSize);
+                const zip=new JSZip();
+                const imgs=zip.folder('images');
+                const manifestDocs=[];
+                let okPhotos=0, failPhotos=0;
+                for(let di=0;di<slice.length;di++){
+                    const ds=slice[di];
+                    const raw=ds.data()||{};
+                    const data=sanitize(raw)||{};
+                    const slug=safe(data.slug||ds.id);
+                    const title=safe(data.title||'imovel');
+                    let list=(Array.isArray(data.images)&&data.images.length)?data.images:((data.img)?[data.img]:[]);
+                    if(photosMode!=='all'){ list=[data.img||list[0]||''].filter(Boolean); }
+                    const photos=[];
+                    for(let ii=0;ii<list.length;ii++){
+                        const url=String(list[ii]||'').trim();
+                        if(!url) continue;
+                        try {
+                            if(statusEl) statusEl.textContent=`⬇ ZIP ${part+1}/${totalParts}: imóvel ${start+di+1}/${docs.length} foto ${ii+1}/${list.length}...`;
+                            const r=ref(storage,url);
+                            const blob=await getBlob(r);
+                            const ext=extFrom(blob.type,url);
+                            const filename=`${slug||ds.id}_${title||'imovel'}_${String(ii+1).padStart(2,'0')}${ext}`;
+                            imgs.file(filename, blob);
+                            photos.push({file:'images/'+filename,contentType:blob.type||'',size:blob.size||0,originalUrl:url});
+                            okPhotos++;
+                        } catch(e) {
+                            if(isCorsBlocked(e)){
+                                if(statusEl) statusEl.textContent='⚠ CORS bloqueado no Storage. Corrija o CORS do bucket e tente novamente.';
+                                showToast('CORS bloqueado no Storage.');
+                                return;
+                            }
+                            console.error('Falha ao adicionar foto no ZIP', url, e);
+                            failPhotos++;
+                            photos.push({file:'',contentType:'',size:0,originalUrl:url,error:'download_failed'});
+                        }
+                    }
+                    manifestDocs.push({id:ds.id,data,photos});
+                }
+                const payload={
+                    version:1,
+                    exportedAt:new Date().toISOString(),
+                    collection:'properties',
+                    photosMode,
+                    count:manifestDocs.length,
+                    docs:manifestDocs
+                };
+                zip.file('backup.json', JSON.stringify(payload,null,2));
+                if(statusEl) statusEl.textContent=`⏳ Gerando ZIP ${part+1}/${totalParts}...`;
+                const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:6}});
+                const href=URL.createObjectURL(blob);
+                const name=`backup_properties_${photosMode}_part${String(part+1).padStart(2,'0')}-de-${String(totalParts).padStart(2,'0')}.zip`;
+                const a=document.createElement('a');
+                a.href=href; a.download=name;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(()=>{ try{URL.revokeObjectURL(href);}catch{} },5000);
+                if(statusEl) statusEl.textContent=`✓ ZIP ${part+1}/${totalParts} pronto (${manifestDocs.length} imóvel(is), fotos: ${okPhotos} ok, ${failPhotos} falha).`;
+                await new Promise(res=>setTimeout(res,600));
+            }
+            showToast('Backup completo gerado.');
+        } catch(err) {
+            console.error(err);
+            if(statusEl) statusEl.textContent='✗ Falha ao gerar pacote.';
+            showToast('Erro ao gerar pacote.');
+        }
+    }
+
+    async function restoreBackupPackage(mode) {
+        const statusEl=document.getElementById('backup-status');
+        if(!auth.currentUser||auth.currentUser.isAnonymous){openLoginModal();return;}
+        storageBlocked=false;
+        const file=document.getElementById('backup-zip-file')?.files?.[0];
+        if(!file){showToast('Selecione um arquivo .zip.'); if(statusEl) statusEl.textContent='⚠ Selecione um ZIP.'; return;}
+        const merge = mode !== 'replace';
+        const ok=confirm('Isso vai enviar as fotos do ZIP para o Storage e restaurar os imóveis no Firestore. Deseja continuar?');
+        if(!ok) return;
+        const sanitize=(v)=>{
+            if(v===undefined) return undefined;
+            if(v===null) return null;
+            if(Array.isArray(v)) return v.map(sanitize).filter(x=>x!==undefined);
+            if(typeof v==='object'){
+                const o={};
+                Object.keys(v).forEach(k=>{
+                    const sv=sanitize(v[k]);
+                    if(sv!==undefined) o[k]=sv;
+                });
+                return o;
+            }
+            return v;
+        };
+        const extFrom = (type, name) => {
+            const t=String(type||'').toLowerCase();
+            if(t.includes('jpeg')) return '.jpg';
+            if(t.includes('png')) return '.png';
+            if(t.includes('webp')) return '.webp';
+            if(t.includes('gif')) return '.gif';
+            const n=String(name||'');
+            const m=n.match(/\.(jpg|jpeg|png|webp|gif)$/i);
+            if(m) return '.'+m[1].toLowerCase().replace('jpeg','jpg');
+            return '.jpg';
+        };
+        try {
+            if(statusEl) statusEl.textContent='⏳ Abrindo ZIP...';
+            const { default: JSZip } = await import('https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm');
+            const zip=await JSZip.loadAsync(file);
+            const jsonFile=zip.file('backup.json') || zip.file('backup_properties.json');
+            if(!jsonFile){showToast('ZIP inválido: backup.json não encontrado.'); if(statusEl) statusEl.textContent='✗ backup.json não encontrado.'; return;}
+            const payload=JSON.parse(await jsonFile.async('string'));
+            const docs=Array.isArray(payload?.docs)?payload.docs:[];
+            if(!docs.length){showToast('Backup vazio.'); if(statusEl) statusEl.textContent='⚠ Backup vazio.'; return;}
+            let uploaded=0, failed=0;
+            const records=[];
+            for(let i=0;i<docs.length;i++){
+                const id=String(docs[i]?.id||'').trim();
+                const data=sanitize(docs[i]?.data||{});
+                if(!id){continue;}
+                const photos=Array.isArray(docs[i]?.photos)?docs[i].photos:[];
+                const urls=[];
+                for(let p=0;p<photos.length;p++){
+                    const rel=String(photos[p]?.file||'').trim();
+                    if(!rel) continue;
+                    const zf=zip.file(rel);
+                    if(!zf){failed++; continue;}
+                    if(statusEl) statusEl.textContent=`⬆ Enviando foto ${p+1} de ${photos.length} (imóvel ${i+1}/${docs.length})...`;
+                    try {
+                        const blob=await zf.async('blob');
+                        const ctype=String(photos[p]?.contentType||blob.type||'image/jpeg');
+                        const ext=extFrom(ctype, rel.split('/').pop());
+                        const base=rel.split('/').pop()?.replace(/\.[^.]+$/,'')||('img_'+p);
+                        const f=new File([blob],base+ext,{type:ctype,lastModified:Date.now()});
+                        const url=await uploadToStorage(f,{ts:Date.now(),safeName:base+ext,folder:'properties'});
+                        urls.push(url);
+                        uploaded++;
+                    } catch(e) {
+                        console.error('Falha ao enviar foto do ZIP', rel, e);
+                        failed++;
+                    }
+                }
+                if(urls.length){
+                    data.images=urls;
+                    data.thumbs=urls;
+                    data.img=urls[0]||'';
+                    data.thumb=urls[0]||'';
+                }
+                data.updatedAt=new Date().toISOString();
+                records.push({id,data});
+            }
+            if(!records.length){showToast('Nenhum imóvel válido no ZIP.'); if(statusEl) statusEl.textContent='✗ Nenhum imóvel válido.'; return;}
+            if(statusEl) statusEl.textContent='⏳ Salvando no Firestore...';
+            for(let i=0;i<records.length;i+=400){
+                const batch=writeBatch(db);
+                const chunk=records.slice(i,i+400);
+                chunk.forEach(r=>{
+                    const refDoc=doc(db,'artifacts',DB_APP_ID,'public','data','properties',r.id);
+                    if(merge) batch.set(refDoc,r.data,{merge:true});
+                    else batch.set(refDoc,r.data);
+                });
+                if(statusEl) statusEl.textContent=`⬆ Gravando ${Math.min(i+chunk.length,records.length)} de ${records.length}...`;
+                await batch.commit();
+            }
+            if(statusEl) statusEl.textContent=`✓ ZIP restaurado: ${records.length} imóvel(is). Fotos: ${uploaded} ok, ${failed} falha.`;
+            showToast('Restauração do ZIP concluída.');
+        } catch(err) {
+            console.error(err);
+            if(statusEl) statusEl.textContent='✗ Falha ao restaurar ZIP.';
+            showToast('Erro ao restaurar ZIP.');
+        }
+    }
+
+    async function restoreDbBackup(mode) {
+        const statusEl=document.getElementById('backup-status');
+        if(!auth.currentUser||auth.currentUser.isAnonymous){openLoginModal();return;}
+        const file=document.getElementById('backup-file')?.files?.[0];
+        if(!file){showToast('Selecione um arquivo de backup.'); if(statusEl) statusEl.textContent='⚠ Selecione um arquivo.'; return;}
+        const deleteMissing=Boolean(document.getElementById('backup-delete-missing')?.checked);
+        const merge = mode !== 'replace';
+        const ok=confirm('Restaurar backup no Firestore? ' + (merge ? 'Modo: mesclar.' : 'Modo: substituir.') );
+        if(!ok) return;
+        if(deleteMissing){
+            const okDel=confirm('ATENÇÃO: isso vai apagar imóveis que não estiverem no backup. Deseja continuar?');
+            if(!okDel) return;
+        }
+        const sanitize=(v)=>{
+            if(v===undefined) return undefined;
+            if(v===null) return null;
+            if(Array.isArray(v)) return v.map(sanitize).filter(x=>x!==undefined);
+            if(typeof v==='object'){
+                const o={};
+                Object.keys(v).forEach(k=>{
+                    const sv=sanitize(v[k]);
+                    if(sv!==undefined) o[k]=sv;
+                });
+                return o;
+            }
+            return v;
+        };
+        if(statusEl) statusEl.textContent='⏳ Lendo arquivo...';
+        try {
+            const text=await file.text();
+            const payload=JSON.parse(text);
+            const list=Array.isArray(payload?.docs)?payload.docs:Array.isArray(payload)?payload:[];
+            if(!list.length){showToast('Backup vazio ou inválido.'); if(statusEl) statusEl.textContent='✗ Backup inválido.'; return;}
+            const records=list.map((x)=>({id:String(x?.id||'').trim(),data:x?.data??x})).filter(x=>x.id);
+            if(!records.length){showToast('Nenhum documento válido no backup.'); if(statusEl) statusEl.textContent='✗ Backup inválido.'; return;}
+            const ids=new Set(records.map(r=>r.id));
+            let done=0;
+            for(let i=0;i<records.length;i+=400){
+                const batch=writeBatch(db);
+                const chunk=records.slice(i,i+400);
+                chunk.forEach(r=>{
+                    const refDoc=doc(db,'artifacts',DB_APP_ID,'public','data','properties',r.id);
+                    const data=sanitize(r.data||{});
+                    if(merge) batch.set(refDoc,data,{merge:true});
+                    else batch.set(refDoc,data);
+                });
+                if(statusEl) statusEl.textContent=`⬆ Gravando ${Math.min(i+chunk.length,records.length)} de ${records.length}...`;
+                await batch.commit();
+                done+=chunk.length;
+            }
+            if(deleteMissing){
+                const colRef=collection(db,'artifacts',DB_APP_ID,'public','data','properties');
+                const snap=await getDocs(colRef);
+                const toDelete=snap.docs.filter(d=>!ids.has(d.id));
+                for(let i=0;i<toDelete.length;i+=400){
+                    const batch=writeBatch(db);
+                    const chunk=toDelete.slice(i,i+400);
+                    chunk.forEach(d=>batch.delete(d.ref));
+                    if(statusEl) statusEl.textContent=`🗑 Apagando ${Math.min(i+chunk.length,toDelete.length)} de ${toDelete.length}...`;
+                    await batch.commit();
+                }
+            }
+            if(statusEl) statusEl.textContent='✓ Restauração concluída ('+records.length+' imóvel(is)).';
+            showToast('Restauração concluída.');
+        } catch(err) {
+            console.error(err);
+            if(statusEl) statusEl.textContent='✗ Falha ao restaurar.';
+            showToast('Erro ao restaurar backup.');
+        }
     }
 
     async function migrateThumbsEconomy() {
@@ -2796,6 +3320,11 @@ function setMediaTab(tab) {
     async function optimizeOldPhotosEconomy() {
         const statusEl=document.getElementById('storage-status');
         if(!auth.currentUser||auth.currentUser.isAnonymous){openLoginModal();return;}
+        const isCorsBlocked = (e) => {
+            const m=String(e?.message||e||'').toLowerCase();
+            return m.includes('access-control-allow-origin') || m.includes('cross-origin') || m.includes('cors');
+        };
+        const corsHelp = '⚠ CORS bloqueado no Firebase Storage. Libere CORS no bucket para o domínio do site (ex.: https://jorgeimoveis.com.br) e tente novamente.';
         const ok=confirm('Isso vai baixar, otimizar e reenviar as fotos antigas do Storage. Pode demorar e consumir banda. Deseja continuar?');
         if(!ok) return;
         const doDelete=confirm('Depois de atualizar os links no banco, deseja apagar os arquivos antigos no Storage para liberar espaço?');
@@ -2829,6 +3358,11 @@ function setMediaTab(tab) {
                         imgsOptimized++;
                         oldRefs.push(u);
                     } catch(e) {
+                        if(isCorsBlocked(e)){
+                            if(statusEl) statusEl.textContent=corsHelp;
+                            showToast('Ative CORS no Storage e tente novamente.');
+                            throw new Error('storage-cors-blocked');
+                        }
                         console.error('Falha ao otimizar', u, e);
                         imgsFailed++;
                         map.set(u,u);
@@ -2858,6 +3392,8 @@ function setMediaTab(tab) {
             showToast('Otimização concluída.');
         } catch(err) {
             console.error(err);
+            const msg=String(err?.message||'');
+            if(msg==='storage-cors-blocked'){return;}
             if(statusEl) statusEl.textContent='✗ Falha ao otimizar fotos antigas.';
             showToast('Erro ao otimizar fotos antigas.');
         }
@@ -2982,11 +3518,28 @@ function setMediaTab(tab) {
     const buildSeo = () => {
         const g = id => (document.getElementById(id)?.value||'').trim();
         const title=g('form-title'),type=g('form-type'),category=g('form-category'),district=g('form-district'),city=g('form-city'),state=g('form-state'),size=g('form-size'),price=g('form-price');
+        const beds=g('form-beds'),baths=g('form-baths'),garage=g('form-garage');
+        const typeLabel = type==='Venda' ? 'à venda' : (type==='Aluguel' ? 'para alugar' : 'rural');
         const loc=[district,city].filter(Boolean).join(', ')+(state?'/'+state:'');
+        const shortLoc=[district,city].filter(Boolean).join(' · ');
+        const headline=[category, typeLabel, district?('no '+district):'', city?('em '+city):''].filter(Boolean).join(' ');
+        const titleMax = 62;
+        const rawTitle = [headline, 'Jorge Imóveis'].filter(Boolean).join(' | ');
+        const seoTitle = rawTitle.length>titleMax ? (rawTitle.slice(0,titleMax-1).trimEnd()+'…') : rawTitle;
+        const parts = [
+            title||category||'Imóvel',
+            shortLoc||'',
+            type?('Tipo: '+type):'',
+            size?('Área: '+size+' m²'):'',
+            beds?('Quartos: '+beds):'',
+            baths?('Banheiros: '+baths):'',
+            garage?('Garagem: '+garage):'',
+            price?('Valor: R$ '+price):''
+        ].filter(Boolean);
         return {
-            seoTitle:[title,type?`${type} em ${city||state||''}`:'','Jorge Imóveis'].filter(Boolean).join(' | '),
-            seoDescription:`${title||'Imóvel'}${loc?' em '+loc:''}.${type?' '+type+'.':''}${size?' '+size+' m².':''}${price?' R$ '+price+'.':''}`,
-            seoKeys:[...new Set([category,type,district,city,state,'imóveis São Luís','Jorge Imóveis'].filter(Boolean))].join(', ')
+            seoTitle,
+            seoDescription:parts.join('. ') + '.',
+            seoKeys:[...new Set([category,type,typeLabel,district,city,state,'imóveis São Luís','imobiliária São Luís','Jorge Imóveis'].filter(Boolean))].join(', ')
         };
     };
     const refreshSeo = () => {
